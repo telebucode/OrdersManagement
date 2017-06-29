@@ -30,6 +30,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\..\..\..\madhu\DLL\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\madhu\DLL\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -39,8 +46,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Client.cs" />
+    <Compile Include="Core\Quotation.cs" />
+    <Compile Include="SharedClass.cs" />
+    <Compile Include="Exceptions\QuotationCreateException.cs" />
     <Compile Include="Model\BillingMode.cs" />
     <Compile Include="Model\Currency.cs" />
+    <Compile Include="Model\Invoice.cs" />
+    <Compile Include="Model\MetaDataFormat.cs" />
     <Compile Include="Model\PropertyDataType.cs" />
     <Compile Include="Model\PropertyInputType.cs" />
     <Compile Include="Model\Quotation.cs" />
