@@ -195,7 +195,7 @@ namespace OrdersManagement.Model
                 foreach(JToken child in tempJArray.Children())
                 {
                     tempJObj = child as JObject;
-
+                    ParseServicePropertyJSon(currentService, tempJObj);
                 }
             }
             return isWellFormatted;
@@ -204,45 +204,45 @@ namespace OrdersManagement.Model
         {
             foreach (KeyValuePair<string, ServiceProperty> servicePropertyEntry in SharedClass.Services[serviceName].Properties)
             {
-                if (servicePropertyEntry.Value.IsRequired && (serviceProperty.SelectToken(servicePropertyEntry.Value.Code) == null
-                        || serviceProperty.SelectToken(servicePropertyEntry.Value.Code).ToString().Trim().Length == 0))
+                if (servicePropertyEntry.Value.IsRequired && (serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode) == null
+                        || serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString().Trim().Length == 0))
                     throw new MissingFieldException(string.Format("Property {0} is marked as Required. But it is not found or empty in MetaData.",
-                        servicePropertyEntry.Value.Code));
-                if (serviceProperty.SelectToken(servicePropertyEntry.Value.Code).ToString().Trim().Length > 0)
+                        servicePropertyEntry.Value.MetaDataCode));
+                if (serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString().Trim().Length > 0)
                 {
                     switch (servicePropertyEntry.Value.DataType)
                     {
                         case PropertyDataType.INT:
                             try
                             {
-                                int.Parse(serviceProperty.SelectToken(servicePropertyEntry.Value.Code).ToString());
+                                int.Parse(serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString());
                             }
                             catch (Exception e)
                             {
                                 throw new InvalidCastException(string.Format("Property {0} requires Int value. But '{1}' is not an Int value.",
-                                    servicePropertyEntry.Value.Code, serviceProperty.SelectToken(servicePropertyEntry.Value.Code).ToString()));
+                                    servicePropertyEntry.Value.MetaDataCode, serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString()));
                             }
                             break;
                         case PropertyDataType.FLOAT:
                             try
                             {
-                                float.Parse(serviceProperty.SelectToken(servicePropertyEntry.Value.Code).ToString());
+                                float.Parse(serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString());
                             }
                             catch (Exception e)
                             {
                                 throw new InvalidCastException(string.Format("Property {0} requires float value. But '{1}' is not a float value.",
-                                    servicePropertyEntry.Value.Code, serviceProperty.SelectToken(servicePropertyEntry.Value.Code).ToString()));
+                                    servicePropertyEntry.Value.MetaDataCode, serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString()));
                             }
                             break;
                         case PropertyDataType.DATETIME:
                             try
                             {
-                                DateTime.Parse(serviceProperty.SelectToken(servicePropertyEntry.Value.Code).ToString());
+                                DateTime.Parse(serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString());
                             }
                             catch (Exception e)
                             {
                                 throw new InvalidCastException(string.Format("Property {0} requires DateTime value. But '{1}' is not a valid DateTime value.",
-                                    servicePropertyEntry.Value.Code, serviceProperty.SelectToken(servicePropertyEntry.Value.Code).ToString()));
+                                    servicePropertyEntry.Value.MetaDataCode, serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString()));
                             }
                             break;
                         default:

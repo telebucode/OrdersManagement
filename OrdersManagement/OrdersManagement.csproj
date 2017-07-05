@@ -38,6 +38,7 @@
       <HintPath>..\..\..\..\madhu\DLL\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,7 +48,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Client.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="Core\Quotation.cs" />
+    <Compile Include="Exceptions\ClientInitializationException.cs" />
+    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="Label.cs" />
+    <Compile Include="ProcedureParameter.cs" />
+    <Compile Include="ResponseFormat.cs" />
+    <Compile Include="StoredProcedure.cs" />
     <Compile Include="SharedClass.cs" />
     <Compile Include="Exceptions\QuotationCreateException.cs" />
     <Compile Include="Model\BillingMode.cs" />

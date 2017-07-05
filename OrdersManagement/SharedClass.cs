@@ -8,6 +8,6 @@ namespace OrdersManagement
 {
     internal static class SharedClass
     {
-        internal static Dictionary<string, Model.Service> Services = null;        
+        internal static Dictionary<string, Model.Service> Services = null;
     }
 }
