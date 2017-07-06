@@ -22,6 +22,8 @@ namespace OrdersManagement
         internal const string IS_REQUIRED = "IsRequired";
         internal const string DEFAULT_VALUE = "DefaultValue";
         internal const string INCLUDE_IN_ORDER_AMOUNT = "IncludeInOrderAmount";
+        internal const string PROPERTIES = "Properties";
+        internal const string SERVICES = "Services";
 
         internal const string TEXT_BOX = "TextBox";
         internal const string TEXT_AREA = "TextArea";
@@ -30,5 +32,9 @@ namespace OrdersManagement
         internal const string FLOAT = "Float";
         internal const string STRING = "String";
         internal const string DATE_TIME = "DateTime";
+
+        internal const string SUCCESS = "Success";
+        internal const string MESSAGE = "Message";
+        internal const string OUTPUT_PARAMETERS = "OutputParameters";
     }
 }

@@ -13,5 +13,6 @@ namespace OrdersManagement.Exceptions
         {
             this._message = message;
         }
+        public string Message { get { return this._message; } }        
     }
 }

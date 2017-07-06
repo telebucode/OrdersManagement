@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.SqlClient;
 using OrdersManagement.Model;
 using OrdersManagement.Exceptions;
+using Newtonsoft.Json.Linq;
 
 namespace OrdersManagement.Core
 {
@@ -39,7 +40,7 @@ namespace OrdersManagement.Core
                 throw new ClientInitializationException("ConnectionString should not be empty.");
             this._connectionString = connectionString;
             this._helper = new Helper(this);
-            this._helper.ResponseFormat = responseFormat;            
+            //this._helper.ResponseFormat = responseFormat;
             this.Initialize();
         }
         /// <summary>
@@ -51,7 +52,7 @@ namespace OrdersManagement.Core
                 throw new ClientInitializationException("OrderDbConnectionString not found in application config file.");
             this._connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["OrdersDbConnectionString"].ConnectionString;
             this._helper = new Helper(this);
-            this._helper.ResponseFormat = responseFormat;
+            //this._helper.ResponseFormat = responseFormat;
             this.Initialize();
         }
         
@@ -77,6 +78,7 @@ namespace OrdersManagement.Core
             try
             {
                 this._sqlCommand = new SqlCommand(StoredProcedure.GET_SERVICES, this._sqlConnection);
+                this._sqlCommand.CommandType = CommandType.StoredProcedure;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = isOnlyActive;
                 this._helper.PopulateOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter();
@@ -105,6 +107,7 @@ namespace OrdersManagement.Core
             try
             {
                 this._sqlCommand = new SqlCommand(StoredProcedure.GET_SERVICE_PROPERTIES, this._sqlConnection);
+                this._sqlCommand.CommandType = CommandType.StoredProcedure;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.SERVICE_ID, SqlDbType.TinyInt).Value = serviceId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = isOnlyActive;
                 this._helper.PopulateOutputParameters(ref this._sqlCommand);
@@ -134,6 +137,7 @@ namespace OrdersManagement.Core
             try
             {
                 this._sqlCommand = new SqlCommand(StoredProcedure.GET_INPUT_TYPES, this._sqlConnection);
+                this._sqlCommand.CommandType = CommandType.StoredProcedure;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = isOnlyActive;
                 this._helper.PopulateOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter();
@@ -173,6 +177,7 @@ namespace OrdersManagement.Core
             try
             {
                 this._sqlCommand = new SqlCommand(StoredProcedure.GET_INPUT_DATA_TYPES, this._sqlConnection);
+                this._sqlCommand.CommandType = CommandType.StoredProcedure;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = isOnlyActive;
                 this._helper.PopulateOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter();
@@ -259,9 +264,39 @@ namespace OrdersManagement.Core
 
         #region PUBLIC METHODS
         
-        public dynamic GetServices(bool includeServiceProperties = false, bool isOnlyActive = true)
+        public JObject GetServices(bool includeServiceProperties = false, bool isOnlyActive = true)
         {
             return this._helper.GetServices(includeServiceProperties, isOnlyActive);
+        }
+        public dynamic GetServicesNew(bool includeServiceProperties = false, bool isOnlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.GET_SERVICES, this._sqlConnection);
+                this._sqlCommand.CommandType = CommandType.StoredProcedure;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = isOnlyActive;
+                this._helper.PopulateOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter();
+                this._da.SelectCommand = this._sqlCommand;
+                this._ds = new DataSet();
+                this._da.Fill(this._ds);
+                if (!this._sqlCommand.IsSuccess())
+                    throw new ClientInitializationException(string.Format("Procedure {0} Returned False. {1}", StoredProcedure.GET_SERVICES, this._sqlCommand.GetMessage()));
+                if (this._ds.Tables.Count > 0 && this._ds.Tables[0].Rows.Count > 0)
+                    this._helper.ParseDataSet(this._ds, tablePreferences);
+                else
+                    throw new ClientInitializationException("No Services Found.");
+            }
+            catch (Exception e)
+            {
+                throw new ClientInitializationException(string.Format("Could not load Services list from database. Reason : {0}", e.Message));
+            }
+            finally
+            {
+                this._ds = null;
+                this._da = null;
+            }
+            return this._helper.GetResponse();
         }
 
         #endregion
