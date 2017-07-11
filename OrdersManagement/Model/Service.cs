@@ -64,6 +64,26 @@ namespace OrdersManagement.Model
             Core.Client client = new Core.Client(responseFormat);
             return client.CreateService(this._displayName, this._metaDataCode, this._areMultipleAllowed);
         }
+        /// <summary>
+        /// Updates a Service
+        /// </summary>
+        /// <param name="responseFormat">Indicates In which format the response object should be.</param>
+        /// <returns>JSon/Xml Object Depending on the responseFormat Parameter</returns>
+        public dynamic Update(ResponseFormat responseFormat = ResponseFormat.JSON)
+        {
+            Core.Client client = new Core.Client(responseFormat);
+            return client.UpdateService(this._id, this._displayName, this._metaDataCode, this._areMultipleAllowed);
+        }
+        /// <summary>
+        /// Deletes a Service
+        /// </summary>
+        /// <param name="responseFormat">Indicates In which format the response object should be.</param>
+        /// <returns>JSon/Xml Object Depending on the responseFormat Parameter</returns>
+        public dynamic Delete(ResponseFormat responseFormat = ResponseFormat.JSON)
+        {
+            Core.Client client = new Core.Client(responseFormat);
+            return client.DeleteService(this._id);
+        }
 
         #endregion
 

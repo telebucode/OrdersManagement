@@ -47,12 +47,18 @@ namespace OrdersManagement.Core
                 this._ds.Dispose();
             this._ds = null;
         }
+        private dynamic ErrorResponse()
+        {
+            this._helper.CreateProperty(Label.SUCCESS, false);
+            this._helper.CreateProperty(Label.MESSAGE, this._sqlCommand.GetMessage());
+            return this._helper.GetResponse();
+        }
 
         #endregion
 
         #region INTERNAL METHODS
 
-        public dynamic GetServices(short serviceId = 0, bool includeServiceProperties = false, bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        internal dynamic GetServices(short serviceId = 0, bool includeServiceProperties = false, bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             DataSet tempDataSet = new DataSet();
             dynamic servicesObj = null;
@@ -79,12 +85,8 @@ namespace OrdersManagement.Core
                 this._da.SelectCommand = this._sqlCommand;
                 this._ds = new DataSet();
                 this._da.Fill(this._ds);
-                if(!this._sqlCommand.IsSuccess())
-                {
-                    this._helper.CreateProperty(Label.SUCCESS, false);
-                    this._helper.CreateProperty(Label.MESSAGE, this._sqlCommand.GetMessage());
-                    return this._helper.GetResponse();
-                }
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
                 if (this._ds.Tables.Count > 1)
                 {
                     this._ds.Tables[0].TableName = Label.SERVICES;
@@ -246,7 +248,7 @@ namespace OrdersManagement.Core
             }
             return this._helper.IsOutputXmlFormat ? servicesXmlDocument.OuterXml : servicesObj;
         }
-        public dynamic CreateService(string displayName, string metaDataCode, bool areMultipleEntriesAllowed)
+        internal dynamic CreateService(string displayName, string metaDataCode, bool areMultipleEntriesAllowed)
         {
             try
             {
@@ -259,24 +261,228 @@ namespace OrdersManagement.Core
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
                 if (this._ds.Tables.Count > 0)
-                    this._ds.Tables[0].TableName = Label.SERVICES;
-                //if (!this._sqlCommand.IsSuccess())
-                //    throw new ServiceException(string.Format("Procedure {0} Returned False. {1}", StoredProcedure.CREATE_SERVICE, this._sqlCommand.GetMessage()));
+                    this._ds.Tables[0].TableName = Label.SERVICE;
                 this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
                 this._helper.ParseDataSet(this._ds);
                 return this._helper.GetResponse();                
             }
             catch (Exception e)
             {
+                Logger.Error(e.ToString());
                 throw new ServiceException(string.Format("Unable to create Service. {0}", e.Message));
             }
             finally
             {
                 this.Clean();
             }
+        }        
+        internal dynamic UpdateService(byte serviceId, string displayName, string metaDataCode, bool areMultipleEntriesAllowed)
+        {
+            try
+            {
+                if (displayName.Trim().Length == 0 || metaDataCode.Trim().Length == 0)
+                    throw new ServiceException(string.Format("DisplayName & MetaDataCode are mandatory"));
+                if(serviceId <= 0)
+                    throw new ServiceException(string.Format("Invalid ServiceId {0}", serviceId));
+                this._sqlCommand = new SqlCommand(StoredProcedure.UPDATE_SERVICE, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.SERVICE_ID, SqlDbType.TinyInt).Value = serviceId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.DISPLAY_NAME, SqlDbType.VarChar, 50).Value = displayName;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.META_DATA_CODE, SqlDbType.VarChar, 20).Value = metaDataCode;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ARE_MULTIPLE_ENTRIES_ALLOWED, SqlDbType.Bit).Value = areMultipleEntriesAllowed;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.SERVICE;
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds);
+                return this._helper.GetResponse();
+            }
+            catch(Exception e)
+            {
+                Logger.Error(e.ToString());
+                throw new ServiceException(string.Format("Unable to Update Service. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
         }
-
+        internal dynamic DeleteService(byte serviceId)
+        {
+            try
+            {
+                if (serviceId <= 0)
+                    throw new ServiceException(string.Format("Invalid ServiceId {0}", serviceId));
+                this._sqlCommand = new SqlCommand(StoredProcedure.DELETE_SERVICE, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.SERVICE_ID, SqlDbType.TinyInt).Value = serviceId;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.SERVICE;
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds);
+                return this._helper.GetResponse();
+            }
+            catch(Exception e)
+            {
+                Logger.Error(e.ToString());
+                throw new ServiceException(string.Format("Unable to Delete Service. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+        internal dynamic CreateServiceProperties(byte serviceId, List<ServiceProperty> serviceProperties)
+        {
+            try
+            {
+                if (serviceId <= 0)
+                    throw new ServiceException(string.Format("Invalid ServiceId {0}", serviceId));
+                if (serviceProperties == null || serviceProperties.Count == 0)
+                    throw new ServiceException(string.Format("Atleast 1 Property should be supplied"));
+                this._sqlCommand = new SqlCommand(StoredProcedure.CREATE_SERVICE_PROPERTIES, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.SERVICE_ID, SqlDbType.TinyInt).Value = serviceId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.SERVICE_PROPERTIES, SqlDbType.Structured).Value = serviceProperties.ToDataTable();
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.PROPERTIES;
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds);
+                return this._helper.GetResponse();
+            }
+            catch(Exception e)
+            {
+                Logger.Error(e.ToString());
+                throw new ServiceException(string.Format("Unable to Create ServiceProperties. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+        internal dynamic UpdateServiceProperty(ServiceProperty serviceProperty)
+        {
+            try
+            {
+                if (serviceProperty.Id <= 0)
+                    throw new ServiceException(string.Format("Invalid ServicePropertyId {0}", serviceProperty.Id));
+                this._sqlCommand = new SqlCommand(StoredProcedure.UPDATE_SERVICE_PROPERTY, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.SERVICE_PROPERTY_ID, SqlDbType.Int).Value = serviceProperty.Id;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.SERVICE_PROPERTY_DETAILS, SqlDbType.Structured).Value = serviceProperty.ToDataTable();
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.PROPERTY;
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds);
+                return this._helper.GetResponse();
+            }
+            catch(Exception e)
+            {
+                throw new ServiceException(string.Format("Unable to Update ServiceProperty. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+        internal dynamic DeleteServiceProperty(int servicePropertyId)
+        {
+            try
+            {
+                if (servicePropertyId <= 0)
+                    throw new ServiceException(string.Format("Invalid ServicePropertyId ", servicePropertyId));
+                this._sqlCommand = new SqlCommand(StoredProcedure.DELETE_SERVICE_PROPERTY, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.SERVICE_PROPERTY_ID, SqlDbType.Int).Value = servicePropertyId;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.PROPERTY;
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds);
+                return this._helper.GetResponse();
+            }
+            catch(Exception e)
+            {
+                throw new ServiceException(string.Format("Unable to Delete ServiceProperty. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+        internal dynamic GetInputTypes(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.GET_INPUT_TYPES, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = onlyActive;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.INPUT_TYPES;
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, tablePreferences);
+                return this._helper.GetResponse();
+            }
+            catch(Exception e)
+            {
+                throw new ServiceException(string.Format("Unable to load InputTypes. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+        internal dynamic GetInputDataTypes(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.GET_INPUT_TYPES, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = onlyActive;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.INPUT_DATA_TYPES;
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, tablePreferences);
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                throw new ServiceException(string.Format("Unable to load InputTypes. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
         #endregion
     }
 }

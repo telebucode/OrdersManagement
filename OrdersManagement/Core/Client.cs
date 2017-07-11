@@ -53,6 +53,8 @@ namespace OrdersManagement.Core
 
         #region PUBLIC METHODS
 
+        #region SERVICE RELATED
+
         /// <summary>
         /// Gets The List Of Services
         /// </summary>
@@ -79,8 +81,87 @@ namespace OrdersManagement.Core
             ServiceClient serviceClient = new ServiceClient(ref this._helper);
             return serviceClient.CreateService(displayName: displayName, metaDataCode: metaDataCode, areMultipleEntriesAllowed: areMultipleEntriesAllowed);
         }
+        /// <summary>
+        /// Updates a Service
+        /// </summary>
+        /// <param name="serviceId">Id Of Service to Update</param>
+        /// <param name="displayName">DisplayName of the Service.</param>
+        /// <param name="metaDataCode">MetaDataCode to use while constructing MetaData.</param>
+        /// <param name="areMultipleEntriesAllowed">Indicates whether this Service Supports Multiple Entries</param>
+        /// <param name="tablePreferences">See Model.TablePreferences For Details.</param>
+        /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
+        public dynamic UpdateService(byte serviceId, string displayName, string metaDataCode, bool areMultipleEntriesAllowed, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            ServiceClient serviceClient = new ServiceClient(ref this._helper);
+            return serviceClient.UpdateService(serviceId, displayName, metaDataCode, areMultipleEntriesAllowed);
+        }
+        /// <summary>
+        /// Deletes a Service
+        /// </summary>
+        /// <param name="serviceId">Id of the Service to Delete</param>
+        /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
+        public dynamic DeleteService(byte serviceId)
+        {
+            ServiceClient serviceClient = new ServiceClient(ref this._helper);
+            return serviceClient.DeleteService(serviceId);
+        }        
+        /// <summary>
+        /// Creates Properties for a Service
+        /// </summary>
+        /// <param name="serviceId">Id of the Service to which these Properties should be mapped.</param>
+        /// <param name="serviceProperties">ServiceProperties list</param>
+        /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
+        public dynamic CreateServiceProperties(byte serviceId, List<ServiceProperty> serviceProperties)
+        {
+            ServiceClient serviceClient = new ServiceClient(ref this._helper);
+            return serviceClient.CreateServiceProperties(serviceId, serviceProperties);
+        }
+        /// <summary>
+        /// Updates a specific ServiceProperty
+        /// </summary>
+        /// <param name="serviceProperty">ServiceProperty Object</param>
+        /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
+        public dynamic UpdateServiceProperty(ServiceProperty serviceProperty)
+        {
+            ServiceClient serviceClient = new ServiceClient(ref this._helper);
+            return serviceClient.UpdateServiceProperty(serviceProperty);
+        }
+        /// <summary>
+        /// Deletes a Specific ServiceProperty
+        /// </summary>
+        /// <param name="servicePropertyId">Id of the ServiceProperty to delete.</param>
+        /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
+        public dynamic DeleteServiceProperty(int servicePropertyId)
+        {
+            ServiceClient serviceClient = new ServiceClient(ref this._helper);
+            return serviceClient.DeleteServiceProperty(servicePropertyId);
+        }
+        /// <summary>
+        /// Gets InputTypes from InputTypes Table
+        /// </summary>
+        /// <param name="onlyActive">Indicates whether to fetch only active InputTypes or all InputTypes irrespective of their Status</param>
+        /// <param name="tablePreferences">See Model.TablePreferences for details</param>
+        /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
+        public dynamic GetInputTypes(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            ServiceClient serviceClient = new ServiceClient(ref this._helper);
+            return serviceClient.GetInputTypes(onlyActive: onlyActive, tablePreferences: tablePreferences);
+        }
+        /// <summary>
+        /// Gets InputDataTypes from InputDataTypes Table
+        /// </summary>
+        /// <param name="onlyActive">Indicates whether to fetch only active InputDataTypes or all InputTypes irrespective of their Status</param>
+        /// <param name="tablePreferences">See Model.TablePreferences for details</param>
+        /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
+        public dynamic GetInputDataTypes(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            ServiceClient serviceClient = new ServiceClient(ref this._helper);
+            return serviceClient.GetInputDataTypes(onlyActive: onlyActive, tablePreferences: tablePreferences);
+        }
 
-        #endregion
+        #endregion // SERVICE RELATED
+
+        #endregion // PUBLIC METHODS
 
         #region INTERNAL PROPERTIES
 

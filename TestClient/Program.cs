@@ -17,10 +17,10 @@ namespace TestClient
         {
             try
             {
-                Client c = new Client(responseFormat: ResponseFormat.XML);
+                Client c = new Client(responseFormat: ResponseFormat.JSON);
                 Dictionary<string, TablePreferences> prefs = new Dictionary<string, TablePreferences>();
-                prefs.Add("Services", new TablePreferences(RootName: "Products", childElementNameForRows: "Product", columnValuesAsXmlAttributes: false, singleRowAsSingleEntity: true));
-                dynamic d = c.GetServices(serviceId:0, includeServiceProperties: true, tablePreferences: prefs, onlyActive: true);
+                //prefs.Add("InputTypes", new TablePreferences(RootName: "FieldTypes", childElementNameForRows: "FieldType", columnValuesAsXmlAttributes: true, singleRowAsSingleEntity: true));                
+                dynamic d = c.DeleteServiceProperty(1000000);
                 Console.WriteLine(d.ToString());
             }
             catch(ClientInitializationException e)
