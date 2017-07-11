@@ -23,7 +23,10 @@ namespace OrdersManagement
         internal const string DEFAULT_VALUE = "DefaultValue";
         internal const string INCLUDE_IN_ORDER_AMOUNT = "IncludeInOrderAmount";
         internal const string PROPERTIES = "Properties";
+        internal const string PROPERTY = "Property";
         internal const string SERVICES = "Services";
+        internal const string SERVICE = "Service";
+        internal const string SERVICE_ID = "ServiceId";
 
         internal const string TEXT_BOX = "TextBox";
         internal const string TEXT_AREA = "TextArea";
@@ -36,5 +39,12 @@ namespace OrdersManagement
         internal const string SUCCESS = "Success";
         internal const string MESSAGE = "Message";
         internal const string OUTPUT_PARAMETERS = "OutputParameters";
+        internal const string CONNECTION_STRING_NAME = "OrdersDbConnectionString";
+        #region LOG_4_NET_RELATED
+        internal const string LOG_NAME = "LogName";
+        internal const string DEFAULT_LOGGER = "DefaultLogger";
+        internal const string TRACE_LOGGER = "TraceLogger";
+        internal const string LOG_FILE_FORMAT = "yyyyMMdd";
+        #endregion        
     }
 }

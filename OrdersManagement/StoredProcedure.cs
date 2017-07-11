@@ -12,5 +12,6 @@ namespace OrdersManagement
         internal const string GET_SERVICE_PROPERTIES = "GetServiceProperties";
         internal const string GET_INPUT_TYPES = "GetInputTypes";
         internal const string GET_INPUT_DATA_TYPES = "GetInputDataTypes";
+        internal const string CREATE_SERVICE = "CreateService";
     }
 }

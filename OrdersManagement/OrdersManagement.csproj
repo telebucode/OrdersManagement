@@ -47,7 +47,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\ActivationClient.cs" />
     <Compile Include="Core\Client.cs" />
+    <Compile Include="Core\InvoiceClient.cs" />
+    <Compile Include="Core\PaymentClient.cs" />
+    <Compile Include="Core\QuotationClient.cs" />
+    <Compile Include="Core\ServiceClient.cs" />
+    <Compile Include="Exceptions\ServiceException.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Core\Quotation.cs" />
     <Compile Include="Exceptions\ClientInitializationException.cs" />
@@ -56,8 +62,9 @@
     <Compile Include="Model\TablePreferences.cs" />
     <Compile Include="ProcedureParameter.cs" />
     <Compile Include="ResponseFormat.cs" />
-    <Compile Include="StoredProcedure.cs" />
     <Compile Include="SharedClass.cs" />
+    <Compile Include="StoredProcedure.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Exceptions\QuotationCreateException.cs" />
     <Compile Include="Model\BillingMode.cs" />
     <Compile Include="Model\Currency.cs" />

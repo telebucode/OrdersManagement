@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace OrdersManagement
 {
@@ -36,6 +38,15 @@ namespace OrdersManagement
         {
             StringValueAttribute[] stringValueAttributes = (StringValueAttribute[])input.GetType().GetField(input.ToString()).GetCustomAttributes(typeof(StringValueAttribute), false);
             return stringValueAttributes.Length > 0 ? stringValueAttributes[0].Value : string.Empty;
+        }
+        internal static string GetSingleRowName(this Model.TablePreferences tablePreferences)
+        {
+            if (tablePreferences.ChildElementNameForRows.Length > 0)
+                return tablePreferences.ChildElementNameForRows;
+            else if (tablePreferences.RootName.Length > 0)
+                return tablePreferences.RootName;
+            else
+                return string.Empty;
         }
     }
 }

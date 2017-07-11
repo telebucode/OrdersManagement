@@ -17,9 +17,11 @@ namespace TestClient
         {
             try
             {
-                Client c = new Client();
-                JObject j = c.GetServices();
-                Console.WriteLine(j);
+                Client c = new Client(responseFormat: ResponseFormat.XML);
+                Dictionary<string, TablePreferences> prefs = new Dictionary<string, TablePreferences>();
+                prefs.Add("Services", new TablePreferences(RootName: "Products", childElementNameForRows: "Product", columnValuesAsXmlAttributes: false, singleRowAsSingleEntity: true));
+                dynamic d = c.GetServices(serviceId:0, includeServiceProperties: true, tablePreferences: prefs, onlyActive: true);
+                Console.WriteLine(d.ToString());
             }
             catch(ClientInitializationException e)
             {

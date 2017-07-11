@@ -8,6 +8,10 @@ namespace OrdersManagement
 {
     internal static class SharedClass
     {
-        internal static Dictionary<string, Model.Service> Services = null;
+        internal static Dictionary<string, Model.Service> Services = new Dictionary<string, Model.Service>();
+        internal static Dictionary<byte, Model.PropertyInputType> InputTypes = new Dictionary<byte, Model.PropertyInputType>();
+        internal static Dictionary<byte, Model.PropertyDataType> InputDataTypes = new Dictionary<byte, Model.PropertyDataType>();
+        internal static bool InputTypesLoaded { get { return InputTypes.Count > 0; } }
+        internal static bool InputDataTypesLoaded { get { return InputDataTypes.Count > 0; } }
     }
 }

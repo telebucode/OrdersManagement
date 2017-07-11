@@ -4,6 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Newtonsoft.Json.Linq;
+using System.Data;
+using System.Data.SqlClient;
+
 namespace OrdersManagement.Model
 {
     public class Service
@@ -16,7 +20,7 @@ namespace OrdersManagement.Model
         private bool _areMultipleAllowed = false;
         private bool _isActive = true;
         //private List<ServiceProperty> _properties = new List<ServiceProperty>();
-        private Dictionary<string, ServiceProperty> _properties = new Dictionary<string, ServiceProperty>();
+        private Dictionary<string, ServiceProperty> _properties = new Dictionary<string, ServiceProperty>();        
 
         #endregion
 
@@ -48,5 +52,20 @@ namespace OrdersManagement.Model
         public Dictionary<string, ServiceProperty> Properties { get { return this._properties; } set { this._properties = value; } }
 
         #endregion
+
+        #region PUBLIC METHODS
+        /// <summary>
+        /// Create a Service
+        /// </summary>
+        /// <param name="responseFormat">Indicates In which format the response object should be.</param>
+        /// <returns>JSon/Xml Object Depending on the responseFormat Parameter</returns>
+        public dynamic Create(ResponseFormat responseFormat = ResponseFormat.JSON)
+        {
+            Core.Client client = new Core.Client(responseFormat);
+            return client.CreateService(this._displayName, this._metaDataCode, this._areMultipleAllowed);
+        }
+
+        #endregion
+
     }
 }

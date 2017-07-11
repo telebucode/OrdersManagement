@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace OrdersManagement.Exceptions
 {
-    public class ClientInitializationException : Exception
+    public class ServiceException : Exception
     {
         private string _message = string.Empty;
-        public ClientInitializationException(string message)
+        public ServiceException(string message)
         {
             this._message = message;
         }
