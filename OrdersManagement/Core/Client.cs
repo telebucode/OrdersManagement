@@ -160,6 +160,20 @@ namespace OrdersManagement.Core
         }
 
         #endregion // SERVICE RELATED
+        #region QUOTATION RELATED
+        /// <summary>
+        /// Gets the QuotationStatuses
+        /// </summary>
+        /// <param name="onlyActive">Indicates whether to fetch only active statuses or all statuses irrespective of the status</param>
+        /// <param name="tablePreferences">See Model.TablePreferences for details</param>
+        /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
+        public dynamic GetQuotationStatuses(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            QuotationClient client = new QuotationClient(ref this._helper);
+            return client.GetQuotationStatuses(onlyActive, tablePreferences);
+        }
+
+        #endregion
 
         #endregion // PUBLIC METHODS
 

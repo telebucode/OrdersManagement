@@ -8,6 +8,7 @@ namespace OrdersManagement
 {
     internal static class StoredProcedure
     {
+        #region SERVICES RELATED
         internal const string GET_SERVICES = "GetServices";
         internal const string GET_SERVICE_PROPERTIES = "GetServiceProperties";
         internal const string GET_INPUT_TYPES = "GetInputTypes";
@@ -18,5 +19,9 @@ namespace OrdersManagement
         internal const string CREATE_SERVICE_PROPERTIES = "CreateServiceProperties";
         internal const string UPDATE_SERVICE_PROPERTY = "UpdateServiceProperty";
         internal const string DELETE_SERVICE_PROPERTY = "DeleteServiceProperty";
+        #endregion
+        #region QUOTATION RELATED
+        internal const string GET_QUOTATION_STATUSES = "GetQuotationStatuses";
+        #endregion
     }
 }

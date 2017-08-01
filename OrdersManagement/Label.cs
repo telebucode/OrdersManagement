@@ -29,6 +29,7 @@ namespace OrdersManagement
         internal const string SERVICE_ID = "ServiceId";
         internal const string INPUT_TYPES = "InputTypes";
         internal const string INPUT_DATA_TYPES = "InputDataTypes";
+        internal const string QUOTATION_STATUSES = "QuotationStatuses";
 
         internal const string TEXT_BOX = "TextBox";
         internal const string TEXT_AREA = "TextArea";
