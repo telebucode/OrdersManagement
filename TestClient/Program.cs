@@ -20,7 +20,7 @@ namespace TestClient
                 Client c = new Client(responseFormat: ResponseFormat.JSON);
                 Dictionary<string, TablePreferences> prefs = new Dictionary<string, TablePreferences>();
                 //prefs.Add("InputTypes", new TablePreferences(RootName: "FieldTypes", childElementNameForRows: "FieldType", columnValuesAsXmlAttributes: true, singleRowAsSingleEntity: true));                
-                dynamic d = c.DeleteServiceProperty(1000000);
+                dynamic d = c.GetQuotationStatuses();
                 Console.WriteLine(d.ToString());
             }
             catch(ClientInitializationException e)

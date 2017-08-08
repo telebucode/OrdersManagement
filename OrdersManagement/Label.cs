@@ -30,6 +30,10 @@ namespace OrdersManagement
         internal const string INPUT_TYPES = "InputTypes";
         internal const string INPUT_DATA_TYPES = "InputDataTypes";
         internal const string QUOTATION_STATUSES = "QuotationStatuses";
+        internal const string QUOTATION = "Quotation";
+        internal const string QUOTATIONS = "Quotations";
+        internal const string QUOTATION_CHANNELS = "QuotationChannels";
+        internal const string BILLING_MODES = "BillingModes";
 
         internal const string TEXT_BOX = "TextBox";
         internal const string TEXT_AREA = "TextArea";

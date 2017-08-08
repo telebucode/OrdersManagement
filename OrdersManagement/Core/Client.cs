@@ -160,6 +160,7 @@ namespace OrdersManagement.Core
         }
 
         #endregion // SERVICE RELATED
+
         #region QUOTATION RELATED
         /// <summary>
         /// Gets the QuotationStatuses
@@ -170,7 +171,51 @@ namespace OrdersManagement.Core
         public dynamic GetQuotationStatuses(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             QuotationClient client = new QuotationClient(ref this._helper);
-            return client.GetQuotationStatuses(onlyActive, tablePreferences);
+            return client.GetStatuses(onlyActive, tablePreferences);
+        }
+        /// <summary>
+        /// Used to Get The Channels through which Quotation can be Raised.
+        /// </summary>
+        /// <param name="onlyActive">Indicates whether to fetch only active statuses or all statuses irrespective of the status</param>
+        /// <param name="tablePreferences">See Model.TablePreferences for details</param>
+        /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
+        public dynamic GetQuotationChannels(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            QuotationClient client = new QuotationClient(ref this._helper);
+            return client.GetChannels(onlyActive, tablePreferences);
+        }
+        /// <summary>
+        /// Used to Search Quotations
+        /// </summary>
+        /// <param name="quotationId"></param>
+        /// <param name="quotationNumber"></param>
+        /// <param name="accountId"></param>
+        /// <param name="employeeId">EmployeeId by whoom the Quotation Was Raised</param>
+        /// <param name="ownerShipId">EmployeeId who owns the accounts mapped with the quotation result set</param>
+        /// <param name="statusId"></param>
+        /// <param name="channelId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="billingModeId"></param>
+        /// <param name="fromDateTime"></param>
+        /// <param name="toDateTime"></param>
+        /// <param name="pageNumber">Page Number. Default is 1</param>
+        /// <param name="limit">Records per page. Default is 20</param>
+        /// <param name="tablePreferences">See Model.TablePreferences for details</param>
+        /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
+        public dynamic GetQuotations(int quotationId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            QuotationClient client = new QuotationClient(ref this._helper);
+            return client.Search(quotationId, quotationNumber, accountId, employeeId, ownerShipId, statusId, channelId, ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, tablePreferences);
+        }
+
+        #endregion
+
+        #region GENERIC
+
+        public dynamic GetBillingModes(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            GenericClient client = new GenericClient(ref this._helper);
+            return client.GetBillingModes(onlyActive, tablePreferences);
         }
 
         #endregion

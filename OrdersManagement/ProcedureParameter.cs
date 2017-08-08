@@ -18,6 +18,23 @@ namespace OrdersManagement
         internal const string SERVICE_PROPERTY_DETAILS = "@ServicePropertyDetails";
         internal const string SERVICE_PROPERTY_ID = "@ServicePropertyId";
 
+        internal const string QUOTATION_ID = "@QuotationId";
+        internal const string QUOTATION_NUMBER = "@QuotationNumber";
+        internal const string ACCOUNT_ID = "@AccountId";
+        internal const string EMPLOYEE_ID = "@EmployeeId";
+        internal const string OWNERSHIP_ID = "@OwnerShipId";
+        internal const string STATUS_ID = "@StatusId";
+        internal const string CHANNEL_ID = "@ChannelId";
+        internal const string IP_ADDRESS = "@IpAddress";
+        internal const string BILLING_MODE_ID = "@BillingModeId";
+        internal const string FROM_DATE_TIME = "@FromDateTime";
+        internal const string TO_DATE_TIME = "@ToDateTime";
+        internal const string PAGE_NUMBER = "@PageNumber";
+        internal const string LIMIT = "@Limit";
+        internal const string META_DATA = "@MetaData";
+        internal const string STATE_ID = "@StateId";
+        internal const string ORDER_AMOUNT = "@OrderAmount";
+
         internal const string SUCCESS = "@Success";
         internal const string MESSAGE = "@Message";
     }

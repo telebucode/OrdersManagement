@@ -22,6 +22,10 @@ namespace OrdersManagement
         #endregion
         #region QUOTATION RELATED
         internal const string GET_QUOTATION_STATUSES = "GetQuotationStatuses";
+        internal const string GET_QUOTATIONS = "GetQuotations";
+        internal const string GET_QUOTATION_CHANNELS = "GetQuotatioChannels";
+        internal const string CREATE_QUOTATION = "CreateQuotation";
         #endregion
+        internal const string GET_BILLING_MODES = "GetBillingModes";
     }
 }
