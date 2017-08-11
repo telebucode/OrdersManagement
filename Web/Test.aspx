@@ -9,7 +9,8 @@
     <script type="text/javascript" src="Scripts/OrdersManagement.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {            
-            $('#ul').increase();            
+            var services = GetServices(0, true, true);
+            console.log(services);
         });
     </script>
 </head>
