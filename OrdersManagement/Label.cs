@@ -34,6 +34,8 @@ namespace OrdersManagement
         internal const string QUOTATIONS = "Quotations";
         internal const string QUOTATION_CHANNELS = "QuotationChannels";
         internal const string BILLING_MODES = "BillingModes";
+        internal const string EXTRA_CHARGES = "ExtraCharges";
+        internal const string AMOUNT = "Amount";
 
         internal const string TEXT_BOX = "TextBox";
         internal const string TEXT_AREA = "TextArea";

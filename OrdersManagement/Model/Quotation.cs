@@ -14,13 +14,13 @@ namespace OrdersManagement.Model
 
         private long _id = long.MinValue;
         private long _accountId = long.MinValue;
-        private int _raisedBy = int.MinValue;
-        private string _identifier = string.Empty;
+        private int _employeeId = int.MinValue;
+        private string _number = string.Empty;
         private QuotationStatus _status = QuotationStatus.UNKNOWN;
-        private float _amountWithOutTax = 0;
+        private float _orderAmount = 0;
         private float _tax = 0;
         private float _totalAmount = 0;
-        private Currency _currency = Currency.UNKNOWN;
+        private Currency _currency = Currency.UNKNOWN;        
         private string _ip = string.Empty;
         private Nullable<DateTime> _createdTime = null;
         private Nullable<DateTime> _updatedTime = null;
@@ -81,11 +81,11 @@ namespace OrdersManagement.Model
         /// <summary>
         /// Gets Or Sets the adminId by which this quotation is raised.
         /// </summary>
-        public int RaisedBy { get { return this._raisedBy; } set { this._raisedBy = value; } }
+        public int EmployeeId { get { return this._employeeId; } set { this._employeeId = value; } }
         /// <summary>
         /// Gets Or Sets the Alphanumeric Number of this quotation
         /// </summary>
-        public string Identifier { get { return this._identifier; } set { this._identifier = value; } }
+        public string Number { get { return this._number; } set { this._number = value; } }
         /// <summary>
         /// Gets Or Sets the Quotation Status
         /// </summary>
@@ -93,7 +93,7 @@ namespace OrdersManagement.Model
         /// <summary>
         /// Gets Or Sets the Amount of this Quotation without Tax.
         /// </summary>
-        public float AmountWithOutTax { get { return this._amountWithOutTax; } set { this._amountWithOutTax = value; } }
+        public float OrderAmount { get { return this._orderAmount; } set { this._orderAmount = value; } }
         /// <summary>
         /// Gets Or Sets the Tax applied for this Quotation.
         /// </summary>
@@ -146,7 +146,7 @@ namespace OrdersManagement.Model
                 foreach(Service service in this._services)
                 {
                     JObject serviceObject = new JObject();
-                    if(service.AreMultipleAllowed)
+                    if(service.AreMultipleEntriesAllowed)
                     {
                         this._jsonArray = new JArray();
                         //foreach(ServiceProperty property in service.Properties)
@@ -189,12 +189,19 @@ namespace OrdersManagement.Model
                 tempJObj = null;
                 currentService = jsonProperty.Name;
                 if (!SharedClass.Services.ContainsKey(currentService))
-                    throw new KeyNotFoundException(string.Format("Service '{0}' Not Found in SharedClass", currentService));
-                if (SharedClass.Services[currentService].AreMultipleAllowed)
-                    tempJArray = this._jsonObj.SelectToken(currentService) as JArray;                
-                foreach(JToken child in tempJArray.Children())
+                    throw new KeyNotFoundException(string.Format("Service '{0}' Not Found", currentService));
+                if (SharedClass.Services[currentService].AreMultipleEntriesAllowed)
                 {
-                    tempJObj = child as JObject;
+                    tempJArray = this._jsonObj.SelectToken(currentService) as JArray;
+                    foreach (JToken child in tempJArray.Children())
+                    {
+                        tempJObj = child as JObject;
+                        ParseServicePropertyJSon(currentService, tempJObj);
+                    }
+                }
+                else
+                {
+                    tempJObj = this._jsonObj.SelectToken(currentService) as JObject;
                     ParseServicePropertyJSon(currentService, tempJObj);
                 }
             }
@@ -206,9 +213,9 @@ namespace OrdersManagement.Model
             {
                 if (servicePropertyEntry.Value.IsRequired && (serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode) == null
                         || serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString().Trim().Length == 0))
-                    throw new MissingFieldException(string.Format("Property {0} is marked as Required. But it is not found or empty in MetaData.",
-                        servicePropertyEntry.Value.MetaDataCode));
-                if (serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString().Trim().Length > 0)
+                    throw new MissingFieldException(string.Format("Property {0} for Service {1} is marked as Required. But it is not found or empty.",
+                        servicePropertyEntry.Value.MetaDataCode, serviceName));
+                if (serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode) != null && serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString().Trim().Length > 0)
                 {
                     switch (servicePropertyEntry.Value.DataType)
                     {
@@ -219,8 +226,8 @@ namespace OrdersManagement.Model
                             }
                             catch (Exception e)
                             {
-                                throw new InvalidCastException(string.Format("Property {0} requires Int value. But '{1}' is not an Int value.",
-                                    servicePropertyEntry.Value.MetaDataCode, serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString()));
+                                throw new FormatException(string.Format("Property {0} for Service {1} requires Int value. But '{2}' is not an Int value.",
+                                    servicePropertyEntry.Value.MetaDataCode, serviceName, serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString()));
                             }
                             break;
                         case PropertyDataType.FLOAT:
@@ -230,8 +237,8 @@ namespace OrdersManagement.Model
                             }
                             catch (Exception e)
                             {
-                                throw new InvalidCastException(string.Format("Property {0} requires float value. But '{1}' is not a float value.",
-                                    servicePropertyEntry.Value.MetaDataCode, serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString()));
+                                throw new InvalidCastException(string.Format("Property {0} for Service {1} requires float value. But '{2}' is not a float value.",
+                                    servicePropertyEntry.Value.MetaDataCode, serviceName, serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString()));
                             }
                             break;
                         case PropertyDataType.DATETIME:
@@ -241,8 +248,8 @@ namespace OrdersManagement.Model
                             }
                             catch (Exception e)
                             {
-                                throw new InvalidCastException(string.Format("Property {0} requires DateTime value. But '{1}' is not a valid DateTime value.",
-                                    servicePropertyEntry.Value.MetaDataCode, serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString()));
+                                throw new InvalidCastException(string.Format("Property {0} for Service {1} requires DateTime value. But '{2}' is not a valid DateTime value.",
+                                    servicePropertyEntry.Value.MetaDataCode, serviceName, serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString()));
                             }
                             break;
                         default:

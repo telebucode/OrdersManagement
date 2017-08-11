@@ -34,6 +34,7 @@ namespace OrdersManagement
         internal const string META_DATA = "@MetaData";
         internal const string STATE_ID = "@StateId";
         internal const string ORDER_AMOUNT = "@OrderAmount";
+        internal const string IS_POSTPAID_QUOTATION = "@IsPostPaidQuotation";
 
         internal const string SUCCESS = "@Success";
         internal const string MESSAGE = "@Message";

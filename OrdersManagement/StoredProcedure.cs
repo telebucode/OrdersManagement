@@ -25,6 +25,7 @@ namespace OrdersManagement
         internal const string GET_QUOTATIONS = "GetQuotations";
         internal const string GET_QUOTATION_CHANNELS = "GetQuotatioChannels";
         internal const string CREATE_QUOTATION = "CreateQuotation";
+        internal const string UPDATE_QUOTATION = "UpdateQuotation";
         #endregion
         internal const string GET_BILLING_MODES = "GetBillingModes";
     }

@@ -13,5 +13,6 @@ namespace OrdersManagement
         internal static Dictionary<byte, Model.PropertyDataType> InputDataTypes = new Dictionary<byte, Model.PropertyDataType>();
         internal static bool InputTypesLoaded { get { return InputTypes.Count > 0; } }
         internal static bool InputDataTypesLoaded { get { return InputDataTypes.Count > 0; } }
+        internal static bool ServiceLoaded { get { return Services.Count > 0; } }
     }
 }

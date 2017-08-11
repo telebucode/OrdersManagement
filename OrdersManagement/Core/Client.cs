@@ -207,6 +207,21 @@ namespace OrdersManagement.Core
             QuotationClient client = new QuotationClient(ref this._helper);
             return client.Search(quotationId, quotationNumber, accountId, employeeId, ownerShipId, statusId, channelId, ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, tablePreferences);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="employeeId"></param>
+        /// <param name="channelId"></param>
+        /// <param name="metaData"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="stateId"></param>
+        /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
+        public dynamic CreateQuotation(int accountId, int employeeId, byte channelId, string metaData, string ipAddress, int stateId)
+        {
+            QuotationClient client = new QuotationClient(ref this._helper);
+            return client.Create(accountId, employeeId, channelId, metaData, ipAddress, stateId);
+        }
 
         #endregion
 

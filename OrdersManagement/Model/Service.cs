@@ -17,7 +17,7 @@ namespace OrdersManagement.Model
         private byte _id = 0;
         private string _displayName = string.Empty;
         private string _metaDataCode = string.Empty;
-        private bool _areMultipleAllowed = false;
+        private bool _areMultipleEntriesAllowed = false;
         private bool _isActive = true;
         //private List<ServiceProperty> _properties = new List<ServiceProperty>();
         private Dictionary<string, ServiceProperty> _properties = new Dictionary<string, ServiceProperty>();        
@@ -41,7 +41,7 @@ namespace OrdersManagement.Model
         /// <summary>
         /// Gets Or Sets the value indicating whether this Service support Multiple Entries
         /// </summary>
-        public bool AreMultipleAllowed { get { return this._areMultipleAllowed; } set { this._areMultipleAllowed = value; } }        
+        public bool AreMultipleEntriesAllowed { get { return this._areMultipleEntriesAllowed; } set { this._areMultipleEntriesAllowed = value; } }        
         /// <summary>
         /// Gets Or Sets the value indicating whether this service is active or not.
         /// </summary>
@@ -62,7 +62,7 @@ namespace OrdersManagement.Model
         public dynamic Create(ResponseFormat responseFormat = ResponseFormat.JSON)
         {
             Core.Client client = new Core.Client(responseFormat);
-            return client.CreateService(this._displayName, this._metaDataCode, this._areMultipleAllowed);
+            return client.CreateService(this._displayName, this._metaDataCode, this._areMultipleEntriesAllowed);
         }
         /// <summary>
         /// Updates a Service
@@ -72,7 +72,7 @@ namespace OrdersManagement.Model
         public dynamic Update(ResponseFormat responseFormat = ResponseFormat.JSON)
         {
             Core.Client client = new Core.Client(responseFormat);
-            return client.UpdateService(this._id, this._displayName, this._metaDataCode, this._areMultipleAllowed);
+            return client.UpdateService(this._id, this._displayName, this._metaDataCode, this._areMultipleEntriesAllowed);
         }
         /// <summary>
         /// Deletes a Service

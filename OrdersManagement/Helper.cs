@@ -70,6 +70,69 @@ namespace OrdersManagement
             this.LoadInputTypes();
             this.LoadInputDataTypes();
         }
+        internal void LoadServices(bool includeServiceProperties = true, bool isOnlyActive = true, bool forceLoad = false)
+        {
+            if (SharedClass.ServiceLoaded && !forceLoad)
+                return;
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.GET_SERVICES, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = isOnlyActive;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.INCLUDE_SERVICE_PROPERTIES, SqlDbType.Bit).Value = includeServiceProperties;
+                this.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    throw new Exception("Unable To Fetch Services Details");
+                if(this._ds.Tables.Count > 0 && this._ds.Tables[0].Rows.Count > 0)
+                {
+                    SharedClass.Services.Clear();
+                    foreach(DataRow serviceRow in this._ds.Tables[0].Rows)
+                    {
+                        Service service = new Service();
+                        service.Id = Convert.ToByte(serviceRow[Label.ID].ToString());
+                        service.DisplayName = serviceRow[Label.DISPLAY_NAME].ToString();
+                        service.MetaDataCode = serviceRow[Label.META_DATA_CODE].ToString();
+                        service.AreMultipleEntriesAllowed = Convert.ToBoolean(serviceRow[Label.ARE_MULTIPLE_ENTRIES_ALLOWED].ToString());
+                        service.IsActive = Convert.ToBoolean(serviceRow[Label.IS_ACTIVE].ToString());
+                        if(this._ds.Tables.Count > 1)
+                        {
+                            Dictionary<string, ServiceProperty> serviceProperties = new Dictionary<string, ServiceProperty>();
+                            foreach (DataRow servicePropertyRow in this._ds.Tables[1].Select(string.Format("{0} = {1}", Label.SERVICE_ID, serviceRow[Label.ID])))
+                            {
+                                ServiceProperty serviceProperty = new ServiceProperty();
+                                serviceProperty.Id = Convert.ToInt16(servicePropertyRow[Label.ID].ToString());
+                                serviceProperty.DisplayName = servicePropertyRow[Label.DISPLAY_NAME].ToString();
+                                serviceProperty.MetaDataCode = servicePropertyRow[Label.META_DATA_CODE].ToString();
+                                serviceProperty.IsRequired = Convert.ToBoolean(servicePropertyRow[Label.IS_REQUIRED].ToString());
+                                if (!servicePropertyRow[Label.DEFAULT_VALUE].IsDbNull())
+                                    serviceProperty.DefaultValue = servicePropertyRow[Label.DEFAULT_VALUE].ToString();
+                                if (!SharedClass.InputTypes.ContainsKey(Convert.ToByte(servicePropertyRow[Label.INPUT_TYPE_ID].ToString())))
+                                    throw new KeyNotFoundException(string.Format("InputType with Id {0} not loaded.", Convert.ToByte(servicePropertyRow[Label.INPUT_TYPE_ID].ToString())));
+                                else
+                                    serviceProperty.InputType = SharedClass.InputTypes[Convert.ToByte(servicePropertyRow[Label.INPUT_TYPE_ID].ToString())];
+                                if (!SharedClass.InputDataTypes.ContainsKey(Convert.ToByte(servicePropertyRow[Label.INPUT_DATA_TYPE_ID].ToString())))
+                                    throw new KeyNotFoundException(string.Format("InputDataType with Id {0} not loaded.", Convert.ToByte(servicePropertyRow[Label.INPUT_DATA_TYPE_ID].ToString())));
+                                else
+                                    serviceProperty.DataType = SharedClass.InputDataTypes[Convert.ToByte(servicePropertyRow[Label.INPUT_DATA_TYPE_ID].ToString())];
+                                serviceProperty.IncludeInOrderAmount = Convert.ToBoolean(servicePropertyRow[Label.INCLUDE_IN_ORDER_AMOUNT].ToString());
+                                serviceProperties.Add(serviceProperty.MetaDataCode, serviceProperty);
+                            }
+                            service.Properties = serviceProperties;
+                        }
+                        SharedClass.Services.Add(service.MetaDataCode, service);
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                
+            }
+        }
 
         internal dynamic GetResponse()
         {
@@ -423,8 +486,8 @@ namespace OrdersManagement
                             throw new ClientInitializationException(string.Format("Input Type is not defined for {0} in Orders Library.", inputTypeRow[Label.TYPE]));
                     }
                 }
-                else
-                    throw new ClientInitializationException("No Input Types found.");
+                //else
+                //    throw new ClientInitializationException("No Input Types found.");
             }
             catch (SqlException e)
             {
