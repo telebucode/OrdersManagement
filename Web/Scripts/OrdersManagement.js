@@ -33,16 +33,15 @@ function GetServices(serviceId, onlyActive, includeServiceProperties)
         data: { Action: "GetServices", ServiceId: serviceId, OnlyActive: onlyActive, IncludeServiceProperties: includeServiceProperties },
         dataType: "JSON",
         success: function (response) {
-            if (response.Success == true)
-            {
-                servicesMetaData = response;
-                console.log(servicesMetaData);
-            }
-            return servicesMetaData;
+            //if (response.Success == true) {
+            //    servicesMetaData = response;
+            //    console.log(servicesMetaData);
+            //}
+            servicesMetaData = response;
         },
         error: function (response) {
-            var obj = { Success: false, Message: "Handler Returned Non-Success Response Code", Response: response };
-            return obj;
+            servicesMetaData = { Success: false, Message: "Handler Returned Non-Success Response Code", Response: response };            
         }
-    })
+    });
+    return servicesMetaData;
 }

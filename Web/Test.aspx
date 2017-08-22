@@ -6,11 +6,12 @@
 <head runat="server">
     <title></title>
     <script type="text/javascript" src="Scripts/JQuery_1.12.0.js"></script>
-    <script type="text/javascript" src="Scripts/OrdersManagement.js"></script>
+    <%--<script type="text/javascript" src="Scripts/OrdersManagement.js"></script>--%>
+    <script type="text/javascript" src="Scripts/OrdersClient.js"></script>
     <script type="text/javascript">
-        $(document).ready(function () {            
-            var services = GetServices(0, true, true);
-            console.log(services);
+        $(document).ready(function () {
+            var ordersClient = new OrdersClient();
+            console.log(ordersClient.GetServices());
         });
     </script>
 </head>
