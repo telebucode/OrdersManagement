@@ -16,6 +16,8 @@ namespace OrdersManagement.Model
         private bool _isRequired = true;
         private dynamic _defaultValue = null;
         private PropertyInputType _inputType = PropertyInputType.UNKNOWN;
+        private byte _inputTypeId = 0;
+        private byte _dataTypeId = 0;
         private PropertyDataType _dataType = PropertyDataType.UNKNOWN;
         private bool _isActive = true;
         private bool _includeInOrderAmount = false;
@@ -47,6 +49,8 @@ namespace OrdersManagement.Model
         /// Gets Or Sets the Input Type for this Service Property. See InputType enum for details.
         /// </summary>
         public PropertyInputType InputType { get { return this._inputType; } set { this._inputType = value; } }
+        public byte InputTypeId { get { return this._inputTypeId; } set { this._inputTypeId = value; } }
+        public byte DataTypeId { get { return this._dataTypeId; } set { this._dataTypeId = value; } }
         /// <summary>
         /// Gets Or Sets the Input Data Type (What type of data should be accepted in the Input Field). See InputDataType enum for details.
         /// </summary>

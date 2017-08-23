@@ -69,8 +69,8 @@ namespace OrdersManagement
                     throw new Exceptions.ServiceException(string.Format("Invalid DisplayName at Row {0}", (index)));
                 if(serviceProperty.MetaDataCode == null || serviceProperty.MetaDataCode.Length == 0)
                     throw new Exceptions.ServiceException(string.Format("Invalid MetaDataCode at Row {0}", (index)));
-                table.Rows.Add(serviceProperty.DisplayName, serviceProperty.MetaDataCode, serviceProperty.IsRequired, Convert.ToByte(serviceProperty.InputType),
-                    Convert.ToByte(serviceProperty.DataType), serviceProperty.DefaultValue, serviceProperty.IncludeInOrderAmount);
+                table.Rows.Add(serviceProperty.DisplayName, serviceProperty.MetaDataCode, serviceProperty.IsRequired, serviceProperty.InputTypeId > 0 ? serviceProperty.InputTypeId : Convert.ToByte(serviceProperty.InputType),
+                    serviceProperty.DataTypeId > 0 ? serviceProperty.DataTypeId : Convert.ToByte(serviceProperty.DataType), serviceProperty.DefaultValue, serviceProperty.IncludeInOrderAmount);
                 ++index;
             }
             return table;
