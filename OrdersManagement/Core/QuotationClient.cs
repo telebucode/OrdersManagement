@@ -343,7 +343,7 @@ namespace OrdersManagement.Core
                 this.Clean();
             }
         }
-        internal dynamic Update(int quotationId, int employeeId, string metaData, string ipAddress, int stateId, bool isPostPaidQuotation = false)
+        internal dynamic Update(int quotationId, int employeeId, string metaData, string ipAddress, int stateId)
         {
             this.ValidateQuotation(metaData);
             try
@@ -354,8 +354,7 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.META_DATA, SqlDbType.VarChar, 2000).Value = metaData;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IP_ADDRESS, SqlDbType.VarChar, 50).Value = ipAddress;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.STATE_ID, SqlDbType.Int).Value = stateId;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.ORDER_AMOUNT, SqlDbType.Decimal).Value = this._orderAmount;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.IS_POSTPAID_QUOTATION, SqlDbType.Bit).Value = isPostPaidQuotation;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ORDER_AMOUNT, SqlDbType.Decimal).Value = this._orderAmount;                
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());
@@ -374,6 +373,38 @@ namespace OrdersManagement.Core
             {
                 Logger.Error(string.Format("Exception while updating the Quotation. {0}", e.ToString()));
                 throw new QuotationException(string.Format("Unable to Update. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+        internal dynamic Delete(int quotationId, bool isPostPaidQuotation)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.DELETE_QUOTATION, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_ID, SqlDbType.Int).Value = quotationId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.IS_POSTPAID_QUOTATION, SqlDbType.Bit).Value = isPostPaidQuotation;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.QUOTATION;
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds);
+                return this._helper.GetResponse();
+            }
+            catch(Exception e)
+            {
+                Logger.Error(string.Format("Exception while delete quotation. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to delete. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
             }
         }
         #endregion

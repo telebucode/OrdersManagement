@@ -44,7 +44,7 @@
                 createServiceButton.addEventListener("click", function () { alert("hai"); });
         }
         function CanCallBack(callBackFunction)
-        {
+        {   
             if (isAsync && callBackFunction && typeof callBackFunction === "function")
                 return true;
             else
@@ -405,6 +405,73 @@
                         callBackFunction(actionResponse);
                 },
                 error: function (response) {
+                    failedActionResponse.Response = response;
+                    failedActionResponse.Message = response.responseJSON.Message;
+                    actionResponse = failedActionResponse;
+                    if (CanCallBack(callBackFunction))
+                        callBackFunction(actionResponse);
+                }
+            });
+            if (!CanCallBack(callBackFunction))
+                return actionResponse;
+        }
+        OrdersClient.prototype.UpdateQuotation = function (quotationId, employeeId, channelId, metaData, stateId, callBackFunction)
+        {
+            var actionResponse;
+            failedActionResponse.Message = defaultErrorMessage;
+            $.ajax({
+                url: this.options.quotationsHandler,
+                async: this.options.async,
+                dataType: "JSON",
+                traditional: true,
+                data:
+                    {
+                        Action: "Update",
+                        QuotationId: quotationId ? quotationId : 0,
+                        EmployeeId: employeeId ? employeeId : 0,
+                        channelId: channelId ? channelId : 0,
+                        MetaData: JSON.stringify(metaData)
+                    },
+                success: function (response)
+                {
+                    actionResponse = response;
+                    if (CanCallBack(callBackFunction))
+                        callBackFunction(actionResponse);
+                },
+                error: function (response)
+                {
+                    failedActionResponse.Response = response;
+                    failedActionResponse.Message = response.responseJSON.Message;
+                    actionResponse = failedActionResponse;
+                    if (CanCallBack(callBackFunction))
+                        callBackFunction(actionResponse);
+                }
+            });
+            if (!CanCallBack(callBackFunction))
+                return actionResponse;
+        }
+        OrdersClient.prototype.DeleteQuotation = function (quotationId, isPostPaidQuotation, callBackFunction)
+        {
+            var actionResponse;
+            failedActionResponse.Message = defaultErrorMessage;
+            $.ajax({
+                url: this.options.quotationsHandler,
+                async: this.options.async,
+                dataType: "JSON",
+                data:
+                    {
+                        "Action": "Delete",
+                        "QuotationId": quotationId ? quotationId : 0,
+                        "IsPostPaidQuotationId": isPostPaidQuotation ? isPostPaidQuotation : null
+                    },
+                success: function (response)
+                {
+                    actionResponse = response;
+                    if (CanCallBack(callBackFunction))
+                        callBackFunction(actionResponse);
+                },
+                error: function (response)
+                {
                     failedActionResponse.Response = response;
                     failedActionResponse.Message = response.responseJSON.Message;
                     actionResponse = failedActionResponse;

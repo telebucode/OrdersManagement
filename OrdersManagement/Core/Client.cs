@@ -208,7 +208,7 @@ namespace OrdersManagement.Core
             return client.Search(quotationId, quotationNumber, accountId, employeeId, ownerShipId, statusId, channelId, ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, tablePreferences);
         }
         /// <summary>
-        /// 
+        /// Creates a Quotation
         /// </summary>
         /// <param name="accountId"></param>
         /// <param name="employeeId"></param>
@@ -221,6 +221,25 @@ namespace OrdersManagement.Core
         {
             QuotationClient client = new QuotationClient(ref this._helper);
             return client.Create(accountId, employeeId, channelId, metaData, ipAddress, stateId);
+        }
+        /// <summary>
+        /// Updates an existing Quotation
+        /// </summary>
+        /// <param name="quotationId">Id of Quotations Table / PostPaidQuotations Table</param>
+        /// <param name="employeeId">EmployeeId who is updating</param>
+        /// <param name="metaData">Quotations services metadata</param>
+        /// <param name="ipAddress">IpAddress from which request came</param>
+        /// <param name="stateId">StateId of the account holder</param>
+        /// <returns></returns>
+        public dynamic UpdateQuotation(int quotationId, int employeeId, string metaData, string ipAddress, int stateId)
+        {
+            QuotationClient client = new QuotationClient(ref this._helper);
+            return client.Update(quotationId, employeeId, metaData, ipAddress, stateId);
+        }
+        public dynamic DeleteQuotation(int quotationId, bool isPostPaidQuotation)
+        {
+            QuotationClient client = new QuotationClient(ref this._helper);
+            return client.Delete(quotationId, isPostPaidQuotation);
         }
 
         #endregion
