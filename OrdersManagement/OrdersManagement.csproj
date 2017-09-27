@@ -54,6 +54,7 @@
     <Compile Include="Core\PaymentClient.cs" />
     <Compile Include="Core\QuotationClient.cs" />
     <Compile Include="Core\ServiceClient.cs" />
+    <Compile Include="Exceptions\InvoiceException.cs" />
     <Compile Include="Exceptions\QuotationException.cs" />
     <Compile Include="Exceptions\ServiceException.cs" />
     <Compile Include="Helper.cs" />

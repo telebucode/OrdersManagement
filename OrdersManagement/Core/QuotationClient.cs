@@ -9,7 +9,6 @@ using System.Data.SqlClient;
 using OrdersManagement.Model;
 using OrdersManagement.Exceptions;
 using Newtonsoft.Json.Linq;
-using System.Xml;
 
 namespace OrdersManagement.Core
 {
@@ -24,7 +23,7 @@ namespace OrdersManagement.Core
         private Helper _helper = null;
         private decimal _orderAmount = 0;
 
-        #endregion        
+        #endregion
 
         #region CONSTRUCTOR
 

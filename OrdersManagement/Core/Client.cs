@@ -244,6 +244,20 @@ namespace OrdersManagement.Core
 
         #endregion
 
+        #region INVOICE RELATED
+        /// <summary>
+        /// Gets InvoiceStatuses
+        /// </summary>
+        /// <param name="onlyActive">Indicates whether to fetch only active statuses or all statuses irrespective of the status</param>
+        /// <param name="tablePreferences">See Model.TablePreferences for details</param>
+        /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
+        public dynamic GetInvoiceStatuses(bool onlyActive = false, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            InvoiceClient client = new InvoiceClient(ref this._helper);
+            return client.GetStatuses(onlyActive, tablePreferences);
+        }
+        #endregion
+
         #region GENERIC
 
         public dynamic GetBillingModes(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)

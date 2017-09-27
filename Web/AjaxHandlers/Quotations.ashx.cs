@@ -152,7 +152,7 @@ namespace Web.AjaxHandlers
                 employeeId: employeeId, 
                 channelId: channelId, 
                 metaData: context.Request["MetaData"].ToString(), 
-                ipAddress: context.Request["IpAddress"] != null ? context.Request["IpAddress"].ToString() : context.Request.ServerVariables["REMOTE_ADDR"].ToString(), stateId: stateId);
+                ipAddress: context.Request["IpAddress"] != null ? context.Request["IpAddress"].ToString() : context.Request.ServerVariables["REMOTE_ADDR"].ToString(), stateId: stateId));
         }
         private void Update(HttpContext context)
         {
