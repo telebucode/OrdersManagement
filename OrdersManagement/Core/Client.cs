@@ -256,6 +256,11 @@ namespace OrdersManagement.Core
             InvoiceClient client = new InvoiceClient(ref this._helper);
             return client.GetStatuses(onlyActive, tablePreferences);
         }
+        public dynamic CreateInvoice(int quotationId, byte billingModeId, int employeeId, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            InvoiceClient client = new InvoiceClient(ref this._helper);
+            return client.Create(quotationId: quotationId, billingModeId: billingModeId, employeeId: employeeId, tablePreferences: tablePreferences);
+        }
         #endregion
 
         #region GENERIC
