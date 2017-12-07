@@ -8,11 +8,11 @@
         this.OrdersClient = function (options) {
             // Define option defaults
             var defaults = {
-                servicesHandler: "AjaxHandlers/Services.ashx",
-                quotationsHandler: "AjaxHandlers/Quotations.ashx",
-                invoicesHandler: "AjaxHandlers/Invoices.ashx",
-                paymentsHandler: "AjaxHandlers/Payments.ashx",
-                activationsHandler: "AjaxHandlers/Activations.ashx",
+                servicesHandler: "AjaxHandlers/Service.ashx",
+                quotationsHandler: "AjaxHandlers/Quotation.ashx",
+                invoicesHandler: "AjaxHandlers/Invoice.ashx",
+                paymentsHandler: "AjaxHandlers/Payment.ashx",
+                activationsHandler: "AjaxHandlers/Activation.ashx",
                 genericHandler: "AjaxHandlers/Generic.ashx",
                 async: true
             }
@@ -473,6 +473,71 @@
                 error: function (response)
                 {
                     failedActionResponse.Response = response;
+                    failedActionResponse.Message = response.responseJSON.Message;
+                    actionResponse = failedActionResponse;
+                    if (CanCallBack(callBackFunction))
+                        callBackFunction(actionResponse);
+                }
+            });
+            if (!CanCallBack(callBackFunction))
+                return actionResponse;
+        }
+
+        OrdersClient.prototype.GetInvoiceStatuses = function(onlyActive, callBackFunction)
+        {
+            var actionResponse;
+            failedActionResponse.Message = defaultErrorMessage;
+            $.ajax({
+                url: this.options.invoicesHandler,
+                async: this.options.async,
+                dataType: "JSON",
+                data:
+                    {
+                        "Action": "GetStatuses",
+                        "OnlyActive": onlyActive ? onlyActive : true
+                    },
+                success:function(response)
+                {
+                    actionResponse = response;
+                    if (CanCallBack(callBackFunction))
+                        callBackFunction(actionResponse);
+                },
+                error:function(response)
+                    {
+                        failedActionResponse.Response = response;
+                        failedActionResponse.Message = response.responseJSON.Message;
+                        actionResponse = failedActionResponse;
+                        if (CanCallBack(callBackFunction))
+                            callBackFunction(actionResponse);
+                    }
+            });
+            if (!CanCallBack(callBackFunction))
+                return actionResponse;
+        }
+        OrdersClient.prototype.CreateInvoice = function(quotationId, billingModeId, employeeId, callBackFunction)
+        {
+            var actionResponse;
+            failedActionResponse.Message = defaultErrorMessage;
+            $.ajax({
+                url: this.options.invoicesHandler,
+                async: this.options.async,
+                dataType: "JSON",
+                data:
+                    {
+                        Action: "Create",
+                        QuotationId: quotationId ? quotationId : 0,
+                        BillingModeId: billingModeId ? billingModeId : 0,
+                        EmployeeId: employeeId ? employeeId : 0
+                    },
+                success:function(response)
+                {
+                    actionResponse = response;
+                    if (CanCallBack(callBackFunction))
+                        callBackFunction(actionResponse);
+                },
+                error:function(response)
+                {
+                    failedActionResponse.Response = actionResponse;
                     failedActionResponse.Message = response.responseJSON.Message;
                     actionResponse = failedActionResponse;
                     if (CanCallBack(callBackFunction))

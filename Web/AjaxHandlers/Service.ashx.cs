@@ -12,7 +12,7 @@ namespace Web.AjaxHandlers
     /// <summary>
     /// Summary description for Services
     /// </summary>
-    public class Services : IHttpHandler
+    public class Service : IHttpHandler
     {
         private JObject errorJSon = new JObject(new JProperty("Success", false), new JProperty("Message", ""));
 

@@ -65,8 +65,9 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AjaxHandlers\Services.ashx" />
-    <Content Include="AjaxHandlers\Quotations.ashx" />
+    <Content Include="AjaxHandlers\Service.ashx" />
+    <Content Include="AjaxHandlers\Quotation.ashx" />
+    <Content Include="AjaxHandlers\Invoice.ashx" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -84,11 +85,14 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AjaxHandlers\Quotations.ashx.cs">
-      <DependentUpon>Quotations.ashx</DependentUpon>
+    <Compile Include="AjaxHandlers\Invoice.ashx.cs">
+      <DependentUpon>Invoice.ashx</DependentUpon>
     </Compile>
-    <Compile Include="AjaxHandlers\Services.ashx.cs">
-      <DependentUpon>Services.ashx</DependentUpon>
+    <Compile Include="AjaxHandlers\Quotation.ashx.cs">
+      <DependentUpon>Quotation.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="AjaxHandlers\Service.ashx.cs">
+      <DependentUpon>Service.ashx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

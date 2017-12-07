@@ -13,7 +13,7 @@ namespace Web.AjaxHandlers
     /// <summary>
     /// Summary description for Quotations
     /// </summary>
-    public class Quotations : IHttpHandler
+    public class Quotation : IHttpHandler
     {
         private JObject errorJSon = new JObject(new JProperty("Success", false), new JProperty("Message", ""));
         public void ProcessRequest(HttpContext context)
@@ -21,6 +21,8 @@ namespace Web.AjaxHandlers
             if (context.Request["Action"] == null)
             {
                 context.Response.StatusCode = 400;
+                errorJSon["Message"] = "Action parameter is mandatory";
+                context.Response.Write(errorJSon);
                 context.Response.End();
             }
             try
@@ -56,7 +58,7 @@ namespace Web.AjaxHandlers
             catch (Exception e)
             {
                 GenerateErrorResponse(500, e.Message);
-            }            
+            }
         }
         private void GetQuotationStatuses(HttpContext context)
         {
