@@ -31,7 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
-      <HintPath>..\..\..\..\madhu\DLL\log4net.dll</HintPath>
+      <HintPath>..\..\GrpTalkLiveSolution\GT.BusinessLogicLayer\bin\Debug\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -40,11 +40,11 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\ActivationClient.cs" />
@@ -62,9 +62,12 @@
     <Compile Include="Exceptions\ClientInitializationException.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Label.cs" />
+    <Compile Include="Model\QuotationServiceProperties.cs" />
+    <Compile Include="Model\QuotationServices.cs" />
     <Compile Include="Model\TablePreferences.cs" />
     <Compile Include="ProcedureParameter.cs" />
     <Compile Include="ResponseFormat.cs" />
+    <Compile Include="Model\ServicePropertyFields.cs" />
     <Compile Include="SharedClass.cs" />
     <Compile Include="StoredProcedure.cs" />
     <Compile Include="Logger.cs" />

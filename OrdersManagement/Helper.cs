@@ -49,7 +49,7 @@ namespace OrdersManagement
         private void InitializeResponseVariables()
         {
             if (this._responseFormat.Equals(ResponseFormat.XML))
-            {   
+            {
                 xmlDoc = new XmlDocument();
                 rootElement = xmlDoc.CreateElement("Response");
                 xmlDoc.AppendChild(rootElement);
@@ -60,7 +60,7 @@ namespace OrdersManagement
                 _jObj = new JObject();
                 _jArr = new JArray();
             }
-        }        
+        }
 
         #endregion
 
@@ -70,13 +70,14 @@ namespace OrdersManagement
             this.LoadInputTypes();
             this.LoadInputDataTypes();
         }
-        internal void LoadServices(bool includeServiceProperties = true, bool isOnlyActive = true, bool forceLoad = false)
+        internal void LoadServices(bool includeServiceProperties = true, bool isOnlyActive = true, bool forceLoad = false, byte productId = 1)
         {
             if (SharedClass.ServiceLoaded && !forceLoad)
                 return;
             try
             {
                 this._sqlCommand = new SqlCommand(StoredProcedure.GET_SERVICES, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_ID, SqlDbType.TinyInt).Value = productId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = isOnlyActive;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.INCLUDE_SERVICE_PROPERTIES, SqlDbType.Bit).Value = includeServiceProperties;
                 this.PopulateCommonOutputParameters(ref this._sqlCommand);
@@ -84,10 +85,10 @@ namespace OrdersManagement
                 this._da.Fill(this._ds = new DataSet());
                 if (!this._sqlCommand.IsSuccess())
                     throw new Exception("Unable To Fetch Services Details");
-                if(this._ds.Tables.Count > 0 && this._ds.Tables[0].Rows.Count > 0)
+                if (this._ds.Tables.Count > 0 && this._ds.Tables[0].Rows.Count > 0)
                 {
                     SharedClass.Services.Clear();
-                    foreach(DataRow serviceRow in this._ds.Tables[0].Rows)
+                    foreach (DataRow serviceRow in this._ds.Tables[0].Rows)
                     {
                         Service service = new Service();
                         service.Id = Convert.ToByte(serviceRow[Label.ID].ToString());
@@ -95,7 +96,8 @@ namespace OrdersManagement
                         service.MetaDataCode = serviceRow[Label.META_DATA_CODE].ToString();
                         service.AreMultipleEntriesAllowed = Convert.ToBoolean(serviceRow[Label.ARE_MULTIPLE_ENTRIES_ALLOWED].ToString());
                         service.IsActive = Convert.ToBoolean(serviceRow[Label.IS_ACTIVE].ToString());
-                        if(this._ds.Tables.Count > 1)
+                        service.ProductId = Convert.ToByte(serviceRow[Label.PRODUCT_ID].ToString());
+                        if (this._ds.Tables.Count > 1)
                         {
                             Dictionary<string, ServiceProperty> serviceProperties = new Dictionary<string, ServiceProperty>();
                             foreach (DataRow servicePropertyRow in this._ds.Tables[1].Select(string.Format("{0} = {1}", Label.SERVICE_ID, serviceRow[Label.ID])))
@@ -115,7 +117,34 @@ namespace OrdersManagement
                                     throw new KeyNotFoundException(string.Format("InputDataType with Id {0} not loaded.", Convert.ToByte(servicePropertyRow[Label.INPUT_DATA_TYPE_ID].ToString())));
                                 else
                                     serviceProperty.DataType = SharedClass.InputDataTypes[Convert.ToByte(servicePropertyRow[Label.INPUT_DATA_TYPE_ID].ToString())];
+
                                 serviceProperty.IncludeInOrderAmount = Convert.ToBoolean(servicePropertyRow[Label.INCLUDE_IN_ORDER_AMOUNT].ToString());
+
+                                if (this._ds.Tables.Count > 2)
+                                {
+                                    Dictionary<string, Model.ServicePropertyFields> servicePropertFields = new Dictionary<string, ServicePropertyFields>();
+                                    foreach (DataRow servicePropertFieldRow in _ds.Tables[2].Select(string.Format("{0}={1}", Label.SERVICE_PROPERTY_ID, servicePropertyRow[Label.ID])))
+                                    {
+                                        ServicePropertyFields servicePropertField = new ServicePropertyFields();
+                                        servicePropertField.MetaDataCode = servicePropertyRow[Label.META_DATA_CODE].ToString();
+                                        servicePropertField.MinLength = Convert.ToByte(servicePropertFieldRow[Label.MINLENGTH].ToString());
+                                        servicePropertField.MaxLength = Convert.ToInt16(servicePropertFieldRow[Label.MAXLENGTH].ToString());
+                                        servicePropertField.IsAllowSpecialChars = Convert.ToBoolean(servicePropertFieldRow[Label.Is_Allow_Special_Chars].ToString());
+                                        servicePropertField.Options = servicePropertFieldRow[Label.OPTIONS].ToString();
+
+                                        if (serviceProperty.InputType == PropertyInputType.TEXT_BOX || serviceProperty.InputType == PropertyInputType.TEXT_BOX)
+                                        {
+                                            servicePropertFields.Add(servicePropertField.MetaDataCode, servicePropertField);
+                                        }
+                                        else
+                                        {
+                                            servicePropertFields.Add(servicePropertField.Options, servicePropertField);
+                                        }
+                                    }
+
+                                    serviceProperty.PropertFields = servicePropertFields;
+                                }
+
                                 serviceProperties.Add(serviceProperty.MetaDataCode, serviceProperty);
                             }
                             service.Properties = serviceProperties;
@@ -124,13 +153,13 @@ namespace OrdersManagement
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw e;
             }
             finally
             {
-                
+
             }
         }
 
@@ -170,7 +199,7 @@ namespace OrdersManagement
                     currentTableRootName = string.Empty;
                     childXmlElementNameForRows = "";
                     columnValuesAsXmlAttributes = true;
-                    singleRowAsSingleEntity = true;                    
+                    singleRowAsSingleEntity = true;
                     if (tablePreferences != null && tablePreferences.ContainsKey(table.TableName))
                     {
                         tablePreferences.TryGetValue(table.TableName, out currentTablePreferences);
@@ -201,7 +230,7 @@ namespace OrdersManagement
                         }
                         if (singleRowAsSingleEntity && table.Rows.Count == 1)
                         {
-                            if(this._isOutputXmlFormat)
+                            if (this._isOutputXmlFormat)
                                 tableRootElement = xmlDoc.CreateElement(childXmlElementNameForRows.Length > 0 ?
                                     childXmlElementNameForRows : currentTableRootName.Length > 0 ? currentTableRootName : table.TableName);
                             rowJObj = new JObject();
@@ -244,11 +273,11 @@ namespace OrdersManagement
                                         bool boolResult = false;
                                         int intResult = 0;
                                         float floatResult = 0;
-                                        if(column.ColumnName.Equals(Label.SUCCESS, StringComparison.CurrentCultureIgnoreCase) || bool.TryParse(columnValue, out boolResult))
+                                        if (column.ColumnName.Equals(Label.SUCCESS, StringComparison.CurrentCultureIgnoreCase) || bool.TryParse(columnValue, out boolResult))
                                             rowJObj.Add(new JProperty(column.ColumnName, boolResult));
                                         else if (int.TryParse(columnValue, out intResult))
                                             rowJObj.Add(new JProperty(column.ColumnName, intResult));
-                                        else if(float.TryParse(columnValue, out floatResult))
+                                        else if (float.TryParse(columnValue, out floatResult))
                                             rowJObj.Add(new JProperty(column.ColumnName, floatResult));
                                         else
                                             rowJObj.Add(new JProperty(column.ColumnName, columnValue));
@@ -261,10 +290,10 @@ namespace OrdersManagement
                             }
                             else
                             {
-                                this._jObj.Add(new JProperty(childXmlElementNameForRows.Length > 0 ? 
-                                                                    childXmlElementNameForRows : 
-                                                                        currentTableRootName.Length > 0 ? 
-                                                                                currentTableRootName : table.TableName, 
+                                this._jObj.Add(new JProperty(childXmlElementNameForRows.Length > 0 ?
+                                                                    childXmlElementNameForRows :
+                                                                        currentTableRootName.Length > 0 ?
+                                                                                currentTableRootName : table.TableName,
                                                                                rowJObj));
                                 //this._jObj.Add(new JProperty(currentTableRootName.Length > 0 ? currentTableRootName : table.TableName, rowJObj));
                             }
@@ -310,11 +339,11 @@ namespace OrdersManagement
                                         bool boolResult = false;
                                         int intResult = 0;
                                         float floatResult = 0;
-                                        if(column.ColumnName.Equals(Label.SUCCESS, StringComparison.CurrentCultureIgnoreCase) || bool.TryParse(columnValue, out boolResult))
+                                        if (column.ColumnName.Equals(Label.SUCCESS, StringComparison.CurrentCultureIgnoreCase) || bool.TryParse(columnValue, out boolResult))
                                             rowJObj.Add(new JProperty(column.ColumnName, boolResult));
                                         else if (int.TryParse(columnValue, out intResult))
                                             rowJObj.Add(new JProperty(column.ColumnName, intResult));
-                                        else if(float.TryParse(columnValue, out floatResult))
+                                        else if (float.TryParse(columnValue, out floatResult))
                                             rowJObj.Add(new JProperty(column.ColumnName, floatResult));
                                         else
                                             rowJObj.Add(new JProperty(column.ColumnName, columnValue));
@@ -408,7 +437,7 @@ namespace OrdersManagement
                         _jObj.Add(new JProperty(key, value));
                 }
             }
-        }        
+        }
         internal void CreateProperty(string key, object value, ref JObject json, bool isInsertFirst = false)
         {
             bool boolResult = false;
@@ -435,7 +464,7 @@ namespace OrdersManagement
                     json.Add(new JProperty(key, floatResult));
                 else
                     json.Add(new JProperty(key, value));
-            }            
+            }
         }
         internal void CreateProperty(string key, object value, ref XmlElement rootElement, ref XmlDocument xmlDoc)
         {
@@ -448,7 +477,7 @@ namespace OrdersManagement
             sqlCommand.CommandType = CommandType.StoredProcedure;
             sqlCommand.Parameters.Add(ProcedureParameter.SUCCESS, System.Data.SqlDbType.Bit).Direction = System.Data.ParameterDirection.Output;
             sqlCommand.Parameters.Add(ProcedureParameter.MESSAGE, System.Data.SqlDbType.VarChar, 1000).Direction = System.Data.ParameterDirection.Output;
-        }        
+        }
         internal void ResetResponseVariables()
         {
             this.InitializeResponseVariables();
@@ -482,6 +511,12 @@ namespace OrdersManagement
                             SharedClass.InputTypes.Add(Convert.ToByte(inputTypeRow[Label.ID]), Model.PropertyInputType.TEXT_BOX);
                         else if (inputTypeRow[Label.TYPE].ToString().Equals(Label.TEXT_AREA, StringComparison.CurrentCultureIgnoreCase))
                             SharedClass.InputTypes.Add(Convert.ToByte(inputTypeRow[Label.ID]), PropertyInputType.TEXT_AREA);
+                        else if (inputTypeRow[Label.TYPE].ToString().Equals(Label.DROP_DOWN, StringComparison.CurrentCultureIgnoreCase))
+                            SharedClass.InputTypes.Add(Convert.ToByte(inputTypeRow[Label.ID]), PropertyInputType.DROP_DOWN);
+                        else if (inputTypeRow[Label.TYPE].ToString().Equals(Label.RADIO_BUTTON, StringComparison.CurrentCultureIgnoreCase))
+                            SharedClass.InputTypes.Add(Convert.ToByte(inputTypeRow[Label.ID]), PropertyInputType.RADIO_BUTTON);
+                        else if (inputTypeRow[Label.TYPE].ToString().Equals(Label.FILE_UPLOAD, StringComparison.CurrentCultureIgnoreCase))
+                            SharedClass.InputTypes.Add(Convert.ToByte(inputTypeRow[Label.ID]), PropertyInputType.FILE_UPLOAD);
                         else
                             throw new ClientInitializationException(string.Format("Input Type is not defined for {0} in Orders Library.", inputTypeRow[Label.TYPE]));
                     }
@@ -527,6 +562,10 @@ namespace OrdersManagement
                             SharedClass.InputDataTypes.Add(Convert.ToByte(inputDataTypeRow[Label.ID]), PropertyDataType.STRING);
                         else if (inputDataTypeRow[Label.DATA_TYPE].ToString().Equals(Label.DATE_TIME, StringComparison.CurrentCultureIgnoreCase))
                             SharedClass.InputDataTypes.Add(Convert.ToByte(inputDataTypeRow[Label.ID]), PropertyDataType.DATETIME);
+                        else if (inputDataTypeRow[Label.DATA_TYPE].ToString().Equals(Label.BIT, StringComparison.CurrentCultureIgnoreCase))
+                            SharedClass.InputDataTypes.Add(Convert.ToByte(inputDataTypeRow[Label.ID]), PropertyDataType.BIT);
+                        else if (inputDataTypeRow[Label.DATA_TYPE].ToString().Equals(Label.MONEY, StringComparison.CurrentCultureIgnoreCase))
+                            SharedClass.InputDataTypes.Add(Convert.ToByte(inputDataTypeRow[Label.ID]), PropertyDataType.MONEY);
                         else
                             throw new ClientInitializationException(string.Format("Input Data Type is not defined for {0} in Orders Library.", inputDataTypeRow[Label.DATA_TYPE]));
                     }
@@ -544,6 +583,8 @@ namespace OrdersManagement
                 this._da = null;
             }
         }
+
+
 
         #endregion
 

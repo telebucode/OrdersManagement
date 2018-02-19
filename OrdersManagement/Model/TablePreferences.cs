@@ -20,5 +20,7 @@ namespace OrdersManagement.Model
         public string ChildElementNameForRows { get; set; }
         public bool ColumnValuesAsXmlAttributes { get; set; }
         public bool SingleRowAsSingleEntity { get; set; }
+
+        
     }
 }

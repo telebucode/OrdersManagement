@@ -13,6 +13,12 @@ namespace OrdersManagement.Model
         [StringValue("TextBox")]
         TEXT_BOX = 1,
         [StringValue("TextArea")]
-        TEXT_AREA = 2
+        TEXT_AREA = 2,
+        [StringValue("DropDown")]
+        DROP_DOWN = 3,
+        [StringValue("RadioButton")]
+        RADIO_BUTTON = 4,
+        [StringValue("FileUpload")]
+        FILE_UPLOAD = 5
     }
 }

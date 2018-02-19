@@ -21,7 +21,7 @@ namespace OrdersManagement.Model
         private PropertyDataType _dataType = PropertyDataType.UNKNOWN;
         private bool _isActive = true;
         private bool _includeInOrderAmount = false;
-
+        private Dictionary<string, ServicePropertyFields> _propertFields = new Dictionary<string, ServicePropertyFields>();
         #endregion
 
         #region PUBLIC PROPERTIES
@@ -64,6 +64,9 @@ namespace OrdersManagement.Model
         /// </summary>
         public bool IncludeInOrderAmount { get { return this._includeInOrderAmount; } set { this._includeInOrderAmount = value; } }
 
+
+        public Dictionary<string, ServicePropertyFields> PropertFields { get { return this._propertFields; } set { this._propertFields = value; } }
         #endregion
+
     }
 }

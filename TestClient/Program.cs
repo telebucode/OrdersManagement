@@ -20,18 +20,22 @@ namespace TestClient
                 Client c = new Client(responseFormat: ResponseFormat.JSON);
                 Dictionary<string, TablePreferences> prefs = new Dictionary<string, TablePreferences>();
                 //prefs.Add("InputTypes", new TablePreferences(RootName: "FieldTypes", childElementNameForRows: "FieldType", columnValuesAsXmlAttributes: true, singleRowAsSingleEntity: true));                
-                dynamic d = c.CreateQuotation(1, 1, 1, "{'Balance':{'Amount': '500','ValidityInDays': '50','TPPS': '50','PPPS': '50','TransactionalPulse/Voice': '','PromotionalPulse/Voice': '','ExtraCharges' : [{'Description': 'raja','Amount': '8909'}]}}", "", 1);
-                Console.WriteLine(d.ToString());
+                //dynamic d = c.CreateQuotation(1,1, 1, 1, "{'Balance':{'Id':'1','Amount': '500','ValidityInDays': '50','TPPS': '50','PPPS': '50','TransactionalPulse/V': '','PromotionalPulse/Voi': '','ExtraCharges' : [{'Description': 'raja','Amount': '8909'}]}}", "", 1);
+                dynamic d = c.CreateQuotation(1, 1, 1, 1, "{'Balance':[{'Id':'1','Occurance':'1','Amount': '100','ValidityInDays': '10','TPPS': '10','PPPS': '10','TransactionalPulse/V': '','PromotionalPulse/Voi': '','ExtraCharges' : [{'Description': 'raja','Amount': '109'}]},{'Id':'2','Occurance':'2','Amount': '500','ValidityInDays': '50','TPPS': '50','PPPS': '50','TransactionalPulse/V': '','PromotionalPulse/Voi': '','ExtraCharges' : [{'Description': 'raja','Amount': '8909'}]}],'SenderName':{'Id':'1','Occurance':'1','SetupCharge': '0','Name': 'Tez','Price': '1000','ValidityInDays': '30','MonthlyRental': '1000'}}", "", 1);
+                //dynamic d = c.GetServices(productId: 1, includeServiceProperties: true, serviceId: 1);
+                //dynamic d1 = c.GetQuotationDetails(1, false);
+                //dynamic d = c.UpdateQuotation(1, 1, "{'Balance':[{'Id':'1','Occurance':'1','Amount': '1200','ValidityInDays': '120','TPPS': '120','PPPS': '120','TransactionalPulse/V': '','PromotionalPulse/Voi': '','ExtraCharges' : [{'Description': 'raja','Amount': '1090'}]},{'Id':'2','Occurance':'2','Amount': '5200','ValidityInDays': '520','TPPS': '520','PPPS': '520','TransactionalPulse/V': '','PromotionalPulse/Voi': '','ExtraCharges' : [{'Description': 'raja','Amount': '8909'}]},{'Id':'0','Occurance':'3','Amount': '500','ValidityInDays': '50','TPPS': '50','PPPS': '50','TransactionalPulse/V': '','PromotionalPulse/Voi': '','ExtraCharges' : [{'Description': 'raja','Amount': '8909'}]}]}", "", 1);
+                //Console.WriteLine(d.ToString());
             }
-            catch(ClientInitializationException e)
+            catch (ClientInitializationException e)
             {
                 Console.WriteLine(e.Message);
             }
-            catch(QuotationException e)
+            catch (QuotationException e)
             {
                 Console.WriteLine(e.Message);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }

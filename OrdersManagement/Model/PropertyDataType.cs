@@ -17,6 +17,10 @@ namespace OrdersManagement.Model
         [StringValue("String")]
         STRING = 3,
         [StringValue("DateTime")]
-        DATETIME = 4
+        DATETIME = 4,
+        [StringValue("Bit")]
+        BIT=5,
+        [StringValue("Money")]
+        MONEY=6
     }
 }

@@ -17,7 +17,8 @@
     <script type="text/javascript" src="Scripts/OrdersClient.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            var ordersClient = new OrdersClient({ async: true });                        
+            var ordersClient = new OrdersClient({ async: true });
+            ordersClient.CreateService()
         });
     </script>
 </body>

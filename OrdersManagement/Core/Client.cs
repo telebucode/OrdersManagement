@@ -48,7 +48,7 @@ namespace OrdersManagement.Core
             this._helper = new Helper(this, responseFormat);
             Logger.InitializeLogger();
         }
-        
+
         #endregion
 
         #region PUBLIC METHODS
@@ -63,10 +63,16 @@ namespace OrdersManagement.Core
         /// <param name="onlyActive">Indicates whether to fetch only active services or all the services irrespective of their status.</param>
         /// <param name="tablePreferences">See Model.TablePreferences for details</param>
         /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
-        public dynamic GetServices(short serviceId = 0, bool includeServiceProperties = false, bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic  GetServices(byte productId = 0, short serviceId = 0, bool includeServiceProperties = false, bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             ServiceClient serviceClient = new ServiceClient(ref this._helper);
-            return serviceClient.GetServices(serviceId: serviceId, includeServiceProperties: includeServiceProperties, onlyActive: onlyActive, tablePreferences: tablePreferences);
+            return serviceClient.GetServices(productId: productId, serviceId: serviceId, includeServiceProperties: includeServiceProperties, onlyActive: onlyActive, tablePreferences: tablePreferences);
+        }
+
+        public dynamic GetServiceProperties(short serviceId = 0, bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            ServiceClient serviceClient = new ServiceClient(ref this._helper);
+            return serviceClient.GetServiceProperties(serviceId: serviceId, onlyActive: onlyActive, tablePreferences: tablePreferences);
         }
         /// <summary>
         /// Creates a new Service
@@ -76,10 +82,10 @@ namespace OrdersManagement.Core
         /// <param name="areMultipleEntriesAllowed">Indicates whether this Service Supports Multiple Entries</param>
         /// <param name="tablePreferences">See Model.TablePreferences For Details.</param>
         /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
-        public dynamic CreateService(string displayName, string metaDataCode, bool areMultipleEntriesAllowed, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic CreateService(byte productId, string displayName, string metaDataCode, bool areMultipleEntriesAllowed, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             ServiceClient serviceClient = new ServiceClient(ref this._helper);
-            return serviceClient.CreateService(displayName: displayName, metaDataCode: metaDataCode, areMultipleEntriesAllowed: areMultipleEntriesAllowed);
+            return serviceClient.CreateService(productId: productId, displayName: displayName, metaDataCode: metaDataCode, areMultipleEntriesAllowed: areMultipleEntriesAllowed);
         }
         /// <summary>
         /// Updates a Service
@@ -90,7 +96,7 @@ namespace OrdersManagement.Core
         /// <param name="areMultipleEntriesAllowed">Indicates whether this Service Supports Multiple Entries</param>
         /// <param name="tablePreferences">See Model.TablePreferences For Details.</param>
         /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
-        public dynamic UpdateService(byte serviceId, string displayName, string metaDataCode, bool areMultipleEntriesAllowed, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic UpdateService(Int16 serviceId, string displayName, string metaDataCode, bool areMultipleEntriesAllowed, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             ServiceClient serviceClient = new ServiceClient(ref this._helper);
             return serviceClient.UpdateService(serviceId, displayName, metaDataCode, areMultipleEntriesAllowed);
@@ -100,31 +106,31 @@ namespace OrdersManagement.Core
         /// </summary>
         /// <param name="serviceId">Id of the Service to Delete</param>
         /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
-        public dynamic DeleteService(byte serviceId)
+        public dynamic DeleteService(Int16 serviceId)
         {
             ServiceClient serviceClient = new ServiceClient(ref this._helper);
             return serviceClient.DeleteService(serviceId);
-        }        
+        }
         /// <summary>
         /// Creates Properties for a Service
         /// </summary>
         /// <param name="serviceId">Id of the Service to which these Properties should be mapped.</param>
         /// <param name="serviceProperties">ServiceProperties list</param>
         /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
-        public dynamic CreateServiceProperties(byte serviceId, List<ServiceProperty> serviceProperties)
+        public dynamic CreateServiceProperties(Int16 serviceId, List<ServiceProperty> serviceProperties, List<ServicePropertyFields> servicePropertyFields)
         {
             ServiceClient serviceClient = new ServiceClient(ref this._helper);
-            return serviceClient.CreateServiceProperties(serviceId, serviceProperties);
+            return serviceClient.CreateServiceProperties(serviceId, serviceProperties, servicePropertyFields);
         }
         /// <summary>
         /// Updates a specific ServiceProperty
         /// </summary>
         /// <param name="serviceProperty">ServiceProperty Object</param>
         /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
-        public dynamic UpdateServiceProperty(ServiceProperty serviceProperty)
+        public dynamic UpdateServiceProperty(ServiceProperty serviceProperty, List<ServicePropertyFields> servicePropertFields)
         {
             ServiceClient serviceClient = new ServiceClient(ref this._helper);
-            return serviceClient.UpdateServiceProperty(serviceProperty);
+            return serviceClient.UpdateServiceProperty(serviceProperty, servicePropertFields);
         }
         /// <summary>
         /// Deletes a Specific ServiceProperty
@@ -202,10 +208,10 @@ namespace OrdersManagement.Core
         /// <param name="limit">Records per page. Default is 20</param>
         /// <param name="tablePreferences">See Model.TablePreferences for details</param>
         /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
-        public dynamic GetQuotations(int quotationId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GetQuotations(byte productId = 0, int quotationId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             QuotationClient client = new QuotationClient(ref this._helper);
-            return client.Search(quotationId, quotationNumber, accountId, employeeId, ownerShipId, statusId, channelId, ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, tablePreferences);
+            return client.Search(productId, quotationId, quotationNumber, accountId, employeeId, ownerShipId, statusId, channelId, ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, tablePreferences);
         }
         /// <summary>
         /// Creates a Quotation
@@ -217,10 +223,11 @@ namespace OrdersManagement.Core
         /// <param name="ipAddress"></param>
         /// <param name="stateId"></param>
         /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
-        public dynamic CreateQuotation(int accountId, int employeeId, byte channelId, string metaData, string ipAddress, int stateId)
+        public dynamic CreateQuotation(byte productId, int accountId, int employeeId, byte channelId, string metaData, string ipAddress, int stateId)
         {
             QuotationClient client = new QuotationClient(ref this._helper);
-            return client.Create(accountId, employeeId, channelId, metaData, ipAddress, stateId);
+
+            return client.Create(productId, accountId, employeeId, channelId, metaData, ipAddress, stateId);
         }
         /// <summary>
         /// Updates an existing Quotation
@@ -240,6 +247,11 @@ namespace OrdersManagement.Core
         {
             QuotationClient client = new QuotationClient(ref this._helper);
             return client.Delete(quotationId, isPostPaidQuotation);
+        }
+        public dynamic GetQuotationDetails(int quotationId, bool isPostPaidQuotation)
+        {
+            QuotationClient client = new QuotationClient(ref this._helper);
+            return client.GetQuotationDetails(quotationId, isPostPaidQuotation);
         }
 
         #endregion

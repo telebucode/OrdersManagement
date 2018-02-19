@@ -10,11 +10,13 @@ namespace OrdersManagement
     {
         internal const string IS_ONLY_ACTIVE = "@IsOnlyActive";
         internal const string SERVICE_ID = "@ServiceId";
+        internal const string PRODUCT_ID = "@ProductId";
         internal const string DISPLAY_NAME = "@DisplayName";
         internal const string META_DATA_CODE = "@MetaDataCode";
         internal const string ARE_MULTIPLE_ENTRIES_ALLOWED = "@AreMultipleEntriesAllowed";
         internal const string INCLUDE_SERVICE_PROPERTIES = "@IncludeServiceProperties";
         internal const string SERVICE_PROPERTIES = "@ServiceProperties";
+        internal const string SERVICE_PROPERTY_FIELDS = "@ServicePropertyFields";
         internal const string SERVICE_PROPERTY_DETAILS = "@ServicePropertyDetails";
         internal const string SERVICE_PROPERTY_ID = "@ServicePropertyId";
 
@@ -35,6 +37,8 @@ namespace OrdersManagement
         internal const string STATE_ID = "@StateId";
         internal const string ORDER_AMOUNT = "@OrderAmount";
         internal const string IS_POSTPAID_QUOTATION = "@IsPostPaidQuotation";
+        internal const string QUOTATION_SERVICES = "@QuotationServices";
+        internal const string QUOTATION_SERVICE_PROPERTIES = "@QuotationServiceProperties";
 
         internal const string SUCCESS = "@Success";
         internal const string MESSAGE = "@Message";

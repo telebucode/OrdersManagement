@@ -63,11 +63,11 @@ namespace OrdersManagement
             table.Columns.Add(Label.DEFAULT_VALUE, typeof(string));
             table.Columns.Add(Label.INCLUDE_IN_ORDER_AMOUNT, typeof(bool));
             byte index = 1;
-            foreach(Model.ServiceProperty serviceProperty in serviceProperties)
+            foreach (Model.ServiceProperty serviceProperty in serviceProperties)
             {
                 if (serviceProperty.DisplayName == null || serviceProperty.DisplayName.Length == 0)
                     throw new Exceptions.ServiceException(string.Format("Invalid DisplayName at Row {0}", (index)));
-                if(serviceProperty.MetaDataCode == null || serviceProperty.MetaDataCode.Length == 0)
+                if (serviceProperty.MetaDataCode == null || serviceProperty.MetaDataCode.Length == 0)
                     throw new Exceptions.ServiceException(string.Format("Invalid MetaDataCode at Row {0}", (index)));
                 table.Rows.Add(serviceProperty.DisplayName, serviceProperty.MetaDataCode, serviceProperty.IsRequired, serviceProperty.InputTypeId > 0 ? serviceProperty.InputTypeId : Convert.ToByte(serviceProperty.InputType),
                     serviceProperty.DataTypeId > 0 ? serviceProperty.DataTypeId : Convert.ToByte(serviceProperty.DataType), serviceProperty.DefaultValue, serviceProperty.IncludeInOrderAmount);
@@ -91,6 +91,63 @@ namespace OrdersManagement
                 throw new Exceptions.ServiceException(string.Format("Invalid MetaDataCode"));
             table.Rows.Add(serviceProperty.DisplayName, serviceProperty.MetaDataCode, serviceProperty.IsRequired, Convert.ToByte(serviceProperty.InputType),
                 Convert.ToByte(serviceProperty.DataType), serviceProperty.DefaultValue, serviceProperty.IncludeInOrderAmount);
+            return table;
+        }
+
+        internal static DataTable ToDataTable(this List<Model.ServicePropertyFields> servicePropertyFields)
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add(Label.FIELDID, typeof(Int16));
+            table.Columns.Add(Label.META_DATA_CODE, typeof(string));
+            table.Columns.Add(Label.INPUT_TYPE_ID, typeof(byte));
+            table.Columns.Add(Label.MINLENGTH, typeof(Byte));
+            table.Columns.Add(Label.MAXLENGTH, typeof(Int16));
+            table.Columns.Add(Label.Is_Allow_Special_Chars, typeof(bool));
+            table.Columns.Add(Label.OPTIONS, typeof(string));
+            byte index = 1;
+            foreach (Model.ServicePropertyFields servicePropertyField in servicePropertyFields)
+            {
+                if (servicePropertyField.MetaDataCode == null || servicePropertyField.MetaDataCode.Length == 0)
+                    throw new Exceptions.ServiceException(string.Format("Invalid Metacode at Row {0}", index));
+                table.Rows.Add(servicePropertyField.FieldId, servicePropertyField.MetaDataCode, servicePropertyField.InputTypeId, servicePropertyField.MinLength, servicePropertyField.MaxLength,
+                   servicePropertyField.IsAllowSpecialChars, servicePropertyField.Options);
+
+                ++index;
+            }
+            return table;
+        }
+
+        internal static DataTable ToQuotationServicesDataTable(this List<Model.QuotationServices> quotationServices)
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add(Label.ID, typeof(int));
+            table.Columns.Add(Label.META_DATA_CODE, typeof(string));
+            table.Columns.Add(Label.SERVICE_ID, typeof(short));
+            table.Columns.Add(Label.EXTRA_CHARGES, typeof(string));
+            table.Columns.Add(Label.OCCURANCE, typeof(string));
+
+            foreach (Model.QuotationServices servicePropertyField in quotationServices)
+            {
+                table.Rows.Add(servicePropertyField.Id, servicePropertyField.MetaDataCode, servicePropertyField.ServiceId, servicePropertyField.ExtraCharges, servicePropertyField.Occurance);
+
+            }
+            return table;
+        }
+        internal static DataTable ToQuotationServicePropertiesDataTable(this List<Model.QuotationServiceProperties> quotationServices)
+        {
+            DataTable table = new DataTable();
+
+            table.Columns.Add(Label.META_DATA_CODE, typeof(string));
+            table.Columns.Add(Label.SERVICE_ID, typeof(short));
+            table.Columns.Add(Label.SERVICE_PROPERTY_ID, typeof(short));
+            table.Columns.Add(Label.VALUE, typeof(string));
+            table.Columns.Add(Label.QUOTATION_SERVICE_ID, typeof(int));
+
+            foreach (Model.QuotationServiceProperties servicePropertyField in quotationServices)
+            {
+                table.Rows.Add(servicePropertyField.MetaDataCode, servicePropertyField.ServiceId, servicePropertyField.ServicePropertiId, servicePropertyField.Value, servicePropertyField.QuotationServiceId);
+
+            }
             return table;
         }
     }

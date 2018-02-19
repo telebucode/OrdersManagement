@@ -14,13 +14,14 @@ namespace OrdersManagement.Model
     {
         #region PRIVATE VARIABLES
 
-        private byte _id = 0;
+        private Int16 _id = 0;
+        private byte _productId = 0;
         private string _displayName = string.Empty;
         private string _metaDataCode = string.Empty;
         private bool _areMultipleEntriesAllowed = false;
         private bool _isActive = true;
         //private List<ServiceProperty> _properties = new List<ServiceProperty>();
-        private Dictionary<string, ServiceProperty> _properties = new Dictionary<string, ServiceProperty>();        
+        private Dictionary<string, ServiceProperty> _properties = new Dictionary<string, ServiceProperty>();
 
         #endregion
 
@@ -28,9 +29,9 @@ namespace OrdersManagement.Model
         /// <summary>
         /// Gets Or Sets the Id associated with this service in Services Table.
         /// </summary>
-        public byte Id { get { return this._id; } set { this._id = value; } }
-
-        /// <summary>
+        public Int16 Id { get { return this._id; } set { this._id = value; } }
+        /// Gets Or Sets the ID asscoiated with the product for the particular service
+        public byte ProductId { get { return this._productId; } set { this._productId = value; } }        /// <summary>
         /// Gets Or Sets the DisplayName of the Service to display in the UI.
         /// </summary>
         public string DisplayName { get { return this._displayName; } set { this._displayName = value; } }
@@ -41,7 +42,7 @@ namespace OrdersManagement.Model
         /// <summary>
         /// Gets Or Sets the value indicating whether this Service support Multiple Entries
         /// </summary>
-        public bool AreMultipleEntriesAllowed { get { return this._areMultipleEntriesAllowed; } set { this._areMultipleEntriesAllowed = value; } }        
+        public bool AreMultipleEntriesAllowed { get { return this._areMultipleEntriesAllowed; } set { this._areMultipleEntriesAllowed = value; } }
         /// <summary>
         /// Gets Or Sets the value indicating whether this service is active or not.
         /// </summary>
@@ -62,7 +63,7 @@ namespace OrdersManagement.Model
         public dynamic Create(ResponseFormat responseFormat = ResponseFormat.JSON)
         {
             Core.Client client = new Core.Client(responseFormat);
-            return client.CreateService(this._displayName, this._metaDataCode, this._areMultipleEntriesAllowed);
+            return client.CreateService(this._productId, this._displayName, this._metaDataCode, this._areMultipleEntriesAllowed);
         }
         /// <summary>
         /// Updates a Service
