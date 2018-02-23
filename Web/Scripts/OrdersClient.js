@@ -128,7 +128,7 @@
             if (!CanCallBack(callBackFunction))
                 return actionResponse;
         }
-        OrdersClient.prototype.GetServices = function (serviceId, onlyActive, includeServiceProperties, renderAutomatically, callBackFunction) {
+        OrdersClient.prototype.GetServices = function (productId,serviceId, onlyActive, includeServiceProperties, renderAutomatically, callBackFunction) {
             var actionResponse;
             failedActionResponse.Message = defaultErrorMessage;
             $.ajax({
@@ -138,6 +138,7 @@
                     Action: "GetServices",
                     ServiceId: (serviceId && serviceId > 0) ? serviceId : 0,
                     OnlyActive: onlyActive ? onlyActive : true,
+                    ProductId : productId,
                     IncludeServiceProperties: includeServiceProperties ? includeServiceProperties : true
                 },
                 dataType: "JSON",

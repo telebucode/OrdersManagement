@@ -80,7 +80,7 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("OnlyActive value ({0}) is not a valid boolean value", context.Request["OnlyActive"].ToString()));
             if (context.Request["IncludeServiceProperties"] != null && !bool.TryParse(context.Request["IncludeServiceProperties"].ToString(), out includeServiceProperties))
                 GenerateErrorResponse(400, string.Format("IncludeServiceProperties value ({0}) is not a valid boolean value", context.Request["IncludeServiceProperties"].ToString()));
-            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: ResponseFormat.JSON);
             context.Response.Write(client.GetServices(productId: productId, serviceId: serviceId, includeServiceProperties: includeServiceProperties, onlyActive: onlyActive));
         }
 
@@ -93,8 +93,7 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("ServiceId value ({0}) is not a valid number", context.Request["ServiceId"].ToString()));
             if (context.Request["OnlyActive"] != null && !bool.TryParse(context.Request["OnlyActive"].ToString(), out onlyActive))
                 GenerateErrorResponse(400, string.Format("OnlyActive value ({0}) is not a valid boolean value", context.Request["OnlyActive"].ToString()));
-
-            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: ResponseFormat.JSON);
             context.Response.Write(client.GetServiceProperties(serviceId: serviceId, onlyActive: onlyActive, tablePreferences: null));
         }
         private void CreateService(HttpContext context)
@@ -109,7 +108,7 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("MetaDataCode Is Mandatory"));
             if (context.Request["AreMultipleEntriesAllowed"] == null || !bool.TryParse(context.Request["AreMultipleEntriesAllowed"].ToString(), out areMultipleEntriesAllowed))
                 GenerateErrorResponse(400, string.Format("Parameter AreMultipleEntriesAllowed is missing or not a valid boolean value"));
-            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: ResponseFormat.JSON);
             context.Response.Write(client.CreateService(productId: Convert.ToByte(context.Request["ProductId"]), displayName: context.Request["DisplayName"].ToString(),
                                                         metaDataCode: context.Request["MetaDataCode"].ToString(),
                                                         areMultipleEntriesAllowed: bool.Parse(context.Request["AreMultipleEntriesAllowed"])));
@@ -128,7 +127,7 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("Parameter AreMultipleEntriesAllowed is missing or not a valid boolean value"));
             if (serviceId <= 0)
                 GenerateErrorResponse(400, string.Format("ServiceId must be greater than 0"));
-            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: ResponseFormat.JSON);
             context.Response.Write(client.UpdateService(serviceId: serviceId,
                 displayName: context.Request["DisplayName"].ToString(), metaDataCode: context.Request["MetaDataCode"].ToString(),
                 areMultipleEntriesAllowed: bool.Parse(context.Request["AreMultipleEntriesAllowed"].ToString())));
@@ -140,7 +139,7 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("Parameter ServiceId is missing or not a valid number"));
             if (serviceId <= 0)
                 GenerateErrorResponse(400, string.Format("ServiceId must be greater than 0"));
-            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: ResponseFormat.JSON);
             context.Response.Write(client.DeleteService(serviceId));
         }
         private void CreateServiceProperties(HttpContext context)
@@ -180,7 +179,7 @@ namespace Web.AjaxHandlers
             }
 
 
-            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: ResponseFormat.JSON);
             context.Response.Write(client.CreateServiceProperties(serviceId, servicePropertiesList, servicePropertiesFieldList));
         }
 
@@ -216,7 +215,7 @@ namespace Web.AjaxHandlers
             serviceProperty.Id = servicePropertId;
             List<ServicePropertyFields> servicePropertFields = ValidateServicePropertyFields(propertyFieldsArray, serviceProperty);
 
-            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: ResponseFormat.JSON);
             context.Response.Write(client.UpdateServiceProperty(serviceProperty, servicePropertiesFieldList));
         }
         private void GenerateErrorResponse(int statusCode, string message)

@@ -39,6 +39,8 @@ namespace OrdersManagement
         internal const string IS_POSTPAID_QUOTATION = "@IsPostPaidQuotation";
         internal const string QUOTATION_SERVICES = "@QuotationServices";
         internal const string QUOTATION_SERVICE_PROPERTIES = "@QuotationServiceProperties";
+        internal const string MOBILE = "@Mobile";
+        internal const string EMAIL = "@Email";
 
         internal const string SUCCESS = "@Success";
         internal const string MESSAGE = "@Message";

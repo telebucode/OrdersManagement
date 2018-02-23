@@ -75,10 +75,10 @@ namespace OrdersManagement
         internal const string UPDATE = "Update";
 
         #region LOG_4_NET_RELATED
-        internal const string LOG_NAME = "LogName";
-        internal const string DEFAULT_LOGGER = "DefaultLogger";
-        internal const string TRACE_LOGGER = "TraceLogger";
-        internal const string LOG_FILE_FORMAT = "yyyyMMdd";
+            internal const string LOG_NAME = "LogName";
+            internal const string DEFAULT_LOGGER = "DefaultLogger";
+            internal const string TRACE_LOGGER = "TraceLogger";
+            internal const string LOG_FILE_FORMAT = "yyyyMMdd";
         #endregion
     }
 }
