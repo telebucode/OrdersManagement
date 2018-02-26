@@ -8,12 +8,12 @@
         this.OrdersClient = function (options) {
             // Define option defaults
             var defaults = {
-                servicesHandler: "AjaxHandlers/Service.ashx",
-                quotationsHandler: "AjaxHandlers/Quotation.ashx",
-                invoicesHandler: "AjaxHandlers/Invoice.ashx",
-                paymentsHandler: "AjaxHandlers/Payment.ashx",
-                activationsHandler: "AjaxHandlers/Activation.ashx",
-                genericHandler: "AjaxHandlers/Generic.ashx",
+                servicesHandler: "/AjaxHandlers/Service.ashx",
+                quotationsHandler: "/AjaxHandlers/Quotation.ashx",
+                invoicesHandler: "/AjaxHandlers/Invoice.ashx",
+                paymentsHandler: "/AjaxHandlers/Payment.ashx",
+                activationsHandler: "/AjaxHandlers/Activation.ashx",
+                genericHandler: "/AjaxHandlers/Generic.ashx",
                 async: true
             }
             // Create options by extending defaults with the passed in arugments
@@ -463,7 +463,7 @@
                     {
                         "Action": "Delete",
                         "QuotationId": quotationId ? quotationId : 0,
-                        "IsPostPaidQuotationId": isPostPaidQuotation ? isPostPaidQuotation : null
+                        "IsPostPaidQuotation": isPostPaidQuotation
                     },
                 success: function (response)
                 {

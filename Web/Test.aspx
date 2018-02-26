@@ -18,7 +18,9 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var ordersClient = new OrdersClient({ async: true });
-            ordersClient.GetServices(1, 0, true, false, false, false);
+            ordersClient.DeleteQuotation(1, false, function (res) {
+
+            });
         });
     </script>
 </body>
