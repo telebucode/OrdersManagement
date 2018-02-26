@@ -28,6 +28,9 @@ namespace OrdersManagement
         internal const string UPDATE_QUOTATION = "UpdateQuotation";
         internal const string DELETE_QUOTATION = "DeleteQuotation";
         internal const string GET_QUOTATION_DETAILS = "GetQuotationDetails";
+        internal const string VIEW_QUOTATION = "ViewQuotation";
+        internal const string VIEW_OR_DOWNLOAD_QUOTATION = "ViewOrDownloadQuotation";
+        internal const string VIEW_OR_DOWNLOAD_INVOICE = "ViewOrDownloadInvoice";
         #endregion
         #region INVOICE RELATED
         internal const string GET_INVOICE_STATUSES = "GetInvoiceStatuses";

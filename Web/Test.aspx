@@ -18,9 +18,18 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var ordersClient = new OrdersClient({ async: true });
-            ordersClient.DeleteQuotation(1, false, function (res) {
-
+            ordersClient.ViewQuotation(4012, false, function (res) {
+                console.log(res);
+                $("#Services").html(res);
             });
+            //ordersClient.DownloadQuotation(4012, false, function (res) {
+            //    console.log(res);
+            //    var a = document.createElement('a');
+            //    a.href = "http://localhost:4018/" + res.FilePath;
+            //    a.download = "http://localhost:4018/" + res.FilePath;
+            //    document.body.appendChild(a);
+            //    a.click();
+            //});
         });
     </script>
 </body>
