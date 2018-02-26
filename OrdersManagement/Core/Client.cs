@@ -254,6 +254,12 @@ namespace OrdersManagement.Core
             return client.GetQuotationDetails(quotationId, isPostPaidQuotation);
         }
 
+        public dynamic ViewQuotation(int quotationId, bool isPostPaidQuotation)
+        {
+            QuotationClient client = new QuotationClient(ref this._helper);
+            return client.GetQuotationDetails(quotationId, isPostPaidQuotation);
+        }
+
         #endregion
 
         #region INVOICE RELATED

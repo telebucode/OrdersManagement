@@ -39,13 +39,16 @@ namespace Web.AjaxHandlers
                         Search(context);
                         break;
                     case "GetQuotationDetails":
-                        Search(context);
+                        GetQuotationDetails(context);
                         break;
                     case "Create":
                         Create(context);
                         break;
                     case "Update":
                         Update(context);
+                        break;
+                    case "Delete":
+                        Delete(context);
                         break;
                     default:
                         GenerateErrorResponse(400, string.Format("Invalid Action ({0})", context.Request["Action"].ToString()));
@@ -130,7 +133,7 @@ namespace Web.AjaxHandlers
         {
             int quotationId = 0;
             bool isPostPaidQuotation = false;
-            if (context.Request["QuotationId"] != null && !int.TryParse(context.Request["OnlyActive"].ToString(), out quotationId))
+            if (context.Request["QuotationId"] != null && !int.TryParse(context.Request["QuotationId"].ToString(), out quotationId))
                 GenerateErrorResponse(400, string.Format("OnlyActive value ({0}) is not a valid boolean value", context.Request["OnlyActive"].ToString()));
             if (quotationId <= 0)
                 GenerateErrorResponse(400, string.Format("QuoationId must be greater than 0"));
@@ -214,7 +217,7 @@ namespace Web.AjaxHandlers
         {
             int quotationId = 0;
             bool isPostPaidQuotation = false;
-            if (context.Request["QuotationId"] != null || !int.TryParse(context.Request["QuotationId"].ToString(), out quotationId))
+            if (context.Request["QuotationId"] != null && !int.TryParse(context.Request["QuotationId"].ToString(), out quotationId))
                 GenerateErrorResponse(400, string.Format("QuotationId Must be a number"));
             if (quotationId <= 0)
                 GenerateErrorResponse(400, string.Format("QuoationId must be greater than 0"));
