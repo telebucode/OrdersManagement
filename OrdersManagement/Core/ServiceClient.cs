@@ -318,7 +318,7 @@ namespace OrdersManagement.Core
 
                 this._sqlCommand = new SqlCommand(StoredProcedure.GET_SERVICE_PROPERTIES, this._sqlConnection);
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
-                this._sqlCommand.Parameters.Add(ProcedureParameter.SERVICE_ID, SqlDbType.TinyInt).Value = 1;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.SERVICE_ID, SqlDbType.TinyInt).Value = serviceId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = onlyActive;
                 this._da = new SqlDataAdapter();
                 this._da.SelectCommand = this._sqlCommand;
