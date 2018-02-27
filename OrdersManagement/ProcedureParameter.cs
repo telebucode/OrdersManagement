@@ -37,6 +37,7 @@ namespace OrdersManagement
         internal const string STATE_ID = "@StateId";
         internal const string ORDER_AMOUNT = "@OrderAmount";
         internal const string IS_POSTPAID_QUOTATION = "@IsPostPaidQuotation";
+        internal const string HTML = "@Html";
         internal const string QUOTATION_SERVICES = "@QuotationServices";
         internal const string QUOTATION_SERVICE_PROPERTIES = "@QuotationServiceProperties";
         internal const string MOBILE = "@Mobile";

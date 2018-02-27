@@ -257,7 +257,12 @@ namespace OrdersManagement.Core
         public dynamic ViewQuotation(int quotationId, bool isPostPaidQuotation)
         {
             QuotationClient client = new QuotationClient(ref this._helper);
-            return client.GetQuotationDetails(quotationId, isPostPaidQuotation);
+            return client.ViewQuotation(quotationId, isPostPaidQuotation);
+        }
+        public dynamic DownloadQuotation(int quotationId, bool isPostPaidQuotation)
+        {
+            QuotationClient client = new QuotationClient(ref this._helper);
+            return client.DownloadQuotation(quotationId, isPostPaidQuotation);
         }
 
         #endregion
@@ -278,6 +283,22 @@ namespace OrdersManagement.Core
         {
             InvoiceClient client = new InvoiceClient(ref this._helper);
             return client.Create(quotationId: quotationId, billingModeId: billingModeId, employeeId: employeeId, tablePreferences: tablePreferences);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="quotationId"></param>
+        /// <param name="isPostPaidQuotation"></param>
+        /// <returns></returns>
+        public dynamic ViewInvoice(int quotationId, bool isPostPaidQuotation)
+        {
+            InvoiceClient client = new InvoiceClient(ref this._helper);
+            return client.ViewInvoice(quotationId, isPostPaidQuotation);
+        }
+        public dynamic DownloadInvoice(int quotationId, bool isPostPaidQuotation)
+        {
+            InvoiceClient client = new InvoiceClient(ref this._helper);
+            return client.DownloadInvoice(quotationId, isPostPaidQuotation);
         }
         #endregion
 

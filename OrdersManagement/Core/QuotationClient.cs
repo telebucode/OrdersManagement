@@ -10,6 +10,10 @@ using OrdersManagement.Model;
 using OrdersManagement.Exceptions;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
+using SelectPdf;
+using System.IO;
+using System.Web;
+using System.Net;
 
 namespace OrdersManagement.Core
 {
@@ -242,8 +246,6 @@ namespace OrdersManagement.Core
                 }
             }
         }
-
-
         private void ValidateQuotationOld(string metaData)
         {
             JObject quotationMetaData = null;
@@ -607,68 +609,29 @@ namespace OrdersManagement.Core
             }
             return quotationObj;
         }
-
         internal dynamic ViewQuotation(int quotationId, bool isPostPaidQuotation)
         {
             DataSet tempDataSet = new DataSet();
-            dynamic quotationObj = null;
-            dynamic quotationServicesObj = null;
-            dynamic quotationServicePropertiesObj = null;
             string entityName = string.Empty;
             string quotationData = string.Empty;
             try
             {
-                this._sqlCommand = new SqlCommand(StoredProcedure.GET_QUOTATION_DETAILS, this._sqlConnection);
+                this._sqlCommand = new SqlCommand(StoredProcedure.VIEW_OR_DOWNLOAD_QUOTATION, this._sqlConnection);
                 this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_ID, SqlDbType.Int).Value = quotationId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IS_POSTPAID_QUOTATION, SqlDbType.Bit).Value = isPostPaidQuotation;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.HTML, SqlDbType.VarChar, -1).Direction=ParameterDirection.Output;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());
                 if (!this._sqlCommand.IsSuccess())
                     return this.ErrorResponse();
-                if (this._ds.Tables.Count > 2)
-                {
-                    this._ds.Tables[0].TableName = Label.QUOTATION;
-                    this._ds.Tables[1].TableName = Label.QUOTATION_SERVICES;
-                    this._ds.Tables[2].TableName = Label.QUOTATION_SERVICE_PROPERTIES;
-                }
-                else if (this._ds.Tables.Count > 1)
-                {
-                    this._ds.Tables[0].TableName = Label.QUOTATION;
-                    this._ds.Tables[1].TableName = Label.QUOTATION_SERVICES;
-                }
-                else
-                {
-                    this._ds.Tables[0].TableName = Label.QUOTATION;
-                }
                 this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
-                //this._helper.ParseDataSet(this._ds);
-
-                if (this._ds.Tables.Contains(Label.QUOTATION) && this._ds.Tables[Label.QUOTATION].Rows.Count > 0)
-                {
-
-                    quotationData += "<div class='col-md-12'><div class='body-wrapper'><div class='top-header'>";
-                    quotationData += "<div class='col-md-2 col-sm-2 col-xs-12'>";
-                    quotationData += "<img src='/images/TelebuLogo.png' class='img-responsive' width='125' style='padding-top:12px;'></div>";
-                    quotationData += "<div class='col-md-4 col-sm-5 col-xs-12'><h2 style='margin:5px 0px 10px; font-size:1.1em'>";
-                    quotationData += "<b>SISRB TECHNOLOGIES PVT LTD</b></h2><p>Ektha towers, white fields,</p><p>kondapur, Hyderabad, Telangana, 500082.</p>";
-                    quotationData += "<p style='color: #08aeea;'>Hello@smscountry.com</p><p style='color: #08aeea;'>040-21265458</p>";
-                    quotationData += "<p>GSTIN:36AAHCS9759A1Z2</p><p>State:Telangana</p><p>State Code:36</p><p>Pan No:AAHCS9759A</p>";
-
-                    quotationData += "</div>";
-                    quotationData += "<div class='col-md-6 col-sm-5 col-xs-12'><div class='right-col'>";
-                    //quotationData += "<h1>Quotation: <label>#" + res.QuotationDetails[0].QuotationNumber + "</label></h1>";
-                    //quotationData += "<p><label  style=' width: 100%;'>Issued On: <span>" + res.QuotationDetails[0].CreatedTime + "</span></label>";
-                    quotationData += "</p></div></div></div><div class='top-header'><div class='col-md-2 col-sm-2 col-xs-12'>";
-                    quotationData += "<img  height='125' src='/images/ClientLogo.png' style='padding-top:12px;'></div>";
-                    quotationData += "<div class='col-md-4 col-sm-5 col-xs-12'><h2 style='margin-top:25px; font-size:1.1em'>";
-
-                }
-
+                quotationData = this._sqlCommand.Parameters[ProcedureParameter.HTML].IsDbNull() ? "Null Message" : this._sqlCommand.Parameters[ProcedureParameter.HTML].Value.ToString();
 
             }
             catch (Exception e)
             {
+                quotationData = "";
                 Logger.Error(string.Format("Unable to get quotation details. {0}", e.ToString()));
                 throw new QuotationException(string.Format("Unable to get quotation details. {0}", e.Message));
             }
@@ -676,11 +639,75 @@ namespace OrdersManagement.Core
             {
                 this.Clean();
             }
-            return quotationObj;
+            return quotationData;
         }
+        internal dynamic DownloadQuotation(int quotationId, bool isPostPaidQuotation)
+        {
+            DataSet tempDataSet = new DataSet();
+            string entityName = string.Empty;
+            string quotationData = string.Empty;
+            JObject responseJobj = null;
+            string filePath = string.Empty;
+            string fileName = string.Empty;
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.VIEW_OR_DOWNLOAD_QUOTATION, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_ID, SqlDbType.Int).Value = quotationId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.HTML, SqlDbType.VarChar,-1).Direction = ParameterDirection.Output;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+
+                fileName = "Quotation_" + System.DateTime.Now.ToString("yyyyMMddHHmmss") + ".pdf";
+                filePath = HttpContext.Current.Server.MapPath("/Files/Quotations") + '/' + fileName;
+                if (ConvertHtmlToPdf(this._sqlCommand.Parameters[ProcedureParameter.HTML].IsDbNull() ? "Null Message" : this._sqlCommand.Parameters[ProcedureParameter.HTML].Value.ToString(), filePath))
+                {
+                    this._helper.CreateProperty("Success", true);
+                    this._helper.CreateProperty("Message", "Success");
+                    this._helper.CreateProperty("FilePath", "Files/Quotations/" + fileName);
+                }
+                else
+                {
+                    this._helper.CreateProperty("Success", false);
+                    this._helper.CreateProperty("Message", "Error while converting pdf");
+                }
 
 
+            }
+            catch (Exception e)
+            {
+                this._helper.CreateProperty("Success", true);
+                this._helper.CreateProperty("Message", e.Message.ToString());
+                Logger.Error(string.Format("Unable to get quotation details. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to get quotation details. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+            return this._helper.GetResponse();
+        }
+        internal dynamic ConvertHtmlToPdf(string html, string filePath)
+        {
+            JObject jobj = new JObject();
+            try
+            {
+                HtmlToPdf pdfConverter = new HtmlToPdf();
+                PdfDocument doc = pdfConverter.ConvertHtmlString(html);
+                doc.Save(filePath);
+                doc.Close();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to convert html to pdf. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to convert html to pdf. {0}", e.Message));
+                return false;
+            }
 
+        }
         internal List<QuotationServices> ListOfQuotationServices(string metaData)
         {
             List<QuotationServices> quotationServicesList = new List<QuotationServices>();
@@ -721,7 +748,6 @@ namespace OrdersManagement.Core
             return quotationServicesList;
 
         }
-
         internal List<QuotationServiceProperties> ListOfQuotationServiceProperties(string metaData, string actionType)
         {
             List<QuotationServiceProperties> quotationServicePropertiesList = new List<QuotationServiceProperties>();
