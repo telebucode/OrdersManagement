@@ -93,6 +93,8 @@ namespace Web.AjaxHandlers
             byte productId = 0;
             int quotationId = 0;
             string quotationNumber = string.Empty;
+            string mobile = string.Empty;
+            string email = string.Empty;
             int accountId = 0;
             int employeeId = 0;
             int ownerShipId = 0;
@@ -104,36 +106,43 @@ namespace Web.AjaxHandlers
             DateTime toDateTime = DateTime.Now.AddDays(1).AddTicks(-1);
             int pageNumber = 1;
             byte limit = 20;
-            if (context.Request["ProductId"] != null && !int.TryParse(context.Request["ProductId"].ToString(), out quotationId))
+            JObject searchData = new JObject();
+            searchData = JObject.Parse(context.Request["SearchData"]);
+
+            if (searchData.SelectToken("ProductId") != null && !byte.TryParse(searchData.SelectToken("ProductId").ToString(), out productId))
                 GenerateErrorResponse(400, string.Format("ProductId must be a number"));
-            if (context.Request["QuotationId"] != null && !int.TryParse(context.Request["QuotationId"].ToString(), out quotationId))
+            if (searchData.SelectToken("QuotationId") != null && !int.TryParse(searchData.SelectToken("QuotationId").ToString(), out quotationId))
                 GenerateErrorResponse(400, string.Format("QuotationId must be a number"));
-            if (context.Request["QuotationNumber"] != null)
-                quotationNumber = context.Request["QuotationNumber"].ToString();
-            if (context.Request["AccountId"] != null && !int.TryParse(context.Request["AccountId"].ToString(), out accountId))
+            if (searchData.SelectToken("QuotationNumber") != null)
+                quotationNumber = searchData.SelectToken("QuotationNumber").ToString();
+            if (searchData.SelectToken("AccountId") != null && !int.TryParse(searchData.SelectToken("AccountId").ToString(), out accountId))
                 GenerateErrorResponse(400, string.Format("AccountId must be a number"));
-            if (context.Request["EmployeeId"] != null && !int.TryParse(context.Request["EmployeeId"].ToString(), out employeeId))
+            if (searchData.SelectToken("EmployeeId") != null && !int.TryParse(searchData.SelectToken("EmployeeId").ToString(), out employeeId))
                 GenerateErrorResponse(400, string.Format("EmployeeId must be a number"));
-            if (context.Request["OwnerShipId"] != null && !int.TryParse(context.Request["OwnerShipId"].ToString(), out ownerShipId))
+            if (searchData.SelectToken("OwnerShipId") != null && !int.TryParse(searchData.SelectToken("OwnerShipId").ToString(), out ownerShipId))
                 GenerateErrorResponse(400, string.Format("OwnerShipId must be a number"));
-            if (context.Request["StatusId"] != null && !byte.TryParse(context.Request["StatusId"].ToString(), out statusId))
+            if (searchData.SelectToken("StatusId") != null && !byte.TryParse(searchData.SelectToken("StatusId").ToString(), out statusId))
                 GenerateErrorResponse(400, string.Format("StatusId must be a number"));
-            if (context.Request["ChannelId"] != null && !sbyte.TryParse(context.Request["ChannelId"].ToString(), out channelId))
+            if (searchData.SelectToken("ChannelId") != null && !sbyte.TryParse(searchData.SelectToken("ChannelId").ToString(), out channelId))
                 GenerateErrorResponse(400, string.Format("ChannelId must be a number"));
-            if (context.Request["BillingModeId"] != null && !byte.TryParse(context.Request["BillingModeId"].ToString(), out billingModeId))
+            if (searchData.SelectToken("BillingModeId") != null && !byte.TryParse(searchData.SelectToken("BillingModeId").ToString(), out billingModeId))
                 GenerateErrorResponse(400, string.Format("BillingModeId must be a number"));
-            if (context.Request["FromDateTime"] != null && !DateTime.TryParse(context.Request["FromDateTime"].ToString(), out fromDateTime))
+            if (searchData.SelectToken("FromDateTime") != null && !DateTime.TryParse(searchData.SelectToken("FromDateTime").ToString(), out fromDateTime))
                 GenerateErrorResponse(400, string.Format("FromDateTime is not a valid datetime"));
-            if (context.Request["ToDateTime"] != null && !DateTime.TryParse(context.Request["ToDateTime"].ToString(), out toDateTime))
+            if (searchData.SelectToken("ToDateTime") != null && !DateTime.TryParse(searchData.SelectToken("ToDateTime").ToString(), out toDateTime))
                 GenerateErrorResponse(400, string.Format("ToDateTime is not a valid datetime"));
-            if (context.Request["PageNumber"] != null && !int.TryParse(context.Request["PageNumber"].ToString(), out pageNumber))
+            if (searchData.SelectToken("PageNumber") != null && !int.TryParse(searchData.SelectToken("PageNumber").ToString(), out pageNumber))
                 GenerateErrorResponse(400, string.Format("PageNumber must be a number"));
-            if (context.Request["Limit"] != null && !byte.TryParse(context.Request["Limit"].ToString(), out limit))
+            if (searchData.SelectToken("Limit") != null && !byte.TryParse(searchData.SelectToken("Limit").ToString(), out limit))
                 GenerateErrorResponse(400, string.Format("Limit must be a number"));
-            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            if (searchData.SelectToken("Mobile") != null)
+                mobile = searchData.SelectToken("Mobile").ToString();
+            if (searchData.SelectToken("Email") != null)
+                mobile = searchData.SelectToken("Email").ToString();
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: OrdersManagement.ResponseFormat.JSON);
             context.Response.Write(client.GetQuotations(productId: productId, quotationId: quotationId, quotationNumber: quotationNumber, accountId: accountId,
                 employeeId: employeeId, ownerShipId: ownerShipId, statusId: statusId, channelId: channelId, ipAddress: ipAddress,
-                billingModeId: billingModeId, fromDateTime: fromDateTime, toDateTime: toDateTime, pageNumber: pageNumber, limit: limit));
+                billingModeId: billingModeId, fromDateTime: fromDateTime, toDateTime: toDateTime, pageNumber: pageNumber, limit: limit, mobile: mobile, email: email));
         }
         private void GetQuotationDetails(HttpContext context)
         {

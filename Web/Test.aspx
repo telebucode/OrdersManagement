@@ -18,10 +18,10 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var ordersClient = new OrdersClient({ async: true });
-            ordersClient.ViewQuotation(4012, false, function (res) {
-                console.log(res);
-                $("#Services").html(res);
-            });
+            //ordersClient.ViewQuotation(4012, false, function (res) {
+            //    console.log(res);
+            //    $("#Services").html(res);
+            //});
             //ordersClient.DownloadQuotation(4012, false, function (res) {
             //    console.log(res);
             //    var a = document.createElement('a');
@@ -29,6 +29,24 @@
             //    a.download = "http://localhost:4018/" + res.FilePath;
             //    document.body.appendChild(a);
             //    a.click();
+            //});
+            //var invoiceSearchData = {};
+            //invoiceSearchData.AccountId = 0;
+            //invoiceSearchData.ProductId = 1;
+            //invoiceSearchData.InvoiceId = 0;
+            //invoiceSearchData.QuotationNumber = "";
+            //invoiceSearchData.EmployeeId = 0;
+            //invoiceSearchData.OwnerShipId = 0;
+            //invoiceSearchData.ChannelId = 2;
+            //invoiceSearchData.BillingModeId = 0;
+            //invoiceSearchData.PageNumber = 1;
+            //invoiceSearchData.Mobile = "";
+            //invoiceSearchData.Email = "";
+            //invoiceSearchData.Limit = 20;
+            //invoiceSearchData.FromDateTime = "2018-02-01";
+            //ordersClient.GetInvoices(invoiceSearchData, function (res) {
+            //    console.log(res);
+            //    $("#Services").html(res);
             //});
         });
     </script>

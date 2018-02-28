@@ -672,6 +672,35 @@
             if (!CanCallBack(callBackFunction))
                 return actionResponse;
         }
+        OrdersClient.prototype.GetInvoices = function (searchData, callBackFunction) {
+            var actionResponse;
+            failedActionResponse.Message = defaultErrorMessage;
+            $.ajax({
+                url: this.options.invoicesHandler,
+                async: this.options.async,
+                dataType: "JSON",
+                traditional: true,
+                data:
+                    {
+                        Action: "Search",
+                        SearchData: JSON.stringify(searchData)
+                    },
+                success: function (response) {
+                    actionResponse = response;
+                    if (CanCallBack(callBackFunction))
+                        callBackFunction(actionResponse);
+                },
+                error: function (response) {
+                    failedActionResponse.Response = response;
+                    failedActionResponse.Message = response.responseJSON.Message;
+                    actionResponse = failedActionResponse;
+                    if (CanCallBack(callBackFunction))
+                        callBackFunction(actionResponse);
+                }
+            });
+            if (!CanCallBack(callBackFunction))
+                return actionResponse;
+        }
         OrdersClient.prototype.DownloadInvoice = function (quotationId, isPostPaidQuotation, callBackFunction) {
             var actionResponse;
             failedActionResponse.Message = defaultErrorMessage;

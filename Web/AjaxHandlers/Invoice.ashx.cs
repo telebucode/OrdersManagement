@@ -32,6 +32,9 @@ namespace Web.AjaxHandlers
                     case "GetStatuses":
                         GetStatuses(context);
                         break;
+                    case "Search":
+                        Search(context);
+                        break;
                     case "Create":
                         CreateInvoice(context);
                         break;
@@ -78,6 +81,62 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("EmployeeId Must be a number"));
             Client client = new Client(responseFormat: ResponseFormat.JSON);
             context.Response.Write(client.CreateInvoice(quotationId, billingModeId, employeeId));
+        }
+        private void Search(HttpContext context)
+        {
+            byte productId = 0;
+            int invoiceId = 0;
+            string quotationNumber = string.Empty;
+            string mobile = string.Empty;
+            string email = string.Empty;
+            int accountId = 0;
+            int employeeId = 0;
+            int ownerShipId = 0;
+            byte statusId = 0;
+            sbyte channelId = 0;
+            string ipAddress = string.Empty;
+            byte billingModeId = 0;
+            DateTime fromDateTime = DateTime.Now.Date;
+            DateTime toDateTime = DateTime.Now.AddDays(1).AddTicks(-1);
+            int pageNumber = 1;
+            byte limit = 20;
+            JObject searchData = new JObject();
+            searchData = JObject.Parse(context.Request["SearchData"]);
+
+            if (searchData.SelectToken("ProductId") != null && !byte.TryParse(searchData.SelectToken("ProductId").ToString(), out productId))
+                GenerateErrorResponse(400, string.Format("ProductId must be a number"));
+            if (searchData.SelectToken("InvoiceId") != null && !int.TryParse(searchData.SelectToken("InvoiceId").ToString(), out invoiceId))
+                GenerateErrorResponse(400, string.Format("QuotationId must be a number"));
+            if (searchData.SelectToken("QuotationNumber") != null)
+                quotationNumber = searchData.SelectToken("QuotationNumber").ToString();
+            if (searchData.SelectToken("AccountId") != null && !int.TryParse(searchData.SelectToken("AccountId").ToString(), out accountId))
+                GenerateErrorResponse(400, string.Format("AccountId must be a number"));
+            if (searchData.SelectToken("EmployeeId") != null && !int.TryParse(searchData.SelectToken("EmployeeId").ToString(), out employeeId))
+                GenerateErrorResponse(400, string.Format("EmployeeId must be a number"));
+            if (searchData.SelectToken("OwnerShipId") != null && !int.TryParse(searchData.SelectToken("OwnerShipId").ToString(), out ownerShipId))
+                GenerateErrorResponse(400, string.Format("OwnerShipId must be a number"));
+            if (searchData.SelectToken("StatusId") != null && !byte.TryParse(searchData.SelectToken("StatusId").ToString(), out statusId))
+                GenerateErrorResponse(400, string.Format("StatusId must be a number"));
+            if (searchData.SelectToken("ChannelId") != null && !sbyte.TryParse(searchData.SelectToken("ChannelId").ToString(), out channelId))
+                GenerateErrorResponse(400, string.Format("ChannelId must be a number"));
+            if (searchData.SelectToken("BillingModeId") != null && !byte.TryParse(searchData.SelectToken("BillingModeId").ToString(), out billingModeId))
+                GenerateErrorResponse(400, string.Format("BillingModeId must be a number"));
+            if (searchData.SelectToken("FromDateTime") != null && !DateTime.TryParse(searchData.SelectToken("FromDateTime").ToString(), out fromDateTime))
+                GenerateErrorResponse(400, string.Format("FromDateTime is not a valid datetime"));
+            if (searchData.SelectToken("ToDateTime") != null && !DateTime.TryParse(searchData.SelectToken("ToDateTime").ToString(), out toDateTime))
+                GenerateErrorResponse(400, string.Format("ToDateTime is not a valid datetime"));
+            if (searchData.SelectToken("PageNumber") != null && !int.TryParse(searchData.SelectToken("PageNumber").ToString(), out pageNumber))
+                GenerateErrorResponse(400, string.Format("PageNumber must be a number"));
+            if (searchData.SelectToken("Limit") != null && !byte.TryParse(searchData.SelectToken("Limit").ToString(), out limit))
+                GenerateErrorResponse(400, string.Format("Limit must be a number"));
+            if (searchData.SelectToken("Mobile") != null)
+                mobile = searchData.SelectToken("Mobile").ToString();
+            if (searchData.SelectToken("Email") != null)
+                mobile = searchData.SelectToken("Email").ToString();
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: OrdersManagement.ResponseFormat.JSON);
+            context.Response.Write(client.GetInvoices(productId: productId, invoiceId: invoiceId, quotationNumber: quotationNumber, accountId: accountId,
+                employeeId: employeeId, ownerShipId: ownerShipId, statusId: statusId, channelId: channelId, ipAddress: ipAddress,
+                billingModeId: billingModeId, fromDateTime: fromDateTime, toDateTime: toDateTime, pageNumber: pageNumber, limit: limit, mobile: mobile, email: email));
         }
         private void View(HttpContext context)
         {

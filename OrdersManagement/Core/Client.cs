@@ -265,6 +265,7 @@ namespace OrdersManagement.Core
             return client.DownloadQuotation(quotationId, isPostPaidQuotation);
         }
 
+
         #endregion
 
         #region INVOICE RELATED
@@ -300,6 +301,13 @@ namespace OrdersManagement.Core
             InvoiceClient client = new InvoiceClient(ref this._helper);
             return client.DownloadInvoice(quotationId, isPostPaidQuotation);
         }
+
+        public dynamic GetInvoices(byte productId = 0, int invoiceId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, Dictionary<string, TablePreferences> tablePreferences = null, string mobile = "", string email = "")
+        {
+            InvoiceClient client = new InvoiceClient(ref this._helper);
+            return client.Search(productId, invoiceId, quotationNumber, accountId, employeeId, ownerShipId, statusId, channelId, ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, tablePreferences, mobile, email);
+        }
+
         #endregion
 
         #region GENERIC
