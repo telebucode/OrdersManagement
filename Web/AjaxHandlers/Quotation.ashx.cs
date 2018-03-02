@@ -139,10 +139,13 @@ namespace Web.AjaxHandlers
                 mobile = searchData.SelectToken("Mobile").ToString();
             if (searchData.SelectToken("Email") != null)
                 mobile = searchData.SelectToken("Email").ToString();
+            TablePreferences quotationTablePreferences = new TablePreferences("", "", true, false);
+            Dictionary<string, TablePreferences> quotationsDictionary = new Dictionary<string, TablePreferences>();
+            quotationsDictionary.Add("Quotations", quotationTablePreferences);
             OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: OrdersManagement.ResponseFormat.JSON);
             context.Response.Write(client.GetQuotations(productId: productId, quotationId: quotationId, quotationNumber: quotationNumber, accountId: accountId,
                 employeeId: employeeId, ownerShipId: ownerShipId, statusId: statusId, channelId: channelId, ipAddress: ipAddress,
-                billingModeId: billingModeId, fromDateTime: fromDateTime, toDateTime: toDateTime, pageNumber: pageNumber, limit: limit, mobile: mobile, email: email));
+                billingModeId: billingModeId, fromDateTime: fromDateTime, toDateTime: toDateTime, pageNumber: pageNumber, limit: limit, mobile: mobile, email: email, tablePreferences: quotationsDictionary));
         }
         private void GetQuotationDetails(HttpContext context)
         {
