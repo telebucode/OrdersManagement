@@ -11,7 +11,7 @@
                 servicesHandler: "/AjaxHandlers/Service.ashx",
                 quotationsHandler: "/AjaxHandlers/Quotation.ashx",
                 invoicesHandler: "/AjaxHandlers/Invoice.ashx",
-                paymentsHandler: "/AjaxHandlers/Payment.ashx",
+                paymentsHandler: "/AjaxHandlers/Payments.ashx",
                 activationsHandler: "/AjaxHandlers/Activation.ashx",
                 genericHandler: "/AjaxHandlers/Generic.ashx",
                 async: true
@@ -715,6 +715,65 @@
                         "QuotationId": quotationId ? quotationId : 0,
                         "IsPostPaidQuotation": isPostPaidQuotation ? isPostPaidQuotation : false
 
+                    },
+                success: function (response) {
+                    actionResponse = response;
+                    if (CanCallBack(callBackFunction))
+                        callBackFunction(actionResponse);
+                },
+                error: function (response) {
+                    failedActionResponse.Response = response;
+                    failedActionResponse.Message = response.responseJSON.Message;
+                    actionResponse = failedActionResponse;
+                    if (CanCallBack(callBackFunction))
+                        callBackFunction(actionResponse);
+                }
+            });
+            if (!CanCallBack(callBackFunction))
+                return actionResponse;
+        }
+
+        // Payments Related
+        OrdersClient.prototype.GetBankAccounts = function(onlyActive,callBackFunction)
+        {
+            var actionResponse;
+            failedActionResponse.Message = defaultErrorMessage;
+            $.ajax({
+                url: this.options.paymentsHandler,
+                async: this.options.async,
+                dataType: "JSON",
+                data:
+                    {
+                        "Action": "GetBankAccounts",
+                        "OnlyActive": onlyActive ? onlyActive : true
+                    },
+                success: function (response) {
+                    actionResponse = response;
+                    if (CanCallBack(callBackFunction))
+                        callBackFunction(actionResponse);
+                },
+                error: function (response) {
+                    failedActionResponse.Response = response;
+                    failedActionResponse.Message = response.responseJSON.Message;
+                    actionResponse = failedActionResponse;
+                    if (CanCallBack(callBackFunction))
+                        callBackFunction(actionResponse);
+                }
+            });
+            if (!CanCallBack(callBackFunction))
+                return actionResponse;
+        }
+        OrdersClient.prototype.GetPaymentGateways = function (onlyActive, callBackFunction) {
+            var actionResponse;
+            failedActionResponse.Message = defaultErrorMessage;
+            $.ajax({
+                url: this.options.paymentsHandler,
+                async: this.options.async,
+                dataType: "JSON",
+                data:
+                    {
+                        "Action": "GetPaymentGateways",
+                        "OnlyActive": onlyActive ? onlyActive : true
                     },
                 success: function (response) {
                     actionResponse = response;

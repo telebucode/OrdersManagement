@@ -310,6 +310,21 @@ namespace OrdersManagement.Core
 
         #endregion
 
+        #region Payments RELATED
+
+        public dynamic GetBankAccounts(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            PaymentClient paymentsClient = new PaymentClient(ref this._helper);
+            return paymentsClient.GetBankAccounts(onlyActive: onlyActive, tablePreferences: tablePreferences);
+        }
+        public dynamic GetPaymentGateways(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            PaymentClient paymentsClient = new PaymentClient(ref this._helper);
+            return paymentsClient.GetPaymentGateways(onlyActive: onlyActive, tablePreferences: tablePreferences);
+        }
+
+        #endregion
+
         #region GENERIC
 
         public dynamic GetBillingModes(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)

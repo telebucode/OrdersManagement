@@ -74,6 +74,9 @@ namespace OrdersManagement
         internal const string CREATE = "Create";
         internal const string UPDATE = "Update";
 
+        internal const string BANK_ACCOUNTS = "BankAccounts";
+        internal const string PAYMENT_GATEWAYS = "PaymentGateways";
+
         #region LOG_4_NET_RELATED
             internal const string LOG_NAME = "LogName";
             internal const string DEFAULT_LOGGER = "DefaultLogger";
