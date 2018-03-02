@@ -43,6 +43,8 @@ namespace OrdersManagement
         internal const string MOBILE = "@Mobile";
         internal const string EMAIL = "@Email";
 
+        internal const string INVOICEID = "@InvoiceId";
+
         internal const string SUCCESS = "@Success";
         internal const string MESSAGE = "@Message";
     }

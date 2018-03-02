@@ -35,6 +35,7 @@ namespace OrdersManagement
         #region INVOICE RELATED
         internal const string GET_INVOICE_STATUSES = "GetInvoiceStatuses";
         internal const string CREATE_INVOICE = "CreateInvoice";
+        internal const string GET_INVOICES = "GetInvoices";
         #endregion
         internal const string GET_BILLING_MODES = "GetBillingModes";
     }
