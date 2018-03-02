@@ -14,6 +14,7 @@ using SelectPdf;
 using System.IO;
 using System.Web;
 using System.Net;
+using System.Xml;
 
 namespace OrdersManagement.Core
 {
@@ -48,9 +49,9 @@ namespace OrdersManagement.Core
             if (this._da != null)
                 this._da.Dispose();
             this._da = null;
-            if (this._ds != null)
-                this._ds.Dispose();
-            this._ds = null;
+            //if (this._ds != null)
+            //    this._ds.Dispose();
+            //this._ds = null;
         }
 
         private bool SpecialCharactersCheck(string value)
@@ -345,7 +346,7 @@ namespace OrdersManagement.Core
                 this.Clean();
             }
         }
-        internal dynamic Search(int productId = 0, int quotationId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, Dictionary<string, TablePreferences> tablePreferences = null,string mobile = "",string email = "")
+        internal dynamic Search(int productId = 0, int quotationId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, Dictionary<string, TablePreferences> tablePreferences = null, string mobile = "", string email = "")
         {
             try
             {
@@ -362,8 +363,8 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.BILLING_MODE_ID, SqlDbType.TinyInt).Value = billingModeId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.FROM_DATE_TIME, SqlDbType.DateTime).Value = fromDateTime;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.TO_DATE_TIME, SqlDbType.DateTime).Value = toDateTime;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.MOBILE, SqlDbType.VarChar,15).Value = mobile;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.EMAIL, SqlDbType.VarChar,200).Value = email;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.MOBILE, SqlDbType.VarChar, 15).Value = mobile;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.EMAIL, SqlDbType.VarChar, 200).Value = email;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PAGE_NUMBER, SqlDbType.Int).Value = pageNumber;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.LIMIT, SqlDbType.TinyInt).Value = limit;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
@@ -571,22 +572,31 @@ namespace OrdersManagement.Core
 
                         if (!this._helper.IsOutputXmlFormat)
                         {
-                            foreach (JObject quotationServices in quotationServicesObj.SelectToken(Label.QUOTATION_SERVICES))
+                            if (_ds.Tables[Label.QUOTATION_SERVICES].Rows.Count == 1)
                             {
-                                quotationServices.Add(new JProperty(Label.QUOTATION_SERVICES, new JArray()));
+                                quotationServicesObj.SelectToken(Label.QUOTATION_SERVICES).Add(new JProperty(Label.QUOTATION_SERVICE_PROPERTIES, new JArray()));
+                                quotationServicesObj.SelectToken(Label.QUOTATION_SERVICES).SelectToken(Label.QUOTATION_SERVICE_PROPERTIES).Add(quotationServicePropertiesObj.SelectToken(Label.QUOTATION_SERVICE_PROPERTIES).Children());
+                                quotationObj.SelectToken(Label.QUOTATION).SelectToken(Label.QUOTATION_SERVICES).Add(quotationServicesObj.SelectToken(Label.QUOTATION_SERVICES));
 
-                                foreach (JObject quotationServiceProperties in quotationServicePropertiesObj.SelectToken(Label.QUOTATION_SERVICE_PROPERTIES))
+                            }
+                            else
+                            {
+                                foreach (JObject quotationServices in quotationServicesObj.SelectToken(Label.QUOTATION_SERVICES))
                                 {
-                                    if (Convert.ToInt32(quotationServices.SelectToken(Label.ID).ToString()) == Convert.ToInt32(quotationServiceProperties.SelectToken(Label.QUOTATION_SERVICE_ID).ToString()))
+                                    quotationServices.Add(new JProperty(Label.QUOTATION_SERVICE_PROPERTIES, new JArray()));
+
+                                    foreach (JObject quotationServiceProperties in quotationServicePropertiesObj.SelectToken(Label.QUOTATION_SERVICE_PROPERTIES))
                                     {
-                                        (quotationServices.SelectToken(Label.QUOTATION_SERVICES) as JArray).Add(quotationServiceProperties);
+                                        if (Convert.ToInt32(quotationServices.SelectToken(Label.ID).ToString()) == Convert.ToInt32(quotationServiceProperties.SelectToken(Label.QUOTATION_SERVICE_ID).ToString()))
+                                        {
+                                            (quotationServices.SelectToken(Label.QUOTATION_SERVICE_PROPERTIES) as JArray).Add(quotationServiceProperties);
+                                        }
                                     }
                                 }
+
+                                quotationObj.SelectToken(Label.QUOTATION).SelectToken(Label.QUOTATION_SERVICES).Add(quotationServicesObj.SelectToken(Label.QUOTATION_SERVICES).Children());
+
                             }
-
-                            quotationObj.SelectToken(Label.QUOTATION).SelectToken(Label.QUOTATION_SERVICES).Add(quotationServicesObj.SelectToken(Label.QUOTATION_SERVICES).Children());
-
-
 
                         }
 
@@ -607,7 +617,8 @@ namespace OrdersManagement.Core
             {
                 this.Clean();
             }
-            return quotationObj;
+
+            return this.IncludeOutputParamsInObj(_ds: _ds, servicesXmlDocument: null, servicesRootElement: null, quotationObj: quotationObj);
         }
         internal dynamic ViewQuotation(int quotationId, bool isPostPaidQuotation)
         {
@@ -619,7 +630,7 @@ namespace OrdersManagement.Core
                 this._sqlCommand = new SqlCommand(StoredProcedure.VIEW_OR_DOWNLOAD_QUOTATION, this._sqlConnection);
                 this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_ID, SqlDbType.Int).Value = quotationId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IS_POSTPAID_QUOTATION, SqlDbType.Bit).Value = isPostPaidQuotation;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.HTML, SqlDbType.VarChar, -1).Direction=ParameterDirection.Output;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.HTML, SqlDbType.VarChar, -1).Direction = ParameterDirection.Output;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());
@@ -653,7 +664,7 @@ namespace OrdersManagement.Core
             {
                 this._sqlCommand = new SqlCommand(StoredProcedure.VIEW_OR_DOWNLOAD_QUOTATION, this._sqlConnection);
                 this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_ID, SqlDbType.Int).Value = quotationId;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.HTML, SqlDbType.VarChar,-1).Direction = ParameterDirection.Output;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.HTML, SqlDbType.VarChar, -1).Direction = ParameterDirection.Output;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());
@@ -820,6 +831,49 @@ namespace OrdersManagement.Core
         }
 
         #endregion
+        internal dynamic IncludeOutputParamsInObj(DataSet _ds, XmlDocument servicesXmlDocument, XmlElement servicesRootElement, dynamic quotationObj)
+        {
+            try
+            {
+                DataSet tempDataSet = new DataSet();
+                tempDataSet.Tables.Clear();
+                tempDataSet.Tables.Add(this._ds.Tables[Label.OUTPUT_PARAMETERS].Copy());
+                this._helper.ResetResponseVariables();
+                this._helper.ParseDataSet(tempDataSet);
+                dynamic outputParamsObj = this._helper.GetResponse();
+                if (this._helper.IsOutputXmlFormat)
+                {
+                    XmlDocument outputParamsXmlDocument = new XmlDocument();
+                    XmlElement outputParamsRootElement = null;
+                    outputParamsXmlDocument.LoadXml(outputParamsObj);
+                    outputParamsRootElement = outputParamsXmlDocument.FirstChild as XmlElement;
+                    foreach (XmlElement childElement in outputParamsRootElement.ChildNodes)
+                    {
+                        XmlElement newElement = servicesXmlDocument.CreateElement(childElement.Name);
+                        newElement.InnerText = childElement.InnerText;
+                        servicesRootElement.PrependChild(newElement);
+                    }
+                }
+                else
+                {
+                    foreach (JProperty jproperty in outputParamsObj.Properties())
+                    {
+                        quotationObj.AddFirst(new JProperty(jproperty.Name, jproperty.Value));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new ClientInitializationException(string.Format("Could not load output parameters in ServiceObj or XmlDocument", e.Message));
+            }
+            finally
+            {
+
+            }
+
+            return this._helper.IsOutputXmlFormat ? servicesXmlDocument.OuterXml : quotationObj;
+        }
+
 
 
     }

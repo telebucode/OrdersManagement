@@ -410,11 +410,22 @@ namespace OrdersManagement.Core
                             {
                                 servicePropertyObject.Add(new JProperty(Label.PROPERTYFIELDS, new JArray()));
 
-                                foreach (JObject servicePropertyFieldsObj in propertyFieldsObj.SelectToken(Label.PROPERTYFIELDS))
+                                if (this._ds.Tables[Label.PROPERTYFIELDS].Rows.Count == 1)
                                 {
-                                    if (Convert.ToSByte(servicePropertyFieldsObj.SelectToken(Label.SERVICE_PROPERTY_ID).ToString()) == Convert.ToSByte(servicePropertyObject.SelectToken(Label.ID).ToString()))
+                                    if (Convert.ToSByte(propertyFieldsObj.SelectToken(Label.PROPERTYFIELDS).SelectToken(Label.SERVICE_PROPERTY_ID).ToString()) == Convert.ToSByte(servicePropertyObject.SelectToken(Label.ID).ToString()))
                                     {
-                                        (servicePropertyObject.SelectToken(Label.PROPERTYFIELDS) as JArray).Add(servicePropertyFieldsObj);
+                                        (servicePropertyObject.SelectToken(Label.PROPERTYFIELDS) as JArray).Add(propertyFieldsObj);
+                                    }
+                                }
+                                else
+                                {
+
+                                    foreach (JObject servicePropertyFieldsObj in propertyFieldsObj.SelectToken(Label.PROPERTYFIELDS))
+                                    {
+                                        if (Convert.ToSByte(servicePropertyFieldsObj.SelectToken(Label.SERVICE_PROPERTY_ID).ToString()) == Convert.ToSByte(servicePropertyObject.SelectToken(Label.ID).ToString()))
+                                        {
+                                            (servicePropertyObject.SelectToken(Label.PROPERTYFIELDS) as JArray).Add(servicePropertyFieldsObj);
+                                        }
                                     }
                                 }
                             }
