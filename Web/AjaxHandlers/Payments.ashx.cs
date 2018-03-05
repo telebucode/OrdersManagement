@@ -64,6 +64,12 @@ namespace Web.AjaxHandlers
             context.Response.Write(client.GetPaymentGateways(onlyActive));
         }
 
+        private void GeneratePayment(HttpContext context)
+        {
+            
+            
+        }
+
         private void GenerateErrorResponse(int statusCode, string message)
         {
             HttpContext.Current.Response.Clear();
