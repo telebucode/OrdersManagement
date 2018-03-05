@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Xml;
 using Newtonsoft.Json.Linq;
+using OrdersManagement.Exceptions;
 
 namespace OrdersManagement
 {
@@ -149,6 +150,37 @@ namespace OrdersManagement
 
             }
             return table;
+        }
+
+        internal static string ToExtraChargesString(this JToken extraChargesOfService, string serviceName)
+        {
+            JArray extraChargesArray = extraChargesOfService as JArray;
+            JObject extraJobject = new JObject();
+
+            if (extraChargesArray != null)
+            {
+                foreach (JToken child in extraChargesArray.Children())
+                {
+                    try
+                    {
+                        JObject childObject = child as JObject;
+                        extraJobject.Add(new JProperty(childObject.SelectToken(Label.DESCRIPTION).ToString(), childObject.SelectToken(Label.AMOUNT).ToString()));
+
+                    }
+                    catch (Exception e)
+                    {
+                        throw new QuotationException(string.Format("Duplicate key name for {0} cannot be added to Service {1}", Label.EXTRA_CHARGES, serviceName));
+                    }
+
+                }
+            }
+            else
+            {
+
+                return string.Empty;
+            }
+
+            return extraJobject.ToString();
         }
     }
 }
