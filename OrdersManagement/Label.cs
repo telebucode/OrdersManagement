@@ -52,6 +52,7 @@ namespace OrdersManagement
         internal const string OPTIONS = "Options";
         internal const string Is_Allow_Special_Chars = "IsAllowSpecialChars";
         internal const string PROPERTYFIELDS = "PropertyFields";
+        internal const string DESCRIPTION = "Description";
 
         internal const string TEXT_BOX = "TextBox";
         internal const string TEXT_AREA = "TextArea";

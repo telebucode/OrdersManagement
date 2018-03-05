@@ -737,7 +737,7 @@ namespace OrdersManagement.Core
                         quotationService.Id = Convert.ToInt16(serviceObj.SelectToken(Label.ID).ToString());
                         quotationService.ServiceId = SharedClass.Services[quotationService.MetaDataCode].Id;
                         quotationService.Occurance = Convert.ToByte(serviceObj.SelectToken(Label.OCCURANCE).ToString());
-                        quotationService.ExtraCharges = Convert.ToString(serviceObj.SelectToken(Label.EXTRA_CHARGES));
+                        quotationService.ExtraCharges = OrdersManagement.ExtensionMethods.ToExtraChargesString(serviceObj.SelectToken(Label.EXTRA_CHARGES), quotationService.MetaDataCode);
                         quotationServicesList.Add(quotationService);
 
                     }
@@ -750,7 +750,7 @@ namespace OrdersManagement.Core
                     quotationService.Id = Convert.ToByte(jpropert.Value.SelectToken(Label.ID).ToString());
                     quotationService.ServiceId = SharedClass.Services[quotationService.MetaDataCode].Id;
                     quotationService.Occurance = Convert.ToByte(jpropert.Value.SelectToken(Label.OCCURANCE).ToString());
-                    quotationService.ExtraCharges = Convert.ToString(jpropert.Value.SelectToken(Label.EXTRA_CHARGES));
+                    quotationService.ExtraCharges = OrdersManagement.ExtensionMethods.ToExtraChargesString(jpropert.Value.SelectToken(Label.EXTRA_CHARGES), quotationService.MetaDataCode);
                     quotationServicesList.Add(quotationService);
 
                 }
@@ -873,6 +873,8 @@ namespace OrdersManagement.Core
 
             return this._helper.IsOutputXmlFormat ? servicesXmlDocument.OuterXml : quotationObj;
         }
+
+
 
 
 
