@@ -18,6 +18,12 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var ordersClient = new OrdersClient({ async: true });
+            ordersClient.GetBankAccounts(true, function (res) {
+                console.log(res);
+            });
+            ordersClient.GetPaymentGateways(true, function (res) {
+                console.log(res);
+            });
             //ordersClient.ViewQuotation(4012, false, function (res) {
             //    console.log(res);
             //    $("#Services").html(res);

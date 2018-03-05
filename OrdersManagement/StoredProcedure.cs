@@ -37,6 +37,10 @@ namespace OrdersManagement
         internal const string CREATE_INVOICE = "CreateInvoice";
         internal const string GET_INVOICES = "GetInvoices";
         #endregion
+        #region PAYMENTS RELATED
+        internal const string GET_BANK_ACCOUNTS = "GetBankAccounts";
+        internal const string GET_PAYMENT_GATEWAYS = "GetPaymentGateways";
+        #endregion
         internal const string GET_BILLING_MODES = "GetBillingModes";
     }
 }

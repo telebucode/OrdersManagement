@@ -68,6 +68,7 @@
     <Content Include="AjaxHandlers\Service.ashx" />
     <Content Include="AjaxHandlers\Quotation.ashx" />
     <Content Include="AjaxHandlers\Invoice.ashx" />
+    <Content Include="AjaxHandlers\Payments.ashx" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -87,6 +88,9 @@
   <ItemGroup>
     <Compile Include="AjaxHandlers\Invoice.ashx.cs">
       <DependentUpon>Invoice.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="AjaxHandlers\Payments.ashx.cs">
+      <DependentUpon>Payments.ashx</DependentUpon>
     </Compile>
     <Compile Include="AjaxHandlers\Quotation.ashx.cs">
       <DependentUpon>Quotation.ashx</DependentUpon>
