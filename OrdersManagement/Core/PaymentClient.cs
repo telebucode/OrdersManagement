@@ -58,7 +58,7 @@ namespace OrdersManagement.Core
                 this._helper.CreateProperty(Label.MESSAGE, this._sqlCommand.GetMessage());
             return this._helper.GetResponse();
         }
-        
+
 
         #endregion
 
@@ -112,6 +112,34 @@ namespace OrdersManagement.Core
             {
                 Logger.Error(string.Format("Unable to fetch QuotationStatuses. {0}", e.ToString()));
                 throw new QuotationException(string.Format("Unable to fetch QuotationStatuses. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+
+        internal dynamic GetOnlinePaymentGateways(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.GET_ONLINE_PAYMENT_GATEWAYS, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = onlyActive;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.PAYMENT_GATEWAYS;
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, tablePreferences);
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to fetch OnliePaymentGateways. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to fetch OnliePaymentGateways. {0}", e.Message));
             }
             finally
             {
