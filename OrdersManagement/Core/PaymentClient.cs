@@ -118,6 +118,45 @@ namespace OrdersManagement.Core
                 this.Clean();
             }
         }
+
+        public dynamic GeneratePayment(int productId, int accountId, int employeeId, int invoiceId,int billingModeId, int paymentGatewayId, float paymentAmount, int bankAccountId, DateTime depositeDate, int activatePercentage, string comments, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.CREATE_PAYMENT, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ACCOUNT_ID, SqlDbType.Int).Value = accountId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_ID, SqlDbType.Int).Value = productId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.EMPLOYEE_ID, SqlDbType.Int).Value = employeeId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.INVOICEID, SqlDbType.Int).Value = invoiceId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.BILLING_MODE_ID, SqlDbType.TinyInt).Value = billingModeId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PAYMENT_GATEWAY_ID, SqlDbType.TinyInt).Value = paymentGatewayId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PAYMENT_AMOUNT, SqlDbType.Float).Value =  paymentAmount;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.BANK_ACCOUNT_ID, SqlDbType.Float).Value = bankAccountId ;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.DEPOSIT_DATE, SqlDbType.DateTime).Value = depositeDate ;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ACTIVATE_PERCENTAGE, SqlDbType.Int).Value = activatePercentage;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.COMMENTS, SqlDbType.VarChar, -1).Value = comments;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.PAYMENT_GATEWAYS;
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, tablePreferences);
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to fetch QuotationStatuses. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to fetch QuotationStatuses. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
         #endregion
     }
 }
+

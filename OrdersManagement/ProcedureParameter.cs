@@ -44,6 +44,13 @@ namespace OrdersManagement
         internal const string EMAIL = "@Email";
 
         internal const string INVOICEID = "@InvoiceId";
+        internal const string PAYMENT_GATEWAY_ID = "@PaymentGatewayId";
+        internal const string PAYMENT_AMOUNT = "@PaymentAmount";
+        internal const string BANK_ACCOUNT_ID = "@BankAccountId";
+        internal const string DEPOSIT_DATE = "@DepositDate";
+        internal const string ACTIVATE_PERCENTAGE = "@ActivatePercentage";
+        internal const string COMMENTS = "@Comments";
+
 
         internal const string SUCCESS = "@Success";
         internal const string MESSAGE = "@Message";
