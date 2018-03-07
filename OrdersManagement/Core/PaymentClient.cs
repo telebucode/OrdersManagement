@@ -58,7 +58,7 @@ namespace OrdersManagement.Core
                 this._helper.CreateProperty(Label.MESSAGE, this._sqlCommand.GetMessage());
             return this._helper.GetResponse();
         }
-        
+
 
         #endregion
 
@@ -119,7 +119,7 @@ namespace OrdersManagement.Core
             }
         }
 
-        public dynamic GeneratePayment(int productId, int accountId, int employeeId, int invoiceId,int billingModeId, int paymentGatewayId, float paymentAmount, int bankAccountId, DateTime depositeDate, int activatePercentage, string comments, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GeneratePayment(int productId, int accountId, int employeeId, int invoiceId, int billingModeId, int paymentGatewayId, float paymentAmount, int bankAccountId, DateTime depositeDate, int activatePercentage, string comments, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
@@ -130,9 +130,9 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.INVOICEID, SqlDbType.Int).Value = invoiceId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.BILLING_MODE_ID, SqlDbType.TinyInt).Value = billingModeId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PAYMENT_GATEWAY_ID, SqlDbType.TinyInt).Value = paymentGatewayId;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.PAYMENT_AMOUNT, SqlDbType.Float).Value =  paymentAmount;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.BANK_ACCOUNT_ID, SqlDbType.Float).Value = bankAccountId ;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.DEPOSIT_DATE, SqlDbType.DateTime).Value = depositeDate ;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PAYMENT_AMOUNT, SqlDbType.Float).Value = paymentAmount;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.BANK_ACCOUNT_ID, SqlDbType.Float).Value = bankAccountId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.DEPOSIT_DATE, SqlDbType.DateTime).Value = depositeDate;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.ACTIVATE_PERCENTAGE, SqlDbType.Int).Value = activatePercentage;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.COMMENTS, SqlDbType.VarChar, -1).Value = comments;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
@@ -148,8 +148,8 @@ namespace OrdersManagement.Core
             }
             catch (Exception e)
             {
-                Logger.Error(string.Format("Unable to fetch QuotationStatuses. {0}", e.ToString()));
-                throw new QuotationException(string.Format("Unable to fetch QuotationStatuses. {0}", e.Message));
+                Logger.Error(string.Format("Unable to generate payments. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to generate payments. {0}", e.Message));
             }
             finally
             {

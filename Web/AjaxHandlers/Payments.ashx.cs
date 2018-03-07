@@ -80,7 +80,7 @@ namespace Web.AjaxHandlers
             string ipAddress = string.Empty;
             int activatePercentage = 0;
             int billingModeId = 0;
-            DateTime depositeDate;
+            DateTime depositeDate=new DateTime();
             JObject paymentData = new JObject();
             paymentData = JObject.Parse(context.Request["SearchData"]);
             if (paymentData.SelectToken("ProductId") != null && !byte.TryParse(paymentData.SelectToken("ProductId").ToString(), out productId))
