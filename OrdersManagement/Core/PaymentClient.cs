@@ -119,10 +119,15 @@ namespace OrdersManagement.Core
             }
         }
 
-        public dynamic GeneratePayment(int productId, int accountId, int employeeId, int invoiceId,int billingModeId, int paymentGatewayId, float paymentAmount, int bankAccountId, DateTime depositeDate, int activatePercentage, string comments,bool isTDSApplicable,int tdsPercentage,Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GeneratePayment(int productId, int accountId, int employeeId, int invoiceId,int billingModeId, 
+            int paymentGatewayId, float paymentAmount, int bankAccountId, DateTime depositeDate, int activatePercentage, 
+            string comments,bool isTDSApplicable,int tdsPercentage,string chequeNumber,string attachments,string transactionNumber,
+            string clientAccountNumber,string clientAccountName,string clientBankName,string clientBankBranch,int onlinePaymentGatewayId,
+            string paymentGatewayReferenceId,Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
+    
                 this._sqlCommand = new SqlCommand(StoredProcedure.CREATE_PAYMENT, this._sqlConnection);
                 this._sqlCommand.Parameters.Add(ProcedureParameter.ACCOUNT_ID, SqlDbType.Int).Value = accountId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_ID, SqlDbType.Int).Value = productId;
@@ -137,6 +142,15 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.COMMENTS, SqlDbType.VarChar, -1).Value = comments;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IS_TDS_APPLICABLE, SqlDbType.Bit).Value = isTDSApplicable;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.TDS_Percentage, SqlDbType.Int).Value = tdsPercentage;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ATTACHMENTS, SqlDbType.VarChar,1000).Value = attachments;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.CHEQUE_NUMBER, SqlDbType.VarChar,64).Value = chequeNumber;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.TRANSACTION_NUMBER, SqlDbType.VarChar,50).Value = transactionNumber;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.CLIENT_ACCOUNT_NUMBER, SqlDbType.VarChar,32).Value = clientAccountNumber;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.CLIENT_ACCOUNT_NAME, SqlDbType.VarChar,128).Value = clientAccountName;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.CLIENT_BANK_NAME, SqlDbType.VarChar,64).Value = clientBankName;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.CLIENT_BANK_BRANCH, SqlDbType.VarChar,64).Value = clientBankBranch;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ONLINE_PAYMENT_GATEWAY_ID, SqlDbType.TinyInt).Value = onlinePaymentGatewayId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PAYMENT_GATEWAY_REFERENCE_ID, SqlDbType.VarChar,64).Value = paymentGatewayReferenceId;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());

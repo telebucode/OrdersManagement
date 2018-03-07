@@ -52,9 +52,18 @@ namespace OrdersManagement
         internal const string COMMENTS = "@Comments";
         internal const string IS_TDS_APPLICABLE = "@IsTDSApplicable";
         internal const string TDS_Percentage = "@TDSPercentage";
-
+        internal const string CHEQUE_NUMBER = "@ChequeNumber";
+        internal const string ATTACHMENTS = "@Attachments";
+        internal const string TRANSACTION_NUMBER = "@TransactionNumber";
+        internal const string CLIENT_ACCOUNT_NUMBER = "@ClientAccountNumber";
+        internal const string CLIENT_ACCOUNT_NAME = "@ClientAccountName";
+        internal const string CLIENT_BANK_NAME = "@ClientBankName";
+        internal const string CLIENT_BANK_BRANCH = "@ClientBankBranch";
+        internal const string ONLINE_PAYMENT_GATEWAY_ID = "@OnlinePaymentGatewayId";
+        internal const string PAYMENT_GATEWAY_REFERENCE_ID = "@PaymentGatewayReferenceId";
 
         internal const string SUCCESS = "@Success";
         internal const string MESSAGE = "@Message";
     }
 }
+

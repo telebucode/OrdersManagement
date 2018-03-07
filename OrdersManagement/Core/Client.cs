@@ -322,10 +322,19 @@ namespace OrdersManagement.Core
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);
             return paymentsClient.GetPaymentGateways(onlyActive: onlyActive, tablePreferences: tablePreferences);
         }
-        public dynamic GeneratePayment(int productId,int accountId,int employeeId,int invoiceId,int billingModeId,int paymentGatewayId,float paymentAmount,int bankAccountId,DateTime depositeDate,int activatePercentage,string comments,bool isTDSApplicable,int tdsPercentage)
+        public dynamic GeneratePayment(int productId,int accountId,int employeeId,int invoiceId,int billingModeId,
+            int paymentGatewayId,float paymentAmount,int bankAccountId,DateTime depositeDate,int activatePercentage,
+            string comments,bool isTDSApplicable,int tdsPercentage,string chequeNumber,string attachments,string transactionNumber,
+            string clientAccountNumber,string clientAccountName,string clientBankName,string clientBankBranch,int onlinePaymentGatewayId,
+            string paymentGatewayReferenceId)
         {
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);
-            return paymentsClient.GeneratePayment(productId: productId, accountId: accountId, employeeId: employeeId, invoiceId: invoiceId,billingModeId:billingModeId, paymentGatewayId: paymentGatewayId, paymentAmount: paymentAmount, bankAccountId: bankAccountId, depositeDate: depositeDate, activatePercentage: activatePercentage, comments: comments,isTDSApplicable:isTDSApplicable,tdsPercentage:tdsPercentage);
+            return paymentsClient.GeneratePayment(productId: productId, accountId: accountId, employeeId: employeeId, 
+                invoiceId: invoiceId,billingModeId:billingModeId, paymentGatewayId: paymentGatewayId, paymentAmount: paymentAmount,
+                bankAccountId: bankAccountId, depositeDate: depositeDate, activatePercentage: activatePercentage, 
+                comments: comments,isTDSApplicable:isTDSApplicable,tdsPercentage:tdsPercentage,chequeNumber:chequeNumber,
+                attachments:attachments,transactionNumber:transactionNumber,clientAccountNumber:clientAccountNumber,
+                clientAccountName:clientAccountName,clientBankName:clientBankName,clientBankBranch:clientBankBranch,onlinePaymentGatewayId:onlinePaymentGatewayId,paymentGatewayReferenceId:paymentGatewayReferenceId);
         }
         public dynamic GetOnlinePaymentGateways(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
         {
