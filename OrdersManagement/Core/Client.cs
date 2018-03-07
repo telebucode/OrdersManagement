@@ -327,6 +327,11 @@ namespace OrdersManagement.Core
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);
             return paymentsClient.GeneratePayment(productId: productId, accountId: accountId, employeeId: employeeId, invoiceId: invoiceId,billingModeId:billingModeId, paymentGatewayId: paymentGatewayId, paymentAmount: paymentAmount, bankAccountId: bankAccountId, depositeDate: depositeDate, activatePercentage: activatePercentage, comments: comments,isTDSApplicable:isTDSApplicable,tdsPercentage:tdsPercentage);
         }
+        public dynamic GetOnlinePaymentGateways(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            PaymentClient paymentsClient = new PaymentClient(ref this._helper);
+            return paymentsClient.GetOnlinePaymentGateways(onlyActive: onlyActive, tablePreferences: tablePreferences);
+        }
 
         #endregion
 
