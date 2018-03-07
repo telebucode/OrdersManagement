@@ -50,6 +50,8 @@ namespace OrdersManagement
         internal const string DEPOSIT_DATE = "@DepositDate";
         internal const string ACTIVATE_PERCENTAGE = "@ActivatePercentage";
         internal const string COMMENTS = "@Comments";
+        internal const string IS_TDS_APPLICABLE = "@IsTDSApplicable";
+        internal const string TDS_Percentage = "@TDSPercentage";
 
 
         internal const string SUCCESS = "@Success";

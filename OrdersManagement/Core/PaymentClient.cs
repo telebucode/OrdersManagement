@@ -58,7 +58,7 @@ namespace OrdersManagement.Core
                 this._helper.CreateProperty(Label.MESSAGE, this._sqlCommand.GetMessage());
             return this._helper.GetResponse();
         }
-
+        
 
         #endregion
 
@@ -119,7 +119,7 @@ namespace OrdersManagement.Core
             }
         }
 
-        public dynamic GeneratePayment(int productId, int accountId, int employeeId, int invoiceId, int billingModeId, int paymentGatewayId, float paymentAmount, int bankAccountId, DateTime depositeDate, int activatePercentage, string comments, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GeneratePayment(int productId, int accountId, int employeeId, int invoiceId,int billingModeId, int paymentGatewayId, float paymentAmount, int bankAccountId, DateTime depositeDate, int activatePercentage, string comments,bool isTDSApplicable,int tdsPercentage,Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
@@ -135,6 +135,8 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.DEPOSIT_DATE, SqlDbType.DateTime).Value = depositeDate;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.ACTIVATE_PERCENTAGE, SqlDbType.Int).Value = activatePercentage;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.COMMENTS, SqlDbType.VarChar, -1).Value = comments;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.IS_TDS_APPLICABLE, SqlDbType.Bit).Value = isTDSApplicable;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.TDS_Percentage, SqlDbType.Int).Value = tdsPercentage;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());

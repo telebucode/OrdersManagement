@@ -322,10 +322,10 @@ namespace OrdersManagement.Core
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);
             return paymentsClient.GetPaymentGateways(onlyActive: onlyActive, tablePreferences: tablePreferences);
         }
-        public dynamic GeneratePayment(int productId,int accountId,int employeeId,int invoiceId,int billingModeId,int paymentGatewayId,float paymentAmount,int bankAccountId,DateTime depositeDate,int activatePercentage,string comments)
+        public dynamic GeneratePayment(int productId,int accountId,int employeeId,int invoiceId,int billingModeId,int paymentGatewayId,float paymentAmount,int bankAccountId,DateTime depositeDate,int activatePercentage,string comments,bool isTDSApplicable,int tdsPercentage)
         {
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);
-            return paymentsClient.GeneratePayment(productId: productId, accountId: accountId, employeeId: employeeId, invoiceId: invoiceId,billingModeId:billingModeId, paymentGatewayId: paymentGatewayId, paymentAmount: paymentAmount, bankAccountId: bankAccountId, depositeDate: depositeDate, activatePercentage: activatePercentage, comments: comments);
+            return paymentsClient.GeneratePayment(productId: productId, accountId: accountId, employeeId: employeeId, invoiceId: invoiceId,billingModeId:billingModeId, paymentGatewayId: paymentGatewayId, paymentAmount: paymentAmount, bankAccountId: bankAccountId, depositeDate: depositeDate, activatePercentage: activatePercentage, comments: comments,isTDSApplicable:isTDSApplicable,tdsPercentage:tdsPercentage);
         }
         public dynamic GetOnlinePaymentGateways(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
         {
