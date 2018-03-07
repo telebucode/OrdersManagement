@@ -791,7 +791,7 @@
             if (!CanCallBack(callBackFunction))
                 return actionResponse;
         }
-        OrdersClient.prototype.GeneratePayment = function (searchData, callBackFunction) {
+        OrdersClient.prototype.GeneratePayment = function (paymentData, callBackFunction) {
             var actionResponse;
             failedActionResponse.Message = defaultErrorMessage;
             $.ajax({
@@ -801,7 +801,7 @@
                 data:
                     {
                         "Action": "GeneratePayment",
-                        "SearchData": searchData
+                        "SearchData": paymentData
                     },
                 success: function (response) {
                     actionResponse = response;

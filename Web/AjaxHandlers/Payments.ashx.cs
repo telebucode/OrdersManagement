@@ -76,11 +76,13 @@ namespace Web.AjaxHandlers
             float paymentAmount = 0;
             int employeeId = 0;
             int bankAccountId = 0;
-            string comments  = string.Empty;
+            string comments = string.Empty;
             string ipAddress = string.Empty;
             int activatePercentage = 0;
             int billingModeId = 0;
             DateTime depositeDate;
+            bool isTDSApplicable = false;
+            int tdsPercentage = 0;
             JObject paymentData = new JObject();
             paymentData = JObject.Parse(context.Request["SearchData"]);
             if (paymentData.SelectToken("ProductId") != null && !byte.TryParse(paymentData.SelectToken("ProductId").ToString(), out productId))
@@ -89,7 +91,7 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("InvoiceId must be a number"));
             if (paymentData.SelectToken("AccountId") != null && !int.TryParse(paymentData.SelectToken("AccountId").ToString(), out accountId))
                 GenerateErrorResponse(400, string.Format("AccountId must be a number"));
-             if (paymentData.SelectToken("BillingModeId") != null && !int.TryParse(paymentData.SelectToken("BillingModeId").ToString(), out billingModeId))
+            if (paymentData.SelectToken("BillingModeId") != null && !int.TryParse(paymentData.SelectToken("BillingModeId").ToString(), out billingModeId))
                 GenerateErrorResponse(400, string.Format("BillingModeId must be a number"));
             if (paymentData.SelectToken("PaymentGatewayId") != null && !int.TryParse(paymentData.SelectToken("PaymentGatewayId").ToString(), out paymentGatewayId))
                 GenerateErrorResponse(400, string.Format("PaymentGatewayId must be a number"));
@@ -101,10 +103,14 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("FromDateTime is not a valid datetime"));
             if (paymentData.SelectToken("ActivatePercentage") != null && !int.TryParse(paymentData.SelectToken("ActivatePercentage").ToString(), out activatePercentage))
                 GenerateErrorResponse(400, string.Format("Activate percentage must be a number"));
+            if (paymentData.SelectToken("IsTDSApplicable") != null && !bool.TryParse(paymentData.SelectToken("IsTDSApplicable").ToString(), out isTDSApplicable))
+                GenerateErrorResponse(400, string.Format("IsTDSApplicable percentage must be a boolean"));
+            if (paymentData.SelectToken("TDSPercentage") != null && !int.TryParse(paymentData.SelectToken("TDSPercentage").ToString(), out tdsPercentage))
+                GenerateErrorResponse(400, string.Format("TDSPercentage percentage must be a number"));
             if (paymentData.SelectToken("Comments") != null)
                 comments = paymentData.SelectToken("Comments").ToString();
             Client client = new Client(responseFormat: ResponseFormat.JSON);
-            context.Response.Write(client.GeneratePayment(productId:productId,accountId:accountId,employeeId:employeeId,invoiceId:invoiceId,billingModeId:billingModeId ,paymentGatewayId:paymentGatewayId,paymentAmount:paymentAmount,bankAccountId:bankAccountId,depositeDate:depositeDate,activatePercentage:activatePercentage,comments:comments));     
+            context.Response.Write(client.GeneratePayment(productId: productId, accountId: accountId, employeeId: employeeId, invoiceId: invoiceId, billingModeId: billingModeId, paymentGatewayId: paymentGatewayId, paymentAmount: paymentAmount, bankAccountId: bankAccountId, depositeDate: depositeDate, activatePercentage: activatePercentage, comments: comments,isTDSApplicable:isTDSApplicable,tdsPercentage:tdsPercentage));
         }
 
         private void GenerateErrorResponse(int statusCode, string message)
