@@ -6,6 +6,7 @@ using System.Web;
 using Newtonsoft.Json.Linq;
 using OrdersManagement;
 using OrdersManagement.Core;
+using OrdersManagement.Model;
 
 namespace Web.AjaxHandlers
 {
@@ -34,8 +35,20 @@ namespace Web.AjaxHandlers
                     case "GetPaymentGateways":
                         GetPaymentGateways(context);
                         break;
-                    case "GeneratePayment":
-                        GeneratePayment(context);
+                    case "GetPaymentStatuses":
+                        GetPaymentStatuses(context);
+                        break;
+                    case "GetOnlinePaymentGateways":
+                        GetOnlinePaymentGateways(context);
+                        break;
+                    case "Create":
+                        Create(context);
+                        break;
+                    case "Search":
+                        Search(context);
+                        break;
+                    case "View":
+                        View(context);
                         break;
                 }
             }
@@ -50,6 +63,7 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(500, e.Message);
             }
         }
+        
         private void GetBankAccounts(HttpContext context)
         {
             bool onlyActive = true;
@@ -66,7 +80,23 @@ namespace Web.AjaxHandlers
             Client client = new Client(responseFormat: ResponseFormat.JSON);
             context.Response.Write(client.GetPaymentGateways(onlyActive));
         }
-        private void GeneratePayment(HttpContext context)
+        private void GetPaymentStatuses(HttpContext context)
+        {
+            bool onlyActive = true;
+            if (context.Request["OnlyActive"] != null && !bool.TryParse(context.Request["OnlyActive"].ToString(), out onlyActive))
+                GenerateErrorResponse(400, string.Format("OnlyActive value ({0}) is not a valid boolean value", context.Request["OnlyActive"].ToString()));
+            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            context.Response.Write(client.GetPaymentStatuses(onlyActive));
+        }
+        private void GetOnlinePaymentGateways(HttpContext context)
+        {
+            bool onlyActive = true;
+            if (context.Request["OnlyActive"] != null && !bool.TryParse(context.Request["OnlyActive"].ToString(), out onlyActive))
+                GenerateErrorResponse(400, string.Format("OnlyActive value ({0}) is not a valid boolean value", context.Request["OnlyActive"].ToString()));
+            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            context.Response.Write(client.GetOnlinePaymentGateways(onlyActive));
+        }
+        private void Create(HttpContext context)
         {
             byte productId = 0;
             int invoiceId = 0;
@@ -99,7 +129,7 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("InvoiceId must be a number"));
             if (paymentData.SelectToken("AccountId") != null && !int.TryParse(paymentData.SelectToken("AccountId").ToString(), out accountId))
                 GenerateErrorResponse(400, string.Format("AccountId must be a number"));
-            if (paymentData.SelectToken("BillingModeId") != null && !int.TryParse(paymentData.SelectToken("BillingModeId").ToString(), out billingModeId))
+             if (paymentData.SelectToken("BillingModeId") != null && !int.TryParse(paymentData.SelectToken("BillingModeId").ToString(), out billingModeId))
                 GenerateErrorResponse(400, string.Format("BillingModeId must be a number"));
             if (paymentData.SelectToken("PaymentGatewayId") != null && !int.TryParse(paymentData.SelectToken("PaymentGatewayId").ToString(), out paymentGatewayId))
                 GenerateErrorResponse(400, string.Format("PaymentGatewayId must be a number"));
@@ -136,13 +166,63 @@ namespace Web.AjaxHandlers
             if (paymentData.SelectToken("PaymentGatewayReferenceId") != null)
                 paymentGatewayReferenceId = paymentData.SelectToken("PaymentGatewayReferenceId").ToString();
             Client client = new Client(responseFormat: ResponseFormat.JSON);
-            context.Response.Write(client.GeneratePayment(productId: productId, accountId: accountId, employeeId: employeeId,
+            context.Response.Write(client.CreatePayment(productId: productId, accountId: accountId, employeeId: employeeId,
                 invoiceId: invoiceId, billingModeId: billingModeId, paymentGatewayId: paymentGatewayId, paymentAmount: paymentAmount,
-                bankAccountId: bankAccountId, depositeDate: depositeDate, activatePercentage: activatePercentage,
-                comments: comments, isTDSApplicable: isTDSApplicable, tdsPercentage: tdsPercentage, chequeNumber: chequeNumber, attachments: attachments,
-                transactionNumber: transactionNumber, clientAccountNumber: clientAccountNumber, clientAccountName: clientAccountName,
-                clientBankName: clientBankName, clientBankBranch: clientBankBranch, onlinePaymentGatewayId: onlinePaymentGatewayId,
-                paymentGatewayReferenceId: paymentGatewayReferenceId));
+                bankAccountId: bankAccountId, depositeDate: depositeDate, activatePercentage: activatePercentage, 
+           comments: comments, isTDSApplicable: isTDSApplicable, tdsPercentage: tdsPercentage, chequeNumber: chequeNumber, attachments: attachments,
+           transactionNumber: transactionNumber, clientAccountNumber: clientAccountNumber, clientAccountName: clientAccountName,
+           clientBankName: clientBankName, clientBankBranch: clientBankBranch, onlinePaymentGatewayId: onlinePaymentGatewayId,
+           paymentGatewayReferenceId: paymentGatewayReferenceId));
+        }
+        private void Search(HttpContext context)
+        {
+            byte productId = 0;
+            int accountId = 0;
+            string mobile = string.Empty;
+            string email = string.Empty;
+            string number = string.Empty;
+            byte paymentStatus = 0;
+            byte billingMode  = 0;
+            DateTime fromDateTime = DateTime.Now.Date;
+            DateTime toDateTime = DateTime.Now.AddDays(1).AddTicks(-1);
+            JObject searchData = new JObject();
+            searchData = JObject.Parse(context.Request["SearchData"].ToString());
+            if (searchData.SelectToken("ProductId") != null && !byte.TryParse(searchData.SelectToken("ProductId").ToString(), out productId))
+                GenerateErrorResponse(400, string.Format("ProductId must be a number"));
+            if (searchData.SelectToken("Number") != null)
+                number = searchData.SelectToken("QuotationNumber").ToString();
+            if (searchData.SelectToken("AccountId") != null && !int.TryParse(searchData.SelectToken("AccountId").ToString(), out accountId))
+                GenerateErrorResponse(400, string.Format("AccountId must be a number"));
+            if (searchData.SelectToken("Mobile") != null)
+                mobile = searchData.SelectToken("Mobile").ToString();
+            if (searchData.SelectToken("Email") != null)
+                email = searchData.SelectToken("Email").ToString();
+            if (searchData.SelectToken("PaymentStatus") != null && !byte.TryParse(searchData.SelectToken("PaymentStatus").ToString(), out paymentStatus))
+                GenerateErrorResponse(400, string.Format("PaymentStatus must be a number"));
+            if (searchData.SelectToken("BillingMode") != null && !byte.TryParse(searchData.SelectToken("BillingMode").ToString(), out billingMode))
+                GenerateErrorResponse(400, string.Format("BillingMode must be a number"));
+            if (searchData.SelectToken("FromDateTime") != null && !DateTime.TryParse(searchData.SelectToken("FromDateTime").ToString(), out fromDateTime))
+                GenerateErrorResponse(400, string.Format("FromDateTime is not a valid datetime"));
+            if (searchData.SelectToken("ToDateTime") != null && !DateTime.TryParse(searchData.SelectToken("ToDateTime").ToString(), out toDateTime))
+                GenerateErrorResponse(400, string.Format("ToDateTime is not a valid datetime"));
+            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            client.GetPayments(productId: productId, accountId: accountId, mobile: mobile, email: email, paymentStatus: paymentStatus,
+                number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime);
+        }
+        private void View(HttpContext context)
+        {
+            int orderId = 0;
+            byte productId = 0;
+            if (context.Request["OrderId"] != null && !int.TryParse(context.Request["OrderId"].ToString(), out orderId))
+                GenerateErrorResponse(400, "OrderId value must be a number");
+            if (context.Request["ProductId"] != null && !byte.TryParse(context.Request["ProductId"].ToString(), out productId))
+                GenerateErrorResponse(400, "ProductId value must be a number");
+
+            TablePreferences PaymentDetailsTablePreferences = new TablePreferences("", "", true, false);
+            Dictionary<string, TablePreferences> PaymentDetailsDictionary = new Dictionary<string, TablePreferences>();
+            PaymentDetailsDictionary.Add("PaymentDetails", PaymentDetailsTablePreferences);
+            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            context.Response.Write(client.GetPaymentDetails(productId, orderId, PaymentDetailsDictionary));
         }
         private void GenerateErrorResponse(int statusCode, string message)
         {

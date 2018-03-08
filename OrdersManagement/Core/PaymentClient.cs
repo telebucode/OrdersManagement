@@ -90,7 +90,6 @@ namespace OrdersManagement.Core
                 this.Clean();
             }
         }
-
         internal dynamic GetPaymentGateways(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
@@ -118,12 +117,68 @@ namespace OrdersManagement.Core
                 this.Clean();
             }
         }
+        internal dynamic GetOnlinePaymentGateways(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.GET_ONLINE_PAYMENT_GATEWAYS, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = onlyActive;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.ONLINE_PAYMENT_GATEWAYS;
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, tablePreferences);
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to fetch OnliePaymentGateways. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to fetch OnliePaymentGateways. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+        internal dynamic GetPaymentStatuses(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.GET_PAYMENT_STATUSES, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = onlyActive;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.PAYMENT_STATUSES;
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, tablePreferences);
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to fetch OnliePaymentGateways. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to fetch OnliePaymentGateways. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+       
 
-        public dynamic GeneratePayment(int productId, int accountId, int employeeId, int invoiceId,int billingModeId, 
+        public dynamic CreatePayment(int productId, int accountId, int employeeId, int invoiceId,int billingModeId, 
             int paymentGatewayId, float paymentAmount, int bankAccountId, DateTime depositeDate, int activatePercentage, 
             string comments,bool isTDSApplicable,int tdsPercentage,string chequeNumber,string attachments,string transactionNumber,
-            string clientAccountNumber,string clientAccountName,string clientBankName,string clientBankBranch,int onlinePaymentGatewayId,
-            string paymentGatewayReferenceId,Dictionary<string, TablePreferences> tablePreferences = null)
+            string clientAccountNumber,string clientAccountName,string clientBankName,string clientBankBranch,
+            int onlinePaymentGatewayId,string paymentGatewayReferenceId,
+            Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
@@ -156,8 +211,6 @@ namespace OrdersManagement.Core
                 this._da.Fill(this._ds = new DataSet());
                 if (!this._sqlCommand.IsSuccess())
                     return this.ErrorResponse();
-                if (this._ds.Tables.Count > 0)
-                    this._ds.Tables[0].TableName = Label.PAYMENT_GATEWAYS;
                 this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
                 this._helper.ParseDataSet(this._ds, tablePreferences);
                 return this._helper.GetResponse();
@@ -173,19 +226,28 @@ namespace OrdersManagement.Core
             }
         }
 
-        internal dynamic GetOnlinePaymentGateways(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        internal dynamic GetPayments(byte productId,int accountId,string mobile,string email,int paymentStatus,
+            string number,byte billingMode,DateTime fromDateTime,DateTime toDateTime, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
-                this._sqlCommand = new SqlCommand(StoredProcedure.GET_ONLINE_PAYMENT_GATEWAYS, this._sqlConnection);
-                this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = onlyActive;
+                this._sqlCommand = new SqlCommand(StoredProcedure.GET_PAYMENTS, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_ID , SqlDbType.TinyInt).Value = productId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ACCOUNT_ID , SqlDbType.Int).Value = accountId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.MOBILE, SqlDbType.VarChar,15).Value = mobile;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.EMAIL, SqlDbType.VarChar, 126).Value = email;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PAYMENT_STATUS , SqlDbType.TinyInt).Value = paymentStatus;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.NUMBER, SqlDbType.Int).Value = number;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.BILLING_MODE_ID, SqlDbType.Int).Value = billingMode;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.FROM_DATE_TIME, SqlDbType.DateTime).Value = fromDateTime;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.TO_DATE_TIME, SqlDbType.DateTime).Value = toDateTime;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());
                 if (!this._sqlCommand.IsSuccess())
                     return this.ErrorResponse();
                 if (this._ds.Tables.Count > 0)
-                    this._ds.Tables[0].TableName = Label.PAYMENT_GATEWAYS;
+                    this._ds.Tables[0].TableName = Label.PAYMENTS;
                 this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
                 this._helper.ParseDataSet(this._ds, tablePreferences);
                 return this._helper.GetResponse();
@@ -200,7 +262,39 @@ namespace OrdersManagement.Core
                 this.Clean();
             }
         }
+
+
+        internal dynamic GetPaymentDetails(byte productId,int orderId, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.GET_PAYMENT_DETAILS, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ORDER_ID, SqlDbType.Int).Value = orderId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_ID, SqlDbType.TinyInt).Value = productId;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.PAYMENT_DETAILS;
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, tablePreferences);
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to fetch QuotationStatuses. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to fetch QuotationStatuses. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+        
         #endregion
     }
 }
+
 

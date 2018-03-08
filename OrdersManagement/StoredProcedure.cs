@@ -42,6 +42,13 @@ namespace OrdersManagement
         internal const string GET_PAYMENT_GATEWAYS = "GetPaymentGateways";
         internal const string GET_ONLINE_PAYMENT_GATEWAYS = "GetOnlinePaymentGateways";
         internal const string CREATE_PAYMENT = "CreatePayment";
+        internal const string GET_PAYMENTS = "GetPayments";
+        internal const string GET_PAYMENT_STATUSES = "GetPaymentStatuses";
+        internal const string GET_PAYMENT_DETAILS = "GetPaymentDetails";
+        #endregion
+        #region Orders Related
+        internal const string GET_ORDER_STATUSES = "GetOrderStatuses";
+        internal const string GET_ORDERS = "GetOrders";
         #endregion
         internal const string GET_BILLING_MODES = "GetBillingModes";
     }
