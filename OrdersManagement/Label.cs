@@ -77,6 +77,12 @@ namespace OrdersManagement
 
         internal const string BANK_ACCOUNTS = "BankAccounts";
         internal const string PAYMENT_GATEWAYS = "PaymentGateways";
+        internal const string ONLINE_PAYMENT_GATEWAYS = "OnlinePaymentGateways";
+        internal const string PAYMENT_STATUSES = "PaymentStatuses";
+        internal const string ORDER_STATUSES = "PaymentStatuses";
+        internal const string PAYMENTS = "Payments";
+        internal const string PAYMENT_DETAILS = "PaymentDetails";
+        internal const string ORDERS = "Orders";
 
         #region LOG_4_NET_RELATED
             internal const string LOG_NAME = "LogName";

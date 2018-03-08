@@ -57,6 +57,7 @@
     <Compile Include="Core\Client.cs" />
     <Compile Include="Core\GenericClient.cs" />
     <Compile Include="Core\InvoiceClient.cs" />
+    <Compile Include="Core\OrdersClient.cs" />
     <Compile Include="Core\PaymentClient.cs" />
     <Compile Include="Core\QuotationClient.cs" />
     <Compile Include="Core\ServiceClient.cs" />

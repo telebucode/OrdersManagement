@@ -61,6 +61,9 @@ namespace OrdersManagement
         internal const string CLIENT_BANK_BRANCH = "@ClientBankBranch";
         internal const string ONLINE_PAYMENT_GATEWAY_ID = "@OnlinePaymentGatewayId";
         internal const string PAYMENT_GATEWAY_REFERENCE_ID = "@PaymentGatewayReferenceId";
+        internal const string PAYMENT_STATUS = "@PaymentStatus";
+        internal const string NUMBER = "@Number";
+        internal const string ORDER_ID = "@OrderId";
 
         internal const string SUCCESS = "@Success";
         internal const string MESSAGE = "@Message";

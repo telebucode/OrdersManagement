@@ -322,14 +322,14 @@ namespace OrdersManagement.Core
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);
             return paymentsClient.GetPaymentGateways(onlyActive: onlyActive, tablePreferences: tablePreferences);
         }
-        public dynamic GeneratePayment(int productId,int accountId,int employeeId,int invoiceId,int billingModeId,
+        public dynamic CreatePayment(int productId, int accountId, int employeeId, int invoiceId, int billingModeId,
             int paymentGatewayId,float paymentAmount,int bankAccountId,DateTime depositeDate,int activatePercentage,
             string comments,bool isTDSApplicable,int tdsPercentage,string chequeNumber,string attachments,string transactionNumber,
             string clientAccountNumber,string clientAccountName,string clientBankName,string clientBankBranch,int onlinePaymentGatewayId,
             string paymentGatewayReferenceId)
         {
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);
-            return paymentsClient.GeneratePayment(productId: productId, accountId: accountId, employeeId: employeeId, 
+            return paymentsClient.CreatePayment(productId: productId, accountId: accountId, employeeId: employeeId, 
                 invoiceId: invoiceId,billingModeId:billingModeId, paymentGatewayId: paymentGatewayId, paymentAmount: paymentAmount,
                 bankAccountId: bankAccountId, depositeDate: depositeDate, activatePercentage: activatePercentage, 
                 comments: comments,isTDSApplicable:isTDSApplicable,tdsPercentage:tdsPercentage,chequeNumber:chequeNumber,
@@ -340,6 +340,44 @@ namespace OrdersManagement.Core
         {
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);
             return paymentsClient.GetOnlinePaymentGateways(onlyActive: onlyActive, tablePreferences: tablePreferences);
+        }
+        public dynamic GetPaymentStatuses(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            PaymentClient paymentsClient = new PaymentClient(ref this._helper);
+            return paymentsClient.GetPaymentStatuses(onlyActive: onlyActive, tablePreferences: tablePreferences);
+        }
+        
+
+        public dynamic GetPayments(byte productId,int accountId,string mobile,string email,int paymentStatus,string number,byte billingMode,DateTime fromDateTime,DateTime toDateTime,Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            PaymentClient paymentsClient = new PaymentClient(ref this._helper);
+            return paymentsClient.GetPayments(productId:productId,accountId:accountId,mobile:mobile,email:email,
+                paymentStatus:paymentStatus,number:number,billingMode:billingMode,fromDateTime:fromDateTime,toDateTime:toDateTime, 
+                tablePreferences: tablePreferences);
+        }
+
+        public dynamic GetPaymentDetails(byte productId,int orderId, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            PaymentClient paymentsClient = new PaymentClient(ref this._helper);
+            return paymentsClient.GetPaymentDetails(productId:productId,orderId:orderId, tablePreferences: tablePreferences);
+        }
+
+        #endregion
+
+        #region Orders Related
+
+        public dynamic GetOrderStatuses(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            OrdersClient ordersClient = new OrdersClient(ref this._helper);
+            return ordersClient.GetOrderStatuses(onlyActive: onlyActive, tablePreferences: tablePreferences);
+        }
+
+        public dynamic GetOrders(byte productId, int accountId, string mobile, string email, int paymentStatus, string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            OrdersClient paymentsClient = new OrdersClient(ref this._helper);
+            return paymentsClient.GetOrders(productId: productId, accountId: accountId, mobile: mobile, email: email,
+                paymentStatus: paymentStatus, number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime,
+                tablePreferences: tablePreferences);
         }
 
         #endregion
