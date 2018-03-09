@@ -237,7 +237,7 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.MOBILE, SqlDbType.VarChar,15).Value = mobile;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.EMAIL, SqlDbType.VarChar, 126).Value = email;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PAYMENT_STATUS , SqlDbType.TinyInt).Value = paymentStatus;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.NUMBER, SqlDbType.Int).Value = number;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.NUMBER, SqlDbType.VarChar,32).Value = number;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.BILLING_MODE_ID, SqlDbType.Int).Value = billingMode;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.FROM_DATE_TIME, SqlDbType.DateTime).Value = fromDateTime;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.TO_DATE_TIME, SqlDbType.DateTime).Value = toDateTime;

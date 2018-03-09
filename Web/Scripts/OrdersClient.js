@@ -12,7 +12,7 @@
                 quotationsHandler: "/AjaxHandlers/Quotation.ashx",
                 invoicesHandler: "/AjaxHandlers/Invoice.ashx",
                 paymentsHandler: "/AjaxHandlers/Payments.ashx",
-                activationsHandler: "/AjaxHandlers/Activation.ashx",
+                ordersHandler: "/AjaxHandlers/Orders.ashx",
                 genericHandler: "/AjaxHandlers/Generic.ashx",
                 async: true
             }
@@ -1002,7 +1002,7 @@
                 data:
                     {
                         "Action": "Search",
-                        "SearchData": searchData
+                        "SearchData": JSON.stringify(searchData)
                     },
                 success: function (response) {
                     actionResponse = response;
