@@ -60,9 +60,15 @@
             searchData.BillingMode = 1;
             searchData.FromDateTime = '2018-01-01';
             searchData.ToDateTime = '2018-03-30';
-            getOrders(searchData);
-            function getOrders(ordersSearchData) {
-                ordersClient.GetOrders(ordersSearchData, function (res) {
+            //getOrders(searchData);
+            //function getOrders(ordersSearchData) {
+            //    ordersClient.GetOrders(ordersSearchData, function (res) {
+            //        console.log(res);
+            //    });
+            //}
+            getPayments(searchData);
+            function getPayments(ordersSearchData) {
+                ordersClient.GetPayments(ordersSearchData, function (res) {
                     console.log(res);
                 });
             }
