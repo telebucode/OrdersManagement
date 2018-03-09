@@ -129,7 +129,7 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("InvoiceId must be a number"));
             if (paymentData.SelectToken("AccountId") != null && !int.TryParse(paymentData.SelectToken("AccountId").ToString(), out accountId))
                 GenerateErrorResponse(400, string.Format("AccountId must be a number"));
-            if (paymentData.SelectToken("BillingModeId") != null && !int.TryParse(paymentData.SelectToken("BillingModeId").ToString(), out billingModeId))
+             if (paymentData.SelectToken("BillingModeId") != null && !int.TryParse(paymentData.SelectToken("BillingModeId").ToString(), out billingModeId))
                 GenerateErrorResponse(400, string.Format("BillingModeId must be a number"));
             if (paymentData.SelectToken("PaymentGatewayId") != null && !int.TryParse(paymentData.SelectToken("PaymentGatewayId").ToString(), out paymentGatewayId))
                 GenerateErrorResponse(400, string.Format("PaymentGatewayId must be a number"));
@@ -167,8 +167,8 @@ namespace Web.AjaxHandlers
                 paymentGatewayReferenceId = paymentData.SelectToken("PaymentGatewayReferenceId").ToString();
             Client client = new Client(responseFormat: ResponseFormat.JSON);
             context.Response.Write(client.CreatePayment(productId: productId, accountId: accountId, employeeId: employeeId,
-           invoiceId: invoiceId, billingModeId: billingModeId, paymentGatewayId: paymentGatewayId, paymentAmount: paymentAmount,
-           bankAccountId: bankAccountId, depositeDate: depositeDate, activatePercentage: activatePercentage,
+                invoiceId: invoiceId, billingModeId: billingModeId, paymentGatewayId: paymentGatewayId, paymentAmount: paymentAmount,
+                bankAccountId: bankAccountId, depositeDate: depositeDate, activatePercentage: activatePercentage, 
            comments: comments, isTDSApplicable: isTDSApplicable, tdsPercentage: tdsPercentage, chequeNumber: chequeNumber, attachments: attachments,
            transactionNumber: transactionNumber, clientAccountNumber: clientAccountNumber, clientAccountName: clientAccountName,
            clientBankName: clientBankName, clientBankBranch: clientBankBranch, onlinePaymentGatewayId: onlinePaymentGatewayId,
