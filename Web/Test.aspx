@@ -18,12 +18,12 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var ordersClient = new OrdersClient({ async: true });
-            ordersClient.GetBankAccounts(true, function (res) {
-                console.log(res);
-            });
-            ordersClient.GetPaymentGateways(true, function (res) {
-                console.log(res);
-            });
+            //ordersClient.GetBankAccounts(true, function (res) {
+            //    console.log(res);
+            //});
+            //ordersClient.GetPaymentGateways(true, function (res) {
+            //    console.log(res);
+            //});
             //ordersClient.ViewQuotation(4012, false, function (res) {
             //    console.log(res);
             //    $("#Services").html(res);
@@ -54,6 +54,24 @@
             //    console.log(res);
             //    $("#Services").html(res);
             //});
+            var searchData = {};
+            searchData.ProductId = 1;
+            searchData.AccountId = 1;
+            searchData.BillingMode = 1;
+            searchData.FromDateTime = '2018-01-01';
+            searchData.ToDateTime = '2018-03-30';
+            //getOrders(searchData);
+            //function getOrders(ordersSearchData) {
+            //    ordersClient.GetOrders(ordersSearchData, function (res) {
+            //        console.log(res);
+            //    });
+            //}
+            getPayments(searchData);
+            function getPayments(ordersSearchData) {
+                ordersClient.GetPayments(ordersSearchData, function (res) {
+                    console.log(res);
+                });
+            }
         });
     </script>
 </body>

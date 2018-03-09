@@ -89,8 +89,8 @@ namespace Web.AjaxHandlers
             if (searchData.SelectToken("ToDateTime") != null && !DateTime.TryParse(searchData.SelectToken("ToDateTime").ToString(), out toDateTime))
                 GenerateErrorResponse(400, string.Format("ToDateTime is not a valid datetime"));
             Client client = new Client(responseFormat: ResponseFormat.JSON);
-            client.GetOrders(productId: productId, accountId: accountId, mobile: mobile, email: email, paymentStatus: paymentStatus,
-                number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime);
+            context.Response.Write(client.GetOrders(productId: productId, accountId: accountId, mobile: mobile, email: email, paymentStatus: paymentStatus,
+                number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime));
         }
 
         private void GenerateErrorResponse(int statusCode, string message)
