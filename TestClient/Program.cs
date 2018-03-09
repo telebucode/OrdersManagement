@@ -29,7 +29,7 @@ namespace TestClient
                 //dynamic d = c.GetServiceProperties(1, true, null);
                 //dynamic d = c.GetServices(productId: 1, includeServiceProperties: true, serviceId: 1);
                 //dynamic d1 = c.GetQuotationDetails(1, false);
-                dynamic d = c.UpdateQuotation(4038, 1, "{'Balance':[{'Id':'4075','Occurance':'1','Amount':'1001','PPPS':'1','PromotionalPulse/Voi':'1','TPPS':'1','TransactionalPulse/V':'1','ValidityInDays':'10','ExtraCharges':[{'Description':'Rental','Amount':'10'},{'Description':'Description','Amount':'20'},{'Description':'Rent','Amount':'30'}]},{'Id':'4076','Occurance':'2','Amount':'2002','PPPS':'2','PromotionalPulse/Voi':'2','TPPS':'2','TransactionalPulse/V':'2','ValidityInDays':'20'}]}", "", 1);
+                dynamic d = c.GetPaymentStatuses(true, null);
                 //Console.WriteLine(d.ToString());
             }
             catch (ClientInitializationException e)
