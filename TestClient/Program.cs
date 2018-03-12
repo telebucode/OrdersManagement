@@ -29,7 +29,7 @@ namespace TestClient
                 //dynamic d = c.GetServiceProperties(1, true, null);
                 //dynamic d = c.GetServices(productId: 1, includeServiceProperties: true, serviceId: 1);
                 //dynamic d1 = c.GetQuotationDetails(1, false);
-                dynamic d = c.GetPaymentStatuses(true, null);
+                dynamic d = c.GetOrderSummary(1, null);
                 //Console.WriteLine(d.ToString());
             }
             catch (ClientInitializationException e)

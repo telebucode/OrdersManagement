@@ -25,28 +25,36 @@ namespace Web.AjaxHandlers
                 context.Response.Write(errorJSon);
                 context.Response.End();
             }
-             try
-             {
-                 switch (context.Request["Action"].ToString())
-                 {
-                     case "GetOrderStatuses":
-                         GetOrderStatuses(context);
-                         break;
-                     case "Search":
-                         Search(context);
-                         break;
-                 }
-             }
-             catch (System.Threading.ThreadAbortException e)
-             { }
-             catch (OrdersManagement.Exceptions.QuotationException e)
-             {
-                 GenerateErrorResponse(500, e.Message);
-             }
-             catch (Exception e)
-             {
-                 GenerateErrorResponse(500, e.Message);
-             }
+            try
+            {
+                switch (context.Request["Action"].ToString())
+                {
+                    case "GetOrderStatuses":
+                        GetOrderStatuses(context);
+                        break;
+                    case "Search":
+                        Search(context);
+                        break;
+                }
+            }
+            catch (System.Threading.ThreadAbortException e)
+            { }
+            catch (OrdersManagement.Exceptions.QuotationException e)
+            {
+                GenerateErrorResponse(500, e.Message);
+            }
+            catch (Exception e)
+            {
+                GenerateErrorResponse(500, e.Message);
+            }
+        }
+        private void GetOrderSummary(HttpContext context)
+        {
+            int quotationId = 0;
+            if (context.Request["QuotationId"] != null && !int.TryParse(context.Request["OnlyActive"].ToString(), out quotationId))
+                GenerateErrorResponse(400, string.Format("OnlyActive value ({0}) is not a valid boolean value", context.Request["OnlyActive"].ToString()));
+            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            context.Response.Write(client.GetOrderSummary(quotationId));
         }
         private void GetOrderStatuses(HttpContext context)
         {
@@ -67,7 +75,7 @@ namespace Web.AjaxHandlers
             byte billingMode = 0;
             DateTime fromDateTime = DateTime.Now.Date;
             DateTime toDateTime = DateTime.Now.AddDays(1).AddTicks(-1);
-            
+
             JObject searchData = new JObject();
             searchData = JObject.Parse(context.Request["SearchData"].ToString());
             if (searchData.SelectToken("ProductId") != null && !byte.TryParse(searchData.SelectToken("ProductId").ToString(), out productId))

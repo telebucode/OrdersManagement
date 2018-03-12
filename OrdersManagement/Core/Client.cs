@@ -371,6 +371,11 @@ namespace OrdersManagement.Core
 
         #region Orders Related
 
+        public dynamic GetOrderSummary(int quotationId, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            OrdersClient ordersClient = new OrdersClient(ref this._helper);
+            return ordersClient.GetOrderSummary(quotationId: quotationId, tablePreferences: tablePreferences);
+        }
         public dynamic GetOrderStatuses(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             OrdersClient ordersClient = new OrdersClient(ref this._helper);

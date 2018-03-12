@@ -50,6 +50,7 @@ namespace OrdersManagement
         #region Orders Related
         internal const string GET_ORDER_STATUSES = "GetOrderStatuses";
         internal const string GET_ORDERS = "GetOrders";
+        internal const string GET_ORDER_SUMMARY = "GetOrderSummary";
         #endregion
         #region PRODUCTS RELATED
         internal const string GET_PRODUCTS = "GetProducts"; 
