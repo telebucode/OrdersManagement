@@ -271,10 +271,13 @@ namespace OrdersManagement
                                     {
                                         //rowJObj.Add(new JProperty(column.ColumnName, columnValue));
                                         bool boolResult = false;
+                                        long longResult = 0;
                                         int intResult = 0;
                                         float floatResult = 0;
                                         if (column.ColumnName.Equals(Label.SUCCESS, StringComparison.CurrentCultureIgnoreCase) || bool.TryParse(columnValue, out boolResult))
                                             rowJObj.Add(new JProperty(column.ColumnName, boolResult));
+                                        else if (long.TryParse(columnValue, out longResult))
+                                            rowJObj.Add(new JProperty(column.ColumnName, longResult));
                                         else if (int.TryParse(columnValue, out intResult))
                                             rowJObj.Add(new JProperty(column.ColumnName, intResult));
                                         else if (float.TryParse(columnValue, out floatResult))
@@ -338,9 +341,12 @@ namespace OrdersManagement
                                     {
                                         bool boolResult = false;
                                         int intResult = 0;
+                                        long longResult = 0;
                                         float floatResult = 0;
                                         if (column.ColumnName.Equals(Label.SUCCESS, StringComparison.CurrentCultureIgnoreCase) || bool.TryParse(columnValue, out boolResult))
                                             rowJObj.Add(new JProperty(column.ColumnName, boolResult));
+                                        else if (long.TryParse(columnValue, out longResult))
+                                            rowJObj.Add(new JProperty(column.ColumnName, longResult));
                                         else if (int.TryParse(columnValue, out intResult))
                                             rowJObj.Add(new JProperty(column.ColumnName, intResult));
                                         else if (float.TryParse(columnValue, out floatResult))
@@ -398,6 +404,7 @@ namespace OrdersManagement
         {
             bool boolResult = false;
             int intResult = 0;
+            long longResult = 0;
             float floatResult = 0;
             if (this._responseFormat.Equals(ResponseFormat.XML))
             {
@@ -420,6 +427,8 @@ namespace OrdersManagement
                         _jObj.AddFirst(new JProperty(key, boolResult));
                     else if (int.TryParse(value.ToString(), out intResult))
                         _jObj.AddFirst(new JProperty(key, intResult));
+                    else if (long.TryParse(value.ToString(), out longResult))
+                        _jObj.AddFirst(new JProperty(key, longResult));
                     else if (float.TryParse(value.ToString(), out floatResult))
                         _jObj.AddFirst(new JProperty(key, floatResult));
                     else
@@ -431,6 +440,8 @@ namespace OrdersManagement
                         _jObj.Add(new JProperty(key, boolResult));
                     else if (int.TryParse(value.ToString(), out intResult))
                         _jObj.Add(new JProperty(key, intResult));
+                    else if (long.TryParse(value.ToString(), out longResult))
+                        _jObj.Add(new JProperty(key, longResult));
                     else if (float.TryParse(value.ToString(), out floatResult))
                         _jObj.Add(new JProperty(key, floatResult));
                     else
@@ -442,6 +453,7 @@ namespace OrdersManagement
         {
             bool boolResult = false;
             int intResult = 0;
+            long longResult = 0;
             float floatResult = 0;
             if (isInsertFirst)
             {
@@ -449,6 +461,8 @@ namespace OrdersManagement
                     json.AddFirst(new JProperty(key, boolResult));
                 else if (int.TryParse(value.ToString(), out intResult))
                     json.AddFirst(new JProperty(key, intResult));
+                else if (long.TryParse(value.ToString(), out longResult))
+                    json.AddFirst(new JProperty(key, longResult));
                 else if (float.TryParse(value.ToString(), out floatResult))
                     json.AddFirst(new JProperty(key, floatResult));
                 else
@@ -460,6 +474,8 @@ namespace OrdersManagement
                     json.Add(new JProperty(key, boolResult));
                 else if (int.TryParse(value.ToString(), out intResult))
                     json.Add(new JProperty(key, intResult));
+                else if (long.TryParse(value.ToString(), out longResult))
+                    json.Add(new JProperty(key, longResult));
                 else if (float.TryParse(value.ToString(), out floatResult))
                     json.Add(new JProperty(key, floatResult));
                 else
