@@ -18,6 +18,9 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var ordersClient = new OrdersClient({ async: true });
+            ordersClient.CreateInvoice(1,1,1,function (res) {
+                console.log(res);
+            });
             //ordersClient.GetBankAccounts(true, function (res) {
             //    console.log(res);
             //});
