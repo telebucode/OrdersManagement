@@ -59,6 +59,7 @@
     <Compile Include="Core\InvoiceClient.cs" />
     <Compile Include="Core\OrdersClient.cs" />
     <Compile Include="Core\PaymentClient.cs" />
+    <Compile Include="Core\ProductsClient.cs" />
     <Compile Include="Core\QuotationClient.cs" />
     <Compile Include="Core\ServiceClient.cs" />
     <Compile Include="Exceptions\InvoiceException.cs" />

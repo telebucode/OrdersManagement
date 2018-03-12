@@ -382,6 +382,15 @@ namespace OrdersManagement.Core
 
         #endregion
 
+        // Products Related
+        #region 
+        public dynamic GetProducts(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            ProductsClient serviceClient = new ProductsClient(ref this._helper);
+            return serviceClient.GetProducts(onlyActive: onlyActive, tablePreferences: tablePreferences);
+        }
+        #endregion
+
         #region GENERIC
 
         public dynamic GetBillingModes(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)

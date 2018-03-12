@@ -50,6 +50,9 @@ namespace OrdersManagement
         internal const string GET_ORDER_STATUSES = "GetOrderStatuses";
         internal const string GET_ORDERS = "GetOrders";
         #endregion
+        #region PRODUCTS RELATED
+        internal const string GET_PRODUCTS = "GetProducts"; 
+        #endregion
         internal const string GET_BILLING_MODES = "GetBillingModes";
     }
 }

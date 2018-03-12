@@ -83,6 +83,7 @@ namespace OrdersManagement
         internal const string PAYMENTS = "Payments";
         internal const string PAYMENT_DETAILS = "PaymentDetails";
         internal const string ORDERS = "Orders";
+        internal const string PRODUCTS = "Products";
 
         #region LOG_4_NET_RELATED
             internal const string LOG_NAME = "LogName";
