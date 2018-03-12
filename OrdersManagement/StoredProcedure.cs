@@ -45,6 +45,7 @@ namespace OrdersManagement
         internal const string GET_PAYMENTS = "GetPayments";
         internal const string GET_PAYMENT_STATUSES = "GetPaymentStatuses";
         internal const string GET_PAYMENT_DETAILS = "GetPaymentDetails";
+        internal const string VERIFY_PAYMENT_STATUSES ="VerifyPaymentStatuses";
         #endregion
         #region Orders Related
         internal const string GET_ORDER_STATUSES = "GetOrderStatuses";

@@ -63,7 +63,7 @@ namespace OrdersManagement.Core
         /// <param name="onlyActive">Indicates whether to fetch only active services or all the services irrespective of their status.</param>
         /// <param name="tablePreferences">See Model.TablePreferences for details</param>
         /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
-        public dynamic  GetServices(byte productId = 0, short serviceId = 0, bool includeServiceProperties = false, bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GetServices(byte productId = 0, short serviceId = 0, bool includeServiceProperties = false, bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             ServiceClient serviceClient = new ServiceClient(ref this._helper);
             return serviceClient.GetServices(productId: productId, serviceId: serviceId, includeServiceProperties: includeServiceProperties, onlyActive: onlyActive, tablePreferences: tablePreferences);
@@ -211,7 +211,7 @@ namespace OrdersManagement.Core
         public dynamic GetQuotations(byte productId = 0, int quotationId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, string mobile = "", string email = "", Dictionary<string, TablePreferences> tablePreferences = null)
         {
             QuotationClient client = new QuotationClient(ref this._helper);
-            return client.Search(productId, quotationId, quotationNumber, accountId, employeeId, ownerShipId, statusId, channelId, ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, tablePreferences,mobile,email);
+            return client.Search(productId, quotationId, quotationNumber, accountId, employeeId, ownerShipId, statusId, channelId, ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, tablePreferences, mobile, email);
         }
         /// <summary>
         /// Creates a Quotation
@@ -323,18 +323,18 @@ namespace OrdersManagement.Core
             return paymentsClient.GetPaymentGateways(onlyActive: onlyActive, tablePreferences: tablePreferences);
         }
         public dynamic CreatePayment(int productId, int accountId, int employeeId, int invoiceId, int billingModeId,
-            int paymentGatewayId,float paymentAmount,int bankAccountId,DateTime depositeDate,int activatePercentage,
-            string comments,bool isTDSApplicable,int tdsPercentage,string chequeNumber,string attachments,string transactionNumber,
-            string clientAccountNumber,string clientAccountName,string clientBankName,string clientBankBranch,int onlinePaymentGatewayId,
+            int paymentGatewayId, float paymentAmount, int bankAccountId, DateTime depositeDate, int activatePercentage,
+            string comments, bool isTDSApplicable, int tdsPercentage, string chequeNumber, string attachments, string transactionNumber,
+            string clientAccountNumber, string clientAccountName, string clientBankName, string clientBankBranch, int onlinePaymentGatewayId,
             string paymentGatewayReferenceId)
         {
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);
-            return paymentsClient.CreatePayment(productId: productId, accountId: accountId, employeeId: employeeId, 
-                invoiceId: invoiceId,billingModeId:billingModeId, paymentGatewayId: paymentGatewayId, paymentAmount: paymentAmount,
-                bankAccountId: bankAccountId, depositeDate: depositeDate, activatePercentage: activatePercentage, 
-                comments: comments,isTDSApplicable:isTDSApplicable,tdsPercentage:tdsPercentage,chequeNumber:chequeNumber,
-                attachments:attachments,transactionNumber:transactionNumber,clientAccountNumber:clientAccountNumber,
-                clientAccountName:clientAccountName,clientBankName:clientBankName,clientBankBranch:clientBankBranch,onlinePaymentGatewayId:onlinePaymentGatewayId,paymentGatewayReferenceId:paymentGatewayReferenceId);
+            return paymentsClient.CreatePayment(productId: productId, accountId: accountId, employeeId: employeeId,
+                invoiceId: invoiceId, billingModeId: billingModeId, paymentGatewayId: paymentGatewayId, paymentAmount: paymentAmount,
+                bankAccountId: bankAccountId, depositeDate: depositeDate, activatePercentage: activatePercentage,
+                comments: comments, isTDSApplicable: isTDSApplicable, tdsPercentage: tdsPercentage, chequeNumber: chequeNumber,
+                attachments: attachments, transactionNumber: transactionNumber, clientAccountNumber: clientAccountNumber,
+                clientAccountName: clientAccountName, clientBankName: clientBankName, clientBankBranch: clientBankBranch, onlinePaymentGatewayId: onlinePaymentGatewayId, paymentGatewayReferenceId: paymentGatewayReferenceId);
         }
         public dynamic GetOnlinePaymentGateways(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
         {
@@ -346,20 +346,25 @@ namespace OrdersManagement.Core
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);
             return paymentsClient.GetPaymentStatuses(onlyActive: onlyActive, tablePreferences: tablePreferences);
         }
-        
 
-        public dynamic GetPayments(byte productId,int accountId,string mobile,string email,int paymentStatus,string number,byte billingMode,DateTime fromDateTime,DateTime toDateTime,Dictionary<string, TablePreferences> tablePreferences = null)
+
+        public dynamic GetPayments(byte productId, int accountId, string mobile, string email, int paymentStatus, string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);
-            return paymentsClient.GetPayments(productId:productId,accountId:accountId,mobile:mobile,email:email,
-                paymentStatus:paymentStatus,number:number,billingMode:billingMode,fromDateTime:fromDateTime,toDateTime:toDateTime, 
+            return paymentsClient.GetPayments(productId: productId, accountId: accountId, mobile: mobile, email: email,
+                paymentStatus: paymentStatus, number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime,
                 tablePreferences: tablePreferences);
         }
 
-        public dynamic GetPaymentDetails(byte productId,int orderId, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GetPaymentDetails(byte productId, int orderId, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);
-            return paymentsClient.GetPaymentDetails(productId:productId,orderId:orderId, tablePreferences: tablePreferences);
+            return paymentsClient.GetPaymentDetails(productId: productId, orderId: orderId, tablePreferences: tablePreferences);
+        }
+        public dynamic VerifyPaymentStatuses(long orderId, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            PaymentClient paymentsClient = new PaymentClient(ref this._helper);
+            return paymentsClient.VerifyPaymentStatuses(orderId: orderId, tablePreferences: tablePreferences);
         }
 
         #endregion
@@ -383,7 +388,7 @@ namespace OrdersManagement.Core
         #endregion
 
         // Products Related
-        #region 
+        #region
         public dynamic GetProducts(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             ProductsClient serviceClient = new ProductsClient(ref this._helper);

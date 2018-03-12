@@ -63,7 +63,7 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(500, e.Message);
             }
         }
-        
+
         private void GetBankAccounts(HttpContext context)
         {
             bool onlyActive = true;
@@ -129,7 +129,7 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("InvoiceId must be a number"));
             if (paymentData.SelectToken("AccountId") != null && !int.TryParse(paymentData.SelectToken("AccountId").ToString(), out accountId))
                 GenerateErrorResponse(400, string.Format("AccountId must be a number"));
-             if (paymentData.SelectToken("BillingModeId") != null && !int.TryParse(paymentData.SelectToken("BillingModeId").ToString(), out billingModeId))
+            if (paymentData.SelectToken("BillingModeId") != null && !int.TryParse(paymentData.SelectToken("BillingModeId").ToString(), out billingModeId))
                 GenerateErrorResponse(400, string.Format("BillingModeId must be a number"));
             if (paymentData.SelectToken("PaymentGatewayId") != null && !int.TryParse(paymentData.SelectToken("PaymentGatewayId").ToString(), out paymentGatewayId))
                 GenerateErrorResponse(400, string.Format("PaymentGatewayId must be a number"));
@@ -168,7 +168,7 @@ namespace Web.AjaxHandlers
             Client client = new Client(responseFormat: ResponseFormat.JSON);
             context.Response.Write(client.CreatePayment(productId: productId, accountId: accountId, employeeId: employeeId,
                 invoiceId: invoiceId, billingModeId: billingModeId, paymentGatewayId: paymentGatewayId, paymentAmount: paymentAmount,
-                bankAccountId: bankAccountId, depositeDate: depositeDate, activatePercentage: activatePercentage, 
+                bankAccountId: bankAccountId, depositeDate: depositeDate, activatePercentage: activatePercentage,
            comments: comments, isTDSApplicable: isTDSApplicable, tdsPercentage: tdsPercentage, chequeNumber: chequeNumber, attachments: attachments,
            transactionNumber: transactionNumber, clientAccountNumber: clientAccountNumber, clientAccountName: clientAccountName,
            clientBankName: clientBankName, clientBankBranch: clientBankBranch, onlinePaymentGatewayId: onlinePaymentGatewayId,
@@ -182,7 +182,7 @@ namespace Web.AjaxHandlers
             string email = string.Empty;
             string number = string.Empty;
             byte paymentStatus = 0;
-            byte billingMode  = 0;
+            byte billingMode = 0;
             DateTime fromDateTime = DateTime.Now.Date;
             DateTime toDateTime = DateTime.Now.AddDays(1).AddTicks(-1);
             JObject searchData = new JObject();
@@ -223,6 +223,16 @@ namespace Web.AjaxHandlers
             PaymentDetailsDictionary.Add("PaymentDetails", PaymentDetailsTablePreferences);
             Client client = new Client(responseFormat: ResponseFormat.JSON);
             context.Response.Write(client.GetPaymentDetails(productId, orderId, PaymentDetailsDictionary));
+        }
+        private void VerifyPaymentStatus(HttpContext context)
+        {
+            long orderId = 0;
+
+            if (context.Request["OrderId"] != null && !Int64.TryParse(context.Request["OrderId"].ToString(), out orderId))
+                GenerateErrorResponse(400, "OrderId value must be a number");
+
+            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            context.Response.Write(client.VerifyPaymentStatuses(orderId, null));
         }
         private void GenerateErrorResponse(int statusCode, string message)
         {
