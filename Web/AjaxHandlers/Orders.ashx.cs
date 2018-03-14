@@ -71,7 +71,7 @@ namespace Web.AjaxHandlers
             string mobile = string.Empty;
             string email = string.Empty;
             string number = string.Empty;
-            byte paymentStatus = 0;
+            byte orderStatus = 0;
             byte billingMode = 0;
             DateTime fromDateTime = DateTime.Now.Date;
             DateTime toDateTime = DateTime.Now.AddDays(1).AddTicks(-1);
@@ -88,7 +88,7 @@ namespace Web.AjaxHandlers
                 mobile = searchData.SelectToken("Mobile").ToString();
             if (searchData.SelectToken("Email") != null)
                 email = searchData.SelectToken("Email").ToString();
-            if (searchData.SelectToken("PaymentStatus") != null && !byte.TryParse(searchData.SelectToken("PaymentStatus").ToString(), out paymentStatus))
+            if (searchData.SelectToken("OrderStatus") != null && !byte.TryParse(searchData.SelectToken("OrderStatus").ToString(), out orderStatus))
                 GenerateErrorResponse(400, string.Format("PaymentStatus must be a number"));
             if (searchData.SelectToken("BillingMode") != null && !byte.TryParse(searchData.SelectToken("BillingMode").ToString(), out billingMode))
                 GenerateErrorResponse(400, string.Format("BillingMode must be a number"));
@@ -97,7 +97,7 @@ namespace Web.AjaxHandlers
             if (searchData.SelectToken("ToDateTime") != null && !DateTime.TryParse(searchData.SelectToken("ToDateTime").ToString(), out toDateTime))
                 GenerateErrorResponse(400, string.Format("ToDateTime is not a valid datetime"));
             Client client = new Client(responseFormat: ResponseFormat.JSON);
-            context.Response.Write(client.GetOrders(productId: productId, accountId: accountId, mobile: mobile, email: email, paymentStatus: paymentStatus,
+            context.Response.Write(client.GetOrders(productId: productId, accountId: accountId, mobile: mobile, email: email, orderStatus: orderStatus,
                 number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime));
         }
 

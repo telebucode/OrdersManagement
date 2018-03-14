@@ -10,6 +10,8 @@ using System.Data.SqlClient;
 using OrdersManagement.Model;
 using OrdersManagement.Exceptions;
 using Newtonsoft.Json.Linq;
+using System.Net;
+using System.IO;
 
 namespace OrdersManagement.Core
 {
@@ -72,7 +74,36 @@ namespace OrdersManagement.Core
         #endregion
 
         #region INTERNAL METHODS
-
+        internal dynamic ActivateOrder(string metaData,string activationUrl,Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                CredentialCache credentials = new CredentialCache();
+                credentials.Add(uriPrefix: new Uri(activationUrl), authType: "Basic", cred: new NetworkCredential("smscountry", "smsc"));
+                WebRequest request = (HttpWebRequest)WebRequest.Create(activationUrl);
+                var data = Encoding.ASCII.GetBytes(metaData);
+                request.Method = "POST";
+                request.Credentials = credentials;
+                request.ContentType = "application/x-www-form-urlencoded";
+                request.ContentLength = data.Length;
+                using (var stream = request.GetRequestStream())
+                {
+                    stream.Write(data, 0, data.Length);
+                }
+                var response = (HttpWebResponse)request.GetResponse();
+                var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                return JObject.Parse(responseString);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to fetch OrderSummary. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to fetch OrderSummary. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
         internal dynamic GetOrderSummary(int quotationId, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
@@ -119,7 +150,7 @@ namespace OrdersManagement.Core
             }
             catch (Exception e)
             {
-                Logger.Error(string.Format("Unable to fetch OnliePaymentGateways. {0}", e.ToString()));
+                Logger.Error(string.Format("Unable to fetch Order Statuses. {0}", e.ToString()));
                 throw new QuotationException(string.Format("Unable to fetch OnliePaymentGateways. {0}", e.Message));
             }
             finally
@@ -128,17 +159,19 @@ namespace OrdersManagement.Core
             }
         }
 
-        internal dynamic GetOrders(byte productId, int accountId, string mobile, string email, int paymentStatus,
-            string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, Dictionary<string, TablePreferences> tablePreferences = null)
+        internal dynamic GetOrders(byte productId, int accountId, string mobile, string email, int orderStatus,
+            string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, string accountName,
+            Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
                 this._sqlCommand = new SqlCommand(StoredProcedure.GET_ORDERS, this._sqlConnection);
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_ID, SqlDbType.TinyInt).Value = productId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.ACCOUNT_ID, SqlDbType.Int).Value = accountId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ACCOUNT_NAME, SqlDbType.Int).Value = accountName;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.MOBILE, SqlDbType.VarChar, 15).Value = mobile;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.EMAIL, SqlDbType.VarChar, 126).Value = email;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.PAYMENT_STATUS, SqlDbType.TinyInt).Value = paymentStatus;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ORDER_STATUS_ID, SqlDbType.TinyInt).Value = orderStatus;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.NUMBER, SqlDbType.VarChar, 32).Value = number;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.BILLING_MODE_ID, SqlDbType.TinyInt).Value = billingMode;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.FROM_DATE_TIME, SqlDbType.DateTime).Value = fromDateTime;
@@ -156,7 +189,7 @@ namespace OrdersManagement.Core
             }
             catch (Exception e)
             {
-                Logger.Error(string.Format("Unable to fetch OnliePaymentGateways. {0}", e.ToString()));
+                Logger.Error(string.Format("Unable to fetch Orders. {0}", e.ToString()));
                 throw new QuotationException(string.Format("Unable to fetch OnliePaymentGateways. {0}", e.Message));
             }
             finally

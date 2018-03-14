@@ -23,6 +23,7 @@ namespace OrdersManagement
         internal const string QUOTATION_ID = "@QuotationId";
         internal const string QUOTATION_NUMBER = "@QuotationNumber";
         internal const string ACCOUNT_ID = "@AccountId";
+        internal const string ACCOUNT_NAME = "@AccountName";
         internal const string EMPLOYEE_ID = "@EmployeeId";
         internal const string OWNERSHIP_ID = "@OwnerShipId";
         internal const string STATUS_ID = "@StatusId";
@@ -63,6 +64,7 @@ namespace OrdersManagement
         internal const string ONLINE_PAYMENT_GATEWAY_ID = "@OnlinePaymentGatewayId";
         internal const string PAYMENT_GATEWAY_REFERENCE_ID = "@PaymentGatewayReferenceId";
         internal const string PAYMENT_STATUS = "@PaymentStatus";
+        internal const string ORDER_STATUS_ID = "@OrderStatusId";
         internal const string NUMBER = "@Number";
         internal const string ORDER_ID = "@OrderId";
 
