@@ -235,7 +235,7 @@ namespace OrdersManagement.Core
                 this._sqlCommand = new SqlCommand(StoredProcedure.GET_PAYMENTS, this._sqlConnection);
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_ID, SqlDbType.TinyInt).Value = productId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.ACCOUNT_ID, SqlDbType.Int).Value = accountId;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.ACCOUNT_NAME, SqlDbType.Int).Value = accountName;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ACCOUNT_NAME, SqlDbType.VarChar, 128).Value = accountName;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.MOBILE, SqlDbType.VarChar, 15).Value = mobile;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.EMAIL, SqlDbType.VarChar, 126).Value = email;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PAYMENT_STATUS, SqlDbType.TinyInt).Value = paymentStatus;
