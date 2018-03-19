@@ -31,6 +31,8 @@ namespace OrdersManagement
         internal const string VIEW_QUOTATION = "ViewQuotation";
         internal const string VIEW_OR_DOWNLOAD_QUOTATION = "ViewOrDownloadQuotation";
         internal const string VIEW_OR_DOWNLOAD_INVOICE = "ViewOrDownloadInvoice";
+        internal const string GET_QUOTATION_SERVICES = "GetQuotationServices";
+        internal const string GET_QUOTATION_SERVICE_PROPERTIES = "GetQuotationServiceProperties";
         #endregion
         #region INVOICE RELATED
         internal const string GET_INVOICE_STATUSES = "GetInvoiceStatuses";
@@ -51,6 +53,7 @@ namespace OrdersManagement
         internal const string GET_ORDER_STATUSES = "GetOrderStatuses";
         internal const string GET_ORDERS = "GetOrders";
         internal const string GET_ORDER_SUMMARY = "GetOrderSummary";
+        internal const string ACTIVATE_ORDER = "ActivateOrder";
         #endregion
         #region PRODUCTS RELATED
         internal const string GET_PRODUCTS = "GetProducts"; 

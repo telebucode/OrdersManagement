@@ -227,13 +227,15 @@ namespace OrdersManagement.Core
         }
 
         internal dynamic GetPayments(byte productId, int accountId, string mobile, string email, int paymentStatus,
-            string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, Dictionary<string, TablePreferences> tablePreferences = null)
+            string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime,string accountName,
+            Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
                 this._sqlCommand = new SqlCommand(StoredProcedure.GET_PAYMENTS, this._sqlConnection);
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_ID, SqlDbType.TinyInt).Value = productId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.ACCOUNT_ID, SqlDbType.Int).Value = accountId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ACCOUNT_NAME, SqlDbType.VarChar, 128).Value = accountName;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.MOBILE, SqlDbType.VarChar, 15).Value = mobile;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.EMAIL, SqlDbType.VarChar, 126).Value = email;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PAYMENT_STATUS, SqlDbType.TinyInt).Value = paymentStatus;
