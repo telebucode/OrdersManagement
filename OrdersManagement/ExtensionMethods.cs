@@ -90,8 +90,8 @@ namespace OrdersManagement
                 throw new Exceptions.ServiceException(string.Format("Invalid DisplayName"));
             if (serviceProperty.MetaDataCode == null || serviceProperty.MetaDataCode.Length == 0)
                 throw new Exceptions.ServiceException(string.Format("Invalid MetaDataCode"));
-            table.Rows.Add(serviceProperty.DisplayName, serviceProperty.MetaDataCode, serviceProperty.IsRequired, Convert.ToByte(serviceProperty.InputType),
-                Convert.ToByte(serviceProperty.DataType), serviceProperty.DefaultValue, serviceProperty.IncludeInOrderAmount);
+            table.Rows.Add(serviceProperty.DisplayName, serviceProperty.MetaDataCode, serviceProperty.IsRequired, Convert.ToByte(serviceProperty.InputTypeId),
+                Convert.ToByte(serviceProperty.DataTypeId), serviceProperty.DefaultValue, serviceProperty.IncludeInOrderAmount);
             return table;
         }
 
@@ -99,8 +99,8 @@ namespace OrdersManagement
         {
             DataTable table = new DataTable();
             table.Columns.Add(Label.FIELDID, typeof(Int16));
-            table.Columns.Add(Label.META_DATA_CODE, typeof(string));
             table.Columns.Add(Label.INPUT_TYPE_ID, typeof(byte));
+            table.Columns.Add(Label.META_DATA_CODE, typeof(string));
             table.Columns.Add(Label.MINLENGTH, typeof(Byte));
             table.Columns.Add(Label.MAXLENGTH, typeof(Int16));
             table.Columns.Add(Label.Is_Allow_Special_Chars, typeof(bool));
@@ -110,7 +110,7 @@ namespace OrdersManagement
             {
                 if (servicePropertyField.MetaDataCode == null || servicePropertyField.MetaDataCode.Length == 0)
                     throw new Exceptions.ServiceException(string.Format("Invalid Metacode at Row {0}", index));
-                table.Rows.Add(servicePropertyField.FieldId, servicePropertyField.MetaDataCode, servicePropertyField.InputTypeId, servicePropertyField.MinLength, servicePropertyField.MaxLength,
+                table.Rows.Add(servicePropertyField.FieldId, servicePropertyField.InputTypeId, servicePropertyField.MetaDataCode, servicePropertyField.MinLength, servicePropertyField.MaxLength,
                    servicePropertyField.IsAllowSpecialChars, servicePropertyField.Options);
 
                 ++index;

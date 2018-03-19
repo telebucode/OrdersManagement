@@ -63,7 +63,7 @@ namespace OrdersManagement.Model
         public dynamic Create(ResponseFormat responseFormat = ResponseFormat.JSON)
         {
             Core.Client client = new Core.Client(responseFormat);
-            return client.CreateService(this._productId, this._displayName, this._metaDataCode, this._areMultipleEntriesAllowed);
+            return client.CreateService(this._productId, this._displayName, this._metaDataCode, this._areMultipleEntriesAllowed,this.IsActive);
         }
         /// <summary>
         /// Updates a Service
@@ -73,7 +73,7 @@ namespace OrdersManagement.Model
         public dynamic Update(ResponseFormat responseFormat = ResponseFormat.JSON)
         {
             Core.Client client = new Core.Client(responseFormat);
-            return client.UpdateService(this._id, this._displayName, this._metaDataCode, this._areMultipleEntriesAllowed);
+            return client.UpdateService(this._id, this._displayName, this._metaDataCode, this._areMultipleEntriesAllowed,this.IsActive);
         }
         /// <summary>
         /// Deletes a Service

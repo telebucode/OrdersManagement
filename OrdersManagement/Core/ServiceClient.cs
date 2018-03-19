@@ -372,6 +372,7 @@ namespace OrdersManagement.Core
                 #region POPULATE PROPERTIES
                 if (this._ds.Tables.Contains(Label.PROPERTIES) && this._ds.Tables[Label.PROPERTIES].Rows.Count > 0)
                 {
+                    
                     tempDataSet.Tables.Clear();
                     tempDataSet.Tables.Add(this._ds.Tables[Label.PROPERTIES].Copy());
                     this._helper.ParseDataSet(tempDataSet, tablePreferences);
@@ -406,6 +407,7 @@ namespace OrdersManagement.Core
                     {
                         if (pref == null && this._ds.Tables[Label.SERVICES].Rows.Count == 1)
                         {
+
                             foreach (JObject servicePropertyObject in propertiesObj.SelectToken(Label.PROPERTIES))
                             {
                                 servicePropertyObject.Add(new JProperty(Label.PROPERTYFIELDS, new JArray()));
@@ -417,7 +419,7 @@ namespace OrdersManagement.Core
                                         (servicePropertyObject.SelectToken(Label.PROPERTYFIELDS) as JArray).Add(propertyFieldsObj);
                                     }
                                 }
-                                else
+                                else if (this._ds.Tables[Label.PROPERTYFIELDS].Rows.Count > 1)
                                 {
 
                                     foreach (JObject servicePropertyFieldsObj in propertyFieldsObj.SelectToken(Label.PROPERTYFIELDS))
@@ -429,6 +431,7 @@ namespace OrdersManagement.Core
                                     }
                                 }
                             }
+
 
                             servicesObj.SelectToken(entityName).SelectToken(Label.PROPERTIES).Add(propertiesObj.SelectToken(Label.PROPERTIES).Children());
 
@@ -451,7 +454,7 @@ namespace OrdersManagement.Core
 
             return this.IncludeOutputParamsInObj(_ds: _ds, servicesXmlDocument: servicesXmlDocument, servicesRootElement: servicesRootElement, servicesObj: servicesObj);
         }
-        internal dynamic CreateService(byte productId, string displayName, string metaDataCode, bool areMultipleEntriesAllowed)
+        internal dynamic CreateService(byte productId, string displayName, string metaDataCode, bool areMultipleEntriesAllowed, bool isActive)
         {
             try
             {
@@ -462,6 +465,7 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_ID, SqlDbType.TinyInt).Value = productId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.META_DATA_CODE, SqlDbType.VarChar, 20).Value = metaDataCode;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.ARE_MULTIPLE_ENTRIES_ALLOWED, SqlDbType.Bit).Value = areMultipleEntriesAllowed;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = isActive;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());
@@ -483,7 +487,7 @@ namespace OrdersManagement.Core
                 this.Clean();
             }
         }
-        internal dynamic UpdateService(Int16 serviceId, string displayName, string metaDataCode, bool areMultipleEntriesAllowed)
+        internal dynamic UpdateService(Int16 serviceId, string displayName, string metaDataCode, bool areMultipleEntriesAllowed, bool isActive)
         {
             try
             {
@@ -496,6 +500,7 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.DISPLAY_NAME, SqlDbType.VarChar, 50).Value = displayName;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.META_DATA_CODE, SqlDbType.VarChar, 20).Value = metaDataCode;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.ARE_MULTIPLE_ENTRIES_ALLOWED, SqlDbType.Bit).Value = areMultipleEntriesAllowed;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = isActive;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());
@@ -546,14 +551,13 @@ namespace OrdersManagement.Core
                 this.Clean();
             }
         }
-        internal dynamic CreateServiceProperties(Int16 serviceId, List<ServiceProperty> serviceProperties, List<ServicePropertyFields> servicePropertyFields)
+        internal dynamic CreateServiceProperties(Int16 serviceId, ServiceProperty serviceProperties, List<ServicePropertyFields> servicePropertyFields)
         {
             try
             {
                 if (serviceId <= 0)
                     throw new ServiceException(string.Format("Invalid ServiceId {0}", serviceId));
-                if (serviceProperties == null || serviceProperties.Count == 0)
-                    throw new ServiceException(string.Format("Atleast 1 Property should be supplied"));
+
                 this._sqlCommand = new SqlCommand(StoredProcedure.CREATE_SERVICE_PROPERTIES, this._sqlConnection);
                 this._sqlCommand.Parameters.Add(ProcedureParameter.SERVICE_ID, SqlDbType.SmallInt).Value = serviceId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.SERVICE_PROPERTIES, SqlDbType.Structured).Value = serviceProperties.ToDataTable();
@@ -667,7 +671,7 @@ namespace OrdersManagement.Core
         {
             try
             {
-                this._sqlCommand = new SqlCommand(StoredProcedure.GET_INPUT_TYPES, this._sqlConnection);
+                this._sqlCommand = new SqlCommand(StoredProcedure.GET_INPUT_DATA_TYPES, this._sqlConnection);
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = onlyActive;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);

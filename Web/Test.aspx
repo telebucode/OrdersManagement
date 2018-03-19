@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>    
+    <title></title>
 </head>
 <body>
     <ul id="ul">
@@ -13,12 +13,12 @@
     </ul>
     <input type="button" value="Create Service" id="CreateService" />
     <div id="Services"></div>
-    <script type="text/javascript" src="Scripts/JQuery_1.12.0.js"></script>    
-    <script type="text/javascript" src="Scripts/OrdersClient.js"></script>
+    <script type="text/javascript" src="Scripts/JQuery_1.12.0.js"></script>
+    <script type="text/javascript" src="Scripts/OrdersClient.js?type=v2"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             var ordersClient = new OrdersClient({ async: true });
-            ordersClient.CreateInvoice(1,1,1,function (res) {
+            ordersClient.UpdateServiceProperties(24, "{'DisplayName': 'Lines','MetaDataCode': 'Lines','IsRequired': false,'IncludeInOrderAmount': false,'InputTypeId': '1','DataTypeId': '1','PropertyFields': [{'MinLength': 0,'MaxLength': 0,'IsAllowSpecialChars': false}]}", function (res) {
                 console.log(res);
             });
             //ordersClient.GetBankAccounts(true, function (res) {

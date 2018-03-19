@@ -82,10 +82,10 @@ namespace OrdersManagement.Core
         /// <param name="areMultipleEntriesAllowed">Indicates whether this Service Supports Multiple Entries</param>
         /// <param name="tablePreferences">See Model.TablePreferences For Details.</param>
         /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
-        public dynamic CreateService(byte productId, string displayName, string metaDataCode, bool areMultipleEntriesAllowed, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic CreateService(byte productId, string displayName, string metaDataCode, bool areMultipleEntriesAllowed, bool isActive, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             ServiceClient serviceClient = new ServiceClient(ref this._helper);
-            return serviceClient.CreateService(productId: productId, displayName: displayName, metaDataCode: metaDataCode, areMultipleEntriesAllowed: areMultipleEntriesAllowed);
+            return serviceClient.CreateService(productId: productId, displayName: displayName, metaDataCode: metaDataCode, areMultipleEntriesAllowed: areMultipleEntriesAllowed, isActive: isActive);
         }
         /// <summary>
         /// Updates a Service
@@ -96,10 +96,10 @@ namespace OrdersManagement.Core
         /// <param name="areMultipleEntriesAllowed">Indicates whether this Service Supports Multiple Entries</param>
         /// <param name="tablePreferences">See Model.TablePreferences For Details.</param>
         /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
-        public dynamic UpdateService(Int16 serviceId, string displayName, string metaDataCode, bool areMultipleEntriesAllowed, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic UpdateService(Int16 serviceId, string displayName, string metaDataCode, bool areMultipleEntriesAllowed, bool isActive, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             ServiceClient serviceClient = new ServiceClient(ref this._helper);
-            return serviceClient.UpdateService(serviceId, displayName, metaDataCode, areMultipleEntriesAllowed);
+            return serviceClient.UpdateService(serviceId, displayName, metaDataCode, areMultipleEntriesAllowed, isActive);
         }
         /// <summary>
         /// Deletes a Service
@@ -117,7 +117,7 @@ namespace OrdersManagement.Core
         /// <param name="serviceId">Id of the Service to which these Properties should be mapped.</param>
         /// <param name="serviceProperties">ServiceProperties list</param>
         /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
-        public dynamic CreateServiceProperties(Int16 serviceId, List<ServiceProperty> serviceProperties, List<ServicePropertyFields> servicePropertyFields)
+        public dynamic CreateServiceProperties(Int16 serviceId, ServiceProperty serviceProperties, List<ServicePropertyFields> servicePropertyFields)
         {
             ServiceClient serviceClient = new ServiceClient(ref this._helper);
             return serviceClient.CreateServiceProperties(serviceId, serviceProperties, servicePropertyFields);
