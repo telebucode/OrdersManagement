@@ -98,7 +98,7 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("ToDateTime is not a valid datetime"));
             Client client = new Client(responseFormat: ResponseFormat.JSON);
             context.Response.Write(client.GetOrders(productId: productId, accountId: accountId, mobile: mobile, email: email, orderStatus: orderStatus,
-                number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime));
+                number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime, accountName: ""));
         }
 
         private void GenerateErrorResponse(int statusCode, string message)
