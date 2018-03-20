@@ -18,7 +18,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var ordersClient = new OrdersClient({ async: true });
-            ordersClient.UpdateServiceProperties(24, "{'DisplayName': 'Lines','MetaDataCode': 'Lines','IsRequired': false,'IncludeInOrderAmount': false,'InputTypeId': '1','DataTypeId': '1','PropertyFields': [{'MinLength': 0,'MaxLength': 0,'IsAllowSpecialChars': false}]}", function (res) {
+            ordersClient.CreateQuotation(24, "{'Balance':{'Id':'1','Occurance':'1','Amount':'1000','PPPS':'1','PromotionalPulse/Voi':'1','TPPS':'1','TransactionalPulse/V':'1','ValidityInDays':'15'}}", function (res) {
                 console.log(res);
             });
             //ordersClient.GetBankAccounts(true, function (res) {

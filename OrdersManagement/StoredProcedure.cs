@@ -47,7 +47,7 @@ namespace OrdersManagement
         internal const string GET_PAYMENTS = "GetPayments";
         internal const string GET_PAYMENT_STATUSES = "GetPaymentStatuses";
         internal const string GET_PAYMENT_DETAILS = "GetPaymentDetails";
-        internal const string VERIFY_PAYMENT_STATUSES ="VerifyPaymentStatuses";
+        internal const string VERIFY_PAYMENT_STATUSES = "VerifyPaymentStatuses";
         #endregion
         #region Orders Related
         internal const string GET_ORDER_STATUSES = "GetOrderStatuses";
@@ -56,8 +56,10 @@ namespace OrdersManagement
         internal const string ACTIVATE_ORDER = "ActivateOrder";
         #endregion
         #region PRODUCTS RELATED
-        internal const string GET_PRODUCTS = "GetProducts"; 
+        internal const string GET_PRODUCTS = "GetProducts";
         #endregion
         internal const string GET_BILLING_MODES = "GetBillingModes";
+        internal const string GET_COUNTRIES = "GetCountries";
+        internal const string GET_STATES = "GetStates";
     }
 }

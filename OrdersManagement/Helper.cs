@@ -162,6 +162,65 @@ namespace OrdersManagement
 
             }
         }
+        internal dynamic GetCountries(Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.GET_COUNTRIES, this._sqlConnection);
+                this.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    throw new Exception("Unable To Fetch Country Details");
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.COUNTRIES;
+                this._ds.Tables.Add(this.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this.ParseDataSet(this._ds, tablePreferences);
+                return this.GetResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e.ToString());
+                throw e;
+            }
+            finally
+            {
+
+            }
+
+
+
+        }
+
+        internal dynamic GetStates(bool isOnlyActive, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.GET_STATES, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = isOnlyActive;
+                this.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    throw new Exception("Unable To Fetch State Details");
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.STATES;
+                this._ds.Tables.Add(this.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this.ParseDataSet(this._ds, tablePreferences);
+                return this.GetResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e.ToString());
+                throw e;
+            }
+            finally
+            {
+
+            }
+
+        }
+
 
         internal dynamic GetResponse()
         {
@@ -599,7 +658,6 @@ namespace OrdersManagement
                 this._da = null;
             }
         }
-
 
 
         #endregion
