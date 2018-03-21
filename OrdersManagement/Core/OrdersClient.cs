@@ -160,7 +160,7 @@ namespace OrdersManagement.Core
         }
 
         internal dynamic GetOrders(byte productId, int accountId, string mobile, string email, int orderStatus,
-            string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, string accountName,
+            string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, string accountName, int pageNumber,byte limit,
             Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
@@ -176,6 +176,10 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.BILLING_MODE_ID, SqlDbType.TinyInt).Value = billingMode;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.FROM_DATE_TIME, SqlDbType.DateTime).Value = fromDateTime;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.TO_DATE_TIME, SqlDbType.DateTime).Value = toDateTime;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.LIMIT, SqlDbType.TinyInt).Value = limit;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PAGE_NUMBER, SqlDbType.Int).Value = pageNumber;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.COUNT, SqlDbType.Int).Direction = ParameterDirection.Output;
+                
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());

@@ -183,6 +183,8 @@ namespace Web.AjaxHandlers
             string number = string.Empty;
             byte paymentStatus = 0;
             byte billingMode = 0;
+            int pageNumber = 1;
+            byte limit = 20;
             DateTime fromDateTime = DateTime.Now.Date;
             DateTime toDateTime = DateTime.Now.AddDays(1).AddTicks(-1);
             JObject searchData = new JObject();
@@ -207,7 +209,7 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("ToDateTime is not a valid datetime"));
             Client client = new Client(responseFormat: ResponseFormat.JSON);
             context.Response.Write(client.GetPayments(productId: productId, accountId: accountId, mobile: mobile, email: email, paymentStatus: paymentStatus,
-                number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime, accountName: ""));
+                number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime, accountName: "", pageNumber: pageNumber, limit: limit));
         }
         private void View(HttpContext context)
         {

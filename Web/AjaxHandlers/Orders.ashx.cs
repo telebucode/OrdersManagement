@@ -75,6 +75,8 @@ namespace Web.AjaxHandlers
             byte billingMode = 0;
             DateTime fromDateTime = DateTime.Now.Date;
             DateTime toDateTime = DateTime.Now.AddDays(1).AddTicks(-1);
+            int pageNumber = 1;
+            byte limit = 20;
 
             JObject searchData = new JObject();
             searchData = JObject.Parse(context.Request["SearchData"].ToString());
@@ -96,9 +98,13 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("FromDateTime is not a valid datetime"));
             if (searchData.SelectToken("ToDateTime") != null && !DateTime.TryParse(searchData.SelectToken("ToDateTime").ToString(), out toDateTime))
                 GenerateErrorResponse(400, string.Format("ToDateTime is not a valid datetime"));
+            if (searchData.SelectToken("PageNumber") != null && !int.TryParse(searchData.SelectToken("PageNumber").ToString(), out pageNumber))
+                GenerateErrorResponse(400, string.Format("PageNumber must be a number"));
+            if (searchData.SelectToken("Limit") != null && !byte.TryParse(searchData.SelectToken("Limit").ToString(), out limit))
+                GenerateErrorResponse(400, string.Format("Limit must be a number"));
             Client client = new Client(responseFormat: ResponseFormat.JSON);
             context.Response.Write(client.GetOrders(productId: productId, accountId: accountId, mobile: mobile, email: email, orderStatus: orderStatus,
-                number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime, accountName: ""));
+                number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime, accountName: "", pageNumber: pageNumber, limit: limit));
         }
 
         private void GenerateErrorResponse(int statusCode, string message)

@@ -364,12 +364,12 @@ namespace OrdersManagement.Core
         }
 
 
-        public dynamic GetPayments(byte productId, int accountId, string mobile, string email, int paymentStatus, string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, string accountName, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GetPayments(byte productId, int accountId, string mobile, string email, int paymentStatus, string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, string accountName, int pageNumber,byte limit,  Dictionary<string, TablePreferences> tablePreferences = null)
         {
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);
             return paymentsClient.GetPayments(productId: productId, accountId: accountId, mobile: mobile, email: email,
                 paymentStatus: paymentStatus, number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime,
-                accountName: accountName, tablePreferences: tablePreferences);
+                accountName: accountName, pageNumber: pageNumber, limit: limit, tablePreferences: tablePreferences);
         }
 
         public dynamic GetPaymentDetails(byte productId, int orderId, Dictionary<string, TablePreferences> tablePreferences = null)
@@ -398,12 +398,12 @@ namespace OrdersManagement.Core
             return ordersClient.GetOrderStatuses(onlyActive: onlyActive, tablePreferences: tablePreferences);
         }
 
-        public dynamic GetOrders(byte productId, int accountId, string mobile, string email, int orderStatus, string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, string accountName, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GetOrders(byte productId, int accountId, string mobile, string email, int orderStatus, string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, string accountName,  int pageNumber,byte limit ,Dictionary<string, TablePreferences> tablePreferences = null)
         {
             OrdersClient paymentsClient = new OrdersClient(ref this._helper);
             return paymentsClient.GetOrders(productId: productId, accountId: accountId, mobile: mobile, email: email,
                 orderStatus: orderStatus, number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime,
-                accountName:accountName,tablePreferences: tablePreferences);
+                accountName: accountName, pageNumber: pageNumber, limit: limit, tablePreferences: tablePreferences);
         }
         public dynamic ActivateOrder(string activationUrl,string metaData,Dictionary<string, TablePreferences> tablePreferences = null)
         {
