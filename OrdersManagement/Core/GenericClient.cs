@@ -23,7 +23,7 @@ namespace OrdersManagement.Core
         private DataSet _ds = null;
         private Helper _helper = null;
 
-        #endregion        
+        #endregion
 
         #region CONSTRUCTOR
 
@@ -74,7 +74,7 @@ namespace OrdersManagement.Core
                 this._helper.ParseDataSet(this._ds, tablePreferences);
                 return this._helper.GetResponse();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.Error(e.ToString());
                 throw e;
@@ -84,6 +84,8 @@ namespace OrdersManagement.Core
                 this.Clean();
             }
         }
+
+        
 
         #endregion
     }

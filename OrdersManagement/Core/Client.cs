@@ -211,12 +211,12 @@ namespace OrdersManagement.Core
         public dynamic GetQuotations(byte productId = 0, int quotationId = 0, string quotationNumber = "", int accountId = 0, 
             int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", 
             byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null,
-            int pageNumber = 1, byte limit = 20, string mobile = "", string email = "",string accountName = "", 
+            int pageNumber = 1, byte limit = 20, string mobile = "", string email = "", string accountName = "",
             Dictionary<string, TablePreferences> tablePreferences = null)
         {
             QuotationClient client = new QuotationClient(ref this._helper);
             return client.Search(productId, quotationId, quotationNumber, accountId, employeeId, ownerShipId, statusId, channelId,
-                ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, mobile, email,accountName, tablePreferences);
+                ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, mobile, email, accountName, tablePreferences);
         }
         /// <summary>
         /// Creates a Quotation
@@ -269,10 +269,10 @@ namespace OrdersManagement.Core
             QuotationClient client = new QuotationClient(ref this._helper);
             return client.DownloadQuotation(quotationId, isPostPaidQuotation);
         }
-        public dynamic GetQuotationServices(int quotationId,byte billingModeId, bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GetQuotationServices(int quotationId, byte billingModeId, bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             QuotationClient client = new QuotationClient(ref this._helper);
-            return client.GetQuotationServices(quotationId:quotationId,billingModeId:billingModeId,onlyActive:onlyActive,tablePreferences: tablePreferences);
+            return client.GetQuotationServices(quotationId: quotationId, billingModeId: billingModeId, onlyActive: onlyActive, tablePreferences: tablePreferences);
         }
 
         public dynamic GetQuotationServiceProperties(int quotationId, byte billingModeId, bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
@@ -321,7 +321,7 @@ namespace OrdersManagement.Core
         {
             InvoiceClient client = new InvoiceClient(ref this._helper);
             return client.Search(productId, invoiceId, quotationNumber, accountId, employeeId, ownerShipId, statusId, channelId,
-                ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, mobile, email,accountName, tablePreferences);
+                ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, mobile, email, accountName, tablePreferences);
         }
 
         #endregion
@@ -405,10 +405,10 @@ namespace OrdersManagement.Core
                 orderStatus: orderStatus, number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime,
                 accountName: accountName, pageNumber: pageNumber, limit: limit, tablePreferences: tablePreferences);
         }
-        public dynamic ActivateOrder(string activationUrl,string metaData,Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic ActivateOrder(string activationUrl, string metaData, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             OrdersClient ordersClient = new OrdersClient(ref this._helper);
-            return ordersClient.ActivateOrder(activationUrl:activationUrl,metaData:metaData, tablePreferences: tablePreferences);
+            return ordersClient.ActivateOrder(activationUrl: activationUrl, metaData: metaData, tablePreferences: tablePreferences);
         }
         
 
@@ -431,6 +431,15 @@ namespace OrdersManagement.Core
             return client.GetBillingModes(onlyActive, tablePreferences);
         }
 
+        public dynamic GetCountries(Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            return this._helper.GetCountries(tablePreferences);
+        }
+
+        public dynamic GetStates(bool isOnlyActive, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            return this._helper.GetStates(isOnlyActive, tablePreferences);
+        }
         #endregion
 
         #endregion // PUBLIC METHODS

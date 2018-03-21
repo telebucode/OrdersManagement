@@ -45,6 +45,8 @@ namespace OrdersManagement
         internal const string QUOTATION_SERVICE_ID = "QuotationServiceId";
         internal const string OCCURANCE = "Occurance";
         internal const string PRODUCT_ID = "ProductId";
+        internal const string COUNTRIES = "Countries";
+        internal const string STATES = "States";
 
         internal const string FIELDID = "FieldId";
         internal const string MINLENGTH = "MinLength";
@@ -88,10 +90,10 @@ namespace OrdersManagement
         internal const string ORDER_ACTIVATION = "OrderActivation";
 
         #region LOG_4_NET_RELATED
-            internal const string LOG_NAME = "LogName";
-            internal const string DEFAULT_LOGGER = "DefaultLogger";
-            internal const string TRACE_LOGGER = "TraceLogger";
-            internal const string LOG_FILE_FORMAT = "yyyyMMdd";
+        internal const string LOG_NAME = "LogName";
+        internal const string DEFAULT_LOGGER = "DefaultLogger";
+        internal const string TRACE_LOGGER = "TraceLogger";
+        internal const string LOG_FILE_FORMAT = "yyyyMMdd";
         #endregion
     }
 }
