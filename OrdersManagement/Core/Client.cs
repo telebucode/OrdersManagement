@@ -208,8 +208,8 @@ namespace OrdersManagement.Core
         /// <param name="limit">Records per page. Default is 20</param>
         /// <param name="tablePreferences">See Model.TablePreferences for details</param>
         /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
-        public dynamic GetQuotations(byte productId = 0, int quotationId = 0, string quotationNumber = "", int accountId = 0, 
-            int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", 
+        public dynamic GetQuotations(byte productId = 0, int quotationId = 0, string quotationNumber = "", int accountId = 0,
+            int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "",
             byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null,
             int pageNumber = 1, byte limit = 20, string mobile = "", string email = "", string accountName = "",
             Dictionary<string, TablePreferences> tablePreferences = null)
@@ -364,7 +364,7 @@ namespace OrdersManagement.Core
         }
 
 
-        public dynamic GetPayments(byte productId, int accountId, string mobile, string email, int paymentStatus, string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, string accountName, int pageNumber,byte limit,  Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GetPayments(byte productId, int accountId, string mobile, string email, int paymentStatus, string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, string accountName, int pageNumber, byte limit, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);
             return paymentsClient.GetPayments(productId: productId, accountId: accountId, mobile: mobile, email: email,
@@ -398,7 +398,7 @@ namespace OrdersManagement.Core
             return ordersClient.GetOrderStatuses(onlyActive: onlyActive, tablePreferences: tablePreferences);
         }
 
-        public dynamic GetOrders(byte productId, int accountId, string mobile, string email, int orderStatus, string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, string accountName,  int pageNumber,byte limit ,Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GetOrders(byte productId, int accountId, string mobile, string email, int orderStatus, string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, string accountName, int pageNumber, byte limit, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             OrdersClient paymentsClient = new OrdersClient(ref this._helper);
             return paymentsClient.GetOrders(productId: productId, accountId: accountId, mobile: mobile, email: email,
@@ -410,7 +410,17 @@ namespace OrdersManagement.Core
             OrdersClient ordersClient = new OrdersClient(ref this._helper);
             return ordersClient.ActivateOrder(activationUrl: activationUrl, metaData: metaData, tablePreferences: tablePreferences);
         }
-        
+
+        public dynamic VerifyOrderStatuses(long orderId, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            OrdersClient ordersClient = new OrdersClient(ref this._helper);
+            return ordersClient.VerifyOrderStatuses(orderId: orderId, tablePreferences: tablePreferences);
+        }
+        public dynamic GetRequestObjectForActivation(int quotationId, bool isPostPaidQuotation, byte activationPercentage)
+        {
+            OrdersClient ordersClient = new OrdersClient(ref this._helper);
+            return ordersClient.GetRequestObjectForActivation(quotationId, isPostPaidQuotation, activationPercentage);
+        }
 
         #endregion
 

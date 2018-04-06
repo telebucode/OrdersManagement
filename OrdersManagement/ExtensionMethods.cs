@@ -90,7 +90,7 @@ namespace OrdersManagement
                 throw new Exceptions.ServiceException(string.Format("Invalid DisplayName"));
             if (serviceProperty.MetaDataCode == null || serviceProperty.MetaDataCode.Length == 0)
                 throw new Exceptions.ServiceException(string.Format("Invalid MetaDataCode"));
-            table.Rows.Add(serviceProperty.DisplayName, serviceProperty.MetaDataCode,  Convert.ToByte(serviceProperty.InputTypeId),
+            table.Rows.Add(serviceProperty.DisplayName, serviceProperty.MetaDataCode, Convert.ToByte(serviceProperty.InputTypeId),
                 Convert.ToByte(serviceProperty.DataTypeId), serviceProperty.IsRequired, serviceProperty.DefaultValue, serviceProperty.IncludeInOrderAmount);
             return table;
         }

@@ -21,7 +21,7 @@ namespace TestClient
                 Client c = new Client(responseFormat: ResponseFormat.JSON);
                 Dictionary<string, TablePreferences> prefs = new Dictionary<string, TablePreferences>();
                 //prefs.Add("InputTypes", new TablePreferences(RootName: "FieldTypes", childElementNameForRows: "FieldType", columnValuesAsXmlAttributes: true, singleRowAsSingleEntity: true));                
-                dynamic d = c.CreateQuotation(1, 1, 1, 1, "{'Balance':{'Id':'1','Occurance':'1','Amount':'1000','PPPS':'1','PromotionalPulse/Voi':'1','TPPS':'1','TransactionalPulse/V':'1','ValidityInDays':'15'}}", "", 1);
+                dynamic d = c.GetRequestObjectForActivation(1, false, 100);
                 //dynamic d = c.GetQuotationDetails(4026, false);
                 // dynamic d1 = c.GetQuotationDetails(4029, false);
 

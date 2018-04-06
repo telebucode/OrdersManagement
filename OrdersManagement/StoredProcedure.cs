@@ -54,6 +54,7 @@ namespace OrdersManagement
         internal const string GET_ORDERS = "GetOrders";
         internal const string GET_ORDER_SUMMARY = "GetOrderSummary";
         internal const string ACTIVATE_ORDER = "ActivateOrder";
+        internal const string VERIFY_ORDER_STATUS = "VerifyOrderStatus";
         #endregion
         #region PRODUCTS RELATED
         internal const string GET_PRODUCTS = "GetProducts";

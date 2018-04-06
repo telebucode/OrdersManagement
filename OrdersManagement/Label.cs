@@ -89,6 +89,7 @@ namespace OrdersManagement
         internal const string ORDER_SUMMARY = "OrderSummary";
         internal const string ORDER_ACTIVATION = "OrderActivation";
 
+        internal const string DATA = "Data";
         #region LOG_4_NET_RELATED
         internal const string LOG_NAME = "LogName";
         internal const string DEFAULT_LOGGER = "DefaultLogger";
