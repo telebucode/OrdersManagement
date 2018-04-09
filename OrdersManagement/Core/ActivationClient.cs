@@ -55,7 +55,6 @@ namespace OrdersManagement.Core
                 {
                     this._ds.Tables[0].TableName = Label.QUOTATION;
                     this._ds.Tables[1].TableName = Label.QUOTATION_SERVICES;
-
                 }
                 else
                 {
@@ -69,10 +68,12 @@ namespace OrdersManagement.Core
                         serviceName = Convert.ToString(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["MetaDataCode"]);
                         areMultipleEntriesAllowed = Convert.ToBoolean(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["AreMultipleEntriesAllowed"]);
                         quotationServiceId = Convert.ToInt32(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["Id"]);
-                        activationObject.Add(new JProperty(serviceName, new JObject()));
-                        activationObject.SelectToken(serviceName).Add(new JProperty(Label.ARE_MULTIPLE_ENTRIES_ALLOWED, areMultipleEntriesAllowed));
+                        
                         if (!activationObject.ContainsKey(serviceName))
                         {
+                            activationObject.Add(new JProperty(serviceName, new JObject()));
+                            activationObject.SelectToken(serviceName).Add(new JProperty(Label.ARE_MULTIPLE_ENTRIES_ALLOWED, areMultipleEntriesAllowed));
+
                             if (areMultipleEntriesAllowed)
                             {
                                 activationObject.SelectToken(serviceName).Add(new JProperty(Label.DATA, new JArray()));
@@ -83,12 +84,33 @@ namespace OrdersManagement.Core
                             }
                         }
                         drServiceProperies = this._ds.Tables[Label.QUOTATION_SERVICE_PROPERTIES].Select(Label.QUOTATION_SERVICE_ID + "=" + quotationServiceId);
+                        JObject servicesData = new JObject();
+                        servicesData.Add(new JProperty("QuotationServiceId", quotationServiceId));
+                       
                         foreach (DataRow drServiceProperty in drServiceProperies)
                         {
-                            activationObject.SelectToken(serviceName).Add(new JProperty(drServiceProperty["MetaDataCode"].ToString(), drServiceProperty["Value"]));
+                            servicesData.Add(new JProperty(drServiceProperty["MetaDataCode"].ToString(), drServiceProperty["Value"]));
+                        }
+
+                        if (activationObject.SelectToken(serviceName).SelectToken(Label.DATA).Type = JTokenType.Array)
+                        {
+                            JArray serviceJarray = new JArray();
+                            serviceJarray = (JArray)activationObject.SelectToken(serviceName).SelectToken(Label.DATA).Add(servicesData);
+                            serviceJarray.Add(servicesData);
+                            activationObject.SelectToken(serviceName).SelectToken(Label.DATA).Replace(serviceJarray);
+                        }
+                        else 
+                        {
+                            activationObject.SelectToken(serviceName).SelectToken(Label.DATA).Replace(servicesData);
                         }
                     }
 
+                    JObject ActivationServiceJobj = new JObject();
+                    ActivationServiceJobj.Add(new JProperty(Label.ACCOUNT_ID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.PRODUCT_USERID]));
+                    ActivationServiceJobj.Add(new JProperty(Label.ORDER_ID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.ID]));
+                    ActivationServiceJobj.Add(new JProperty(Label.SERVICES_LIST, activationObject));
+                    activationObject = new JObject();
+                    activationObject = ActivationServiceJobj;
                 }
 
             }
