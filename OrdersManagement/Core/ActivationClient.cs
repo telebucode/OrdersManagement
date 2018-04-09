@@ -64,6 +64,8 @@ namespace OrdersManagement.Core
                 if (this._ds.Tables[Label.QUOTATION_SERVICES].Rows.Count != 0)
                 {
                     //dtServicesUniqueTable = this._ds.Tables[Label.QUOTATION_SERVICES].DefaultView.ToTable(true, "ServiceId");
+
+
                     for (int quotationServices = 0; quotationServices < this._ds.Tables[Label.QUOTATION_SERVICES].Rows.Count; quotationServices++)
                     {
                         serviceName = Convert.ToString(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["MetaDataCode"]);

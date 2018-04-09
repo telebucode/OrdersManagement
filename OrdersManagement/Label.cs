@@ -88,6 +88,7 @@ namespace OrdersManagement
         internal const string PRODUCTS = "Products";
         internal const string ORDER_SUMMARY = "OrderSummary";
         internal const string ORDER_ACTIVATION = "OrderActivation";
+        internal const string ACCOUNT_ID = "AccountId";
 
         internal const string DATA = "Data";
         #region LOG_4_NET_RELATED
