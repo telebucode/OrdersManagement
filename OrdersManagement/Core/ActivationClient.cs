@@ -26,103 +26,103 @@ namespace OrdersManagement.Core
             this._sqlConnection = new SqlConnection(this._helper.ConnectionString);
         }
 
-        public dynamic GetRequestObjectForActivation(int quotationId, bool isPostPaidQuotation, byte activationPercentage)
-        {
-            dynamic activationObject = new JObject();
-            dynamic servicesObject;
-            string serviceName = string.Empty;
-            bool areMultipleEntriesAllowed = false;
-            int quotationServiceId = 0;
-            DataRow[] drServiceProperies;
+        //public dynamic GetRequestObjectForActivation(int quotationId, bool isPostPaidQuotation, byte activationPercentage)
+        //{
+        //    dynamic activationObject = new JObject();
+        //    dynamic servicesObject;
+        //    string serviceName = string.Empty;
+        //    bool areMultipleEntriesAllowed = false;
+        //    int quotationServiceId = 0;
+        //    DataRow[] drServiceProperies;
 
-            try
-            {
-                this._sqlCommand = new SqlCommand(StoredProcedure.GET_QUOTATION_DETAILS, this._sqlConnection);
-                this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_ID, SqlDbType.Int).Value = quotationId;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.IS_POSTPAID_QUOTATION, SqlDbType.Bit).Value = isPostPaidQuotation;
-                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
-                this._da = new SqlDataAdapter(this._sqlCommand);
-                this._da.Fill(this._ds = new DataSet());
-                if (!this._sqlCommand.IsSuccess())
-                    return this.ErrorResponse();
-                if (this._ds.Tables.Count > 2)
-                {
-                    this._ds.Tables[0].TableName = Label.QUOTATION;
-                    this._ds.Tables[1].TableName = Label.QUOTATION_SERVICES;
-                    this._ds.Tables[2].TableName = Label.QUOTATION_SERVICE_PROPERTIES;
-                }
-                else if (this._ds.Tables.Count > 1)
-                {
-                    this._ds.Tables[0].TableName = Label.QUOTATION;
-                    this._ds.Tables[1].TableName = Label.QUOTATION_SERVICES;
-                }
-                else
-                {
-                    this._ds.Tables[0].TableName = Label.QUOTATION;
-                }
-                if (this._ds.Tables[Label.QUOTATION_SERVICES].Rows.Count != 0)
-                {
-                    //dtServicesUniqueTable = this._ds.Tables[Label.QUOTATION_SERVICES].DefaultView.ToTable(true, "ServiceId");
+        //    try
+        //    {
+        //        this._sqlCommand = new SqlCommand(StoredProcedure.GET_QUOTATION_DETAILS, this._sqlConnection);
+        //        this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_ID, SqlDbType.Int).Value = quotationId;
+        //        this._sqlCommand.Parameters.Add(ProcedureParameter.IS_POSTPAID_QUOTATION, SqlDbType.Bit).Value = isPostPaidQuotation;
+        //        this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+        //        this._da = new SqlDataAdapter(this._sqlCommand);
+        //        this._da.Fill(this._ds = new DataSet());
+        //        if (!this._sqlCommand.IsSuccess())
+        //            return this.ErrorResponse();
+        //        if (this._ds.Tables.Count > 2)
+        //        {
+        //            this._ds.Tables[0].TableName = Label.QUOTATION;
+        //            this._ds.Tables[1].TableName = Label.QUOTATION_SERVICES;
+        //            this._ds.Tables[2].TableName = Label.QUOTATION_SERVICE_PROPERTIES;
+        //        }
+        //        else if (this._ds.Tables.Count > 1)
+        //        {
+        //            this._ds.Tables[0].TableName = Label.QUOTATION;
+        //            this._ds.Tables[1].TableName = Label.QUOTATION_SERVICES;
+        //        }
+        //        else
+        //        {
+        //            this._ds.Tables[0].TableName = Label.QUOTATION;
+        //        }
+        //        if (this._ds.Tables[Label.QUOTATION_SERVICES].Rows.Count != 0)
+        //        {
+        //            //dtServicesUniqueTable = this._ds.Tables[Label.QUOTATION_SERVICES].DefaultView.ToTable(true, "ServiceId");
 
 
-                    for (int quotationServices = 0; quotationServices < this._ds.Tables[Label.QUOTATION_SERVICES].Rows.Count; quotationServices++)
-                    {
-                        serviceName = Convert.ToString(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["MetaDataCode"]);
-                        areMultipleEntriesAllowed = Convert.ToBoolean(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["AreMultipleEntriesAllowed"]);
-                        quotationServiceId = Convert.ToInt32(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["Id"]);
+        //            for (int quotationServices = 0; quotationServices < this._ds.Tables[Label.QUOTATION_SERVICES].Rows.Count; quotationServices++)
+        //            {
+        //                serviceName = Convert.ToString(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["MetaDataCode"]);
+        //                areMultipleEntriesAllowed = Convert.ToBoolean(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["AreMultipleEntriesAllowed"]);
+        //                quotationServiceId = Convert.ToInt32(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["Id"]);
                         
-                        if (!activationObject.ContainsKey(serviceName))
-                        {
-                            activationObject.Add(new JProperty(serviceName, new JObject()));
-                            activationObject.SelectToken(serviceName).Add(new JProperty(Label.ARE_MULTIPLE_ENTRIES_ALLOWED, areMultipleEntriesAllowed));
+        //                if (!activationObject.ContainsKey(serviceName))
+        //                {
+        //                    activationObject.Add(new JProperty(serviceName, new JObject()));
+        //                    activationObject.SelectToken(serviceName).Add(new JProperty(Label.ARE_MULTIPLE_ENTRIES_ALLOWED, areMultipleEntriesAllowed));
 
-                            if (areMultipleEntriesAllowed)
-                            {
-                                activationObject.SelectToken(serviceName).Add(new JProperty(Label.DATA, new JArray()));
-                            }
-                            else
-                            {
-                                activationObject.SelectToken(serviceName).Add(new JProperty(Label.DATA, new JObject()));
-                            }
-                        }
-                        drServiceProperies = this._ds.Tables[Label.QUOTATION_SERVICE_PROPERTIES].Select(Label.QUOTATION_SERVICE_ID + "=" + quotationServiceId);
-                        JObject servicesData = new JObject();
-                        servicesData.Add(new JProperty("QuotationServiceId", quotationServiceId));
+        //                    if (areMultipleEntriesAllowed)
+        //                    {
+        //                        activationObject.SelectToken(serviceName).Add(new JProperty(Label.DATA, new JArray()));
+        //                    }
+        //                    else
+        //                    {
+        //                        activationObject.SelectToken(serviceName).Add(new JProperty(Label.DATA, new JObject()));
+        //                    }
+        //                }
+        //                drServiceProperies = this._ds.Tables[Label.QUOTATION_SERVICE_PROPERTIES].Select(Label.QUOTATION_SERVICE_ID + "=" + quotationServiceId);
+        //                JObject servicesData = new JObject();
+        //                servicesData.Add(new JProperty("QuotationServiceId", quotationServiceId));
                        
-                        foreach (DataRow drServiceProperty in drServiceProperies)
-                        {
-                            servicesData.Add(new JProperty(drServiceProperty["MetaDataCode"].ToString(), drServiceProperty["Value"]));
-                        }
+        //                foreach (DataRow drServiceProperty in drServiceProperies)
+        //                {
+        //                    servicesData.Add(new JProperty(drServiceProperty["MetaDataCode"].ToString(), drServiceProperty["Value"]));
+        //                }
 
-                        if (activationObject.SelectToken(serviceName).SelectToken(Label.DATA).Type = JTokenType.Array)
-                        {
-                            JArray serviceJarray = new JArray();
-                            serviceJarray = (JArray)activationObject.SelectToken(serviceName).SelectToken(Label.DATA).Add(servicesData);
-                            serviceJarray.Add(servicesData);
-                            activationObject.SelectToken(serviceName).SelectToken(Label.DATA).Replace(serviceJarray);
-                        }
-                        else 
-                        {
-                            activationObject.SelectToken(serviceName).SelectToken(Label.DATA).Replace(servicesData);
-                        }
-                    }
+        //                if (activationObject.SelectToken(serviceName).SelectToken(Label.DATA).Type = JTokenType.Array)
+        //                {
+        //                    JArray serviceJarray = new JArray();
+        //                    serviceJarray = (JArray)activationObject.SelectToken(serviceName).SelectToken(Label.DATA).Add(servicesData);
+        //                    serviceJarray.Add(servicesData);
+        //                    activationObject.SelectToken(serviceName).SelectToken(Label.DATA).Replace(serviceJarray);
+        //                }
+        //                else 
+        //                {
+        //                    activationObject.SelectToken(serviceName).SelectToken(Label.DATA).Replace(servicesData);
+        //                }
+        //            }
 
-                    JObject ActivationServiceJobj = new JObject();
-                    ActivationServiceJobj.Add(new JProperty(Label.ACCOUNT_ID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.PRODUCT_USERID]));
-                    ActivationServiceJobj.Add(new JProperty(Label.ORDER_ID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.ID]));
-                    ActivationServiceJobj.Add(new JProperty(Label.SERVICES_LIST, activationObject));
-                    activationObject = new JObject();
-                    activationObject = ActivationServiceJobj;
-                }
+        //            JObject ActivationServiceJobj = new JObject();
+        //            ActivationServiceJobj.Add(new JProperty(Label.ACCOUNT_ID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.PRODUCT_USERID]));
+        //            ActivationServiceJobj.Add(new JProperty(Label.ORDER_ID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.ID]));
+        //            ActivationServiceJobj.Add(new JProperty(Label.SERVICES_LIST, activationObject));
+        //            activationObject = new JObject();
+        //            activationObject = ActivationServiceJobj;
+        //        }
 
-            }
-            catch (Exception ex)
-            {
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-            }
+        //    }
 
-            return activationObject;
-        }
+        //    return activationObject;
+        //}
 
         private dynamic ErrorResponse(string message = null)
         {

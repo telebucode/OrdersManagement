@@ -405,10 +405,10 @@ namespace OrdersManagement.Core
                 orderStatus: orderStatus, number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime,
                 accountName: accountName, pageNumber: pageNumber, limit: limit, tablePreferences: tablePreferences);
         }
-        public dynamic ActivateOrder(string activationUrl, string metaData, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic ActivateOrder(int quotationId, bool isPostPaidQuotation, byte activatedPercentage, string activationUrl, int employeeId, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             OrdersClient ordersClient = new OrdersClient(ref this._helper);
-            return ordersClient.ActivateOrder(activationUrl: activationUrl, metaData: metaData, tablePreferences: tablePreferences);
+            return ordersClient.ActivateOrder(quotationId: quotationId, isPostPaidQuotation: isPostPaidQuotation, activatedPercentage: activatedPercentage, activationUrl: activationUrl, employeeId: employeeId, tablePreferences: null);
         }
 
         public dynamic VerifyOrderStatuses(long orderId, Dictionary<string, TablePreferences> tablePreferences = null)

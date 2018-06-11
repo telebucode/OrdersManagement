@@ -186,6 +186,7 @@ namespace OrdersManagement.Core
                     if ((servicePropertyEntry.Value.InputType == PropertyInputType.TEXT_AREA || servicePropertyEntry.Value.InputType == PropertyInputType.TEXT_BOX) && servicePropertyEntry.Value.DataType == PropertyDataType.STRING)
                     {
                         //servicePropertyEntry.Value.PropertFields;
+
                         if (serviceProperty.SelectToken(servicePropertyEntry.Key).ToString().Length < servicePropertyEntry.Value.PropertFields[servicePropertyEntry.Key].MinLength)
                         {
                             throw new QuotationException(string.Format("Property {0} for Service {1} value is invalid or it's length is not supported",
@@ -198,13 +199,16 @@ namespace OrdersManagement.Core
                                    servicePropertyEntry.Value.MetaDataCode, serviceName));
 
                         }
+
                     }
                     if (servicePropertyEntry.Value.InputType == PropertyInputType.TEXT_AREA || servicePropertyEntry.Value.InputType == PropertyInputType.TEXT_BOX)
                     {
-                        if (!SpecialCharactersCheck((serviceProperty.SelectToken(servicePropertyEntry.Key).ToString())))
+                        if (servicePropertyEntry.Value.PropertFields.Count != 0 && servicePropertyEntry.Value.PropertFields[servicePropertyEntry.Key].IsAllowSpecialChars == false)
                         {
-                            throw new QuotationException(string.Format("Property {0} for Service {1} have special characters which are not allowed ", servicePropertyEntry.Value.MetaDataCode, serviceName));
-
+                            if (!SpecialCharactersCheck((serviceProperty.SelectToken(servicePropertyEntry.Key).ToString())))
+                            {
+                                throw new QuotationException(string.Format("Property {0} for Service {1} have special characters which are not allowed ", servicePropertyEntry.Value.MetaDataCode, serviceName));
+                            }
                         }
 
                     }
@@ -346,7 +350,7 @@ namespace OrdersManagement.Core
                 this.Clean();
             }
         }
-        internal dynamic Search(int productId = 0, int quotationId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, string mobile = "", string email = "",string accountName = "", Dictionary<string, TablePreferences> tablePreferences = null)
+        internal dynamic Search(int productId = 0, int quotationId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, string mobile = "", string email = "", string accountName = "", Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
@@ -355,7 +359,7 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_ID, SqlDbType.Int).Value = quotationId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_NUMBER, SqlDbType.VarChar, 20).Value = quotationNumber;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.ACCOUNT_ID, SqlDbType.Int).Value = accountId;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.ACCOUNT_NAME, SqlDbType.VarChar,128).Value = accountName;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ACCOUNT_NAME, SqlDbType.VarChar, 128).Value = accountName;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.EMPLOYEE_ID, SqlDbType.Int).Value = employeeId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.OWNERSHIP_ID, SqlDbType.Int).Value = ownerShipId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.STATUS_ID, SqlDbType.TinyInt).Value = statusId;

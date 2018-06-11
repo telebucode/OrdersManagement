@@ -21,11 +21,11 @@ namespace TestClient
                 Client c = new Client(responseFormat: ResponseFormat.JSON);
                 Dictionary<string, TablePreferences> prefs = new Dictionary<string, TablePreferences>();
                 //prefs.Add("InputTypes", new TablePreferences(RootName: "FieldTypes", childElementNameForRows: "FieldType", columnValuesAsXmlAttributes: true, singleRowAsSingleEntity: true));                
-                dynamic d = c.GetRequestObjectForActivation(1, false, 100);
+                //dynamic d = c.ActivateOrder(1, false, 100, "http://staging.grptalk.com/v2.1/ServiceActivation");
                 //dynamic d = c.GetQuotationDetails(4026, false);
                 // dynamic d1 = c.GetQuotationDetails(4029, false);
 
-                //dynamic d = c.CreateQuotation(1, 1, 1, 1, "{'Balance':[{'Id':'1','Occurance':'1','Amount': '100','ValidityInDays': '10','TPPS': '10','PPPS': '10','TransactionalPulse/V': '','PromotionalPulse/Voi': '','ExtraCharges' : [{'Description': 'raja','Amount': '109'}]},{'Id':'2','Occurance':'2','Amount': '500','ValidityInDays': '50','TPPS': '50','PPPS': '50','TransactionalPulse/V': '','PromotionalPulse/Voi': '','ExtraCharges' : [{'Description': 'raja','Amount': '8909'}]}],'SenderName':{'Id':'1','Occurance':'1','SetupCharge': '0','Name': 'Tez','Price': '1000','ValidityInDays': '30','MonthlyRental': '1000'}}", "", 1);
+                dynamic d = c.CreateQuotation(1, 1, 1, 1, "{'Balance':{'Id':'1','Occurance':'1','Amt':'150','IBPrice':'0.65','OBPrice':'0.65','ValidityInDays':'120'}}", "", 1);
                 //dynamic d1 = c.GetServices(productId: 1, includeServiceProperties: true);
                 //dynamic d = c.UpdateServiceProperty(2, "{'DisplayName': 'Lines','MetaDataCode': 'Lines','IsRequired': false,'IncludeInOrderAmount': false,'InputTypeId': '1','DataTypeId': '1','PropertyFields': [{'MinLength': 0,'MaxLength': 0,'IsAllowSpecialChars': false}]}", null);
                 //dynamic d = c.GetServices(productId: 1, includeServiceProperties: true, serviceId: 1);

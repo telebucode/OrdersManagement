@@ -74,25 +74,35 @@ namespace OrdersManagement.Core
         #endregion
 
         #region INTERNAL METHODS
-        internal dynamic ActivateOrder(string metaData, string activationUrl, Dictionary<string, TablePreferences> tablePreferences = null)
+        internal dynamic ActivateOrder(int quotationId, bool isPostPaidQuotation, byte activatedPercentage, string activationUrl, int employeeId, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
+                StreamReader SReader = null;
+                StreamWriter SWriter = null;
+                string HttpAPIResponseString = "";
+                JObject repsonseObj;
+                dynamic metaData;
+                dynamic logResponse;
+                metaData = this.GetRequestObjectForActivation(quotationId, isPostPaidQuotation, activatedPercentage);
                 CredentialCache credentials = new CredentialCache();
                 credentials.Add(uriPrefix: new Uri(activationUrl), authType: "Basic", cred: new NetworkCredential("smscountry", "smsc"));
                 WebRequest request = (HttpWebRequest)WebRequest.Create(activationUrl);
-                var data = Encoding.ASCII.GetBytes(metaData);
-                request.Method = "POST";
                 request.Credentials = credentials;
-                request.ContentType = "application/x-www-form-urlencoded";
-                request.ContentLength = data.Length;
-                using (var stream = request.GetRequestStream())
-                {
-                    stream.Write(data, 0, data.Length);
-                }
-                var response = (HttpWebResponse)request.GetResponse();
-                var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
-                return JObject.Parse(responseString);
+                request.Method = "POST";
+                request.ContentType = "application/json";
+                SWriter = new StreamWriter(request.GetRequestStream());
+                SWriter.Write(metaData.ToString());
+                SWriter.Flush();
+                SWriter.Close();
+                SReader = new StreamReader(request.GetResponse().GetResponseStream());
+                HttpAPIResponseString = SReader.ReadToEnd();
+                SReader.Close();
+                repsonseObj = JObject.Parse(HttpAPIResponseString);
+                logResponse = this.LogOrderData(employeeId, Convert.ToString(metaData), Convert.ToString(repsonseObj));
+
+
+                return repsonseObj;
             }
             catch (Exception e)
             {
@@ -103,6 +113,35 @@ namespace OrdersManagement.Core
             {
                 this.Clean();
             }
+        }
+
+        private dynamic LogOrderData(int employeeId, string requestObject, string responseObject)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.ORDERS_LOG, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.EMPLOYEE_ID, SqlDbType.Int).Value = employeeId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.REQUEST_OBJECT, SqlDbType.VarChar, -1).Value = requestObject;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.RESPONSE_OBJECT, SqlDbType.VarChar, -1).Value = responseObject;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, null);
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to Log Order Data. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to Log Order Data. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+
         }
         internal dynamic GetOrderSummary(int quotationId, Dictionary<string, TablePreferences> tablePreferences = null)
         {
@@ -263,45 +302,45 @@ namespace OrdersManagement.Core
                 {
                     this._ds.Tables[0].TableName = Label.QUOTATION;
                 }
-            //    if (this._ds.Tables[Label.QUOTATION_SERVICES].Rows.Count != 0)
-            //    {
-            //        //dtServicesUniqueTable = this._ds.Tables[Label.QUOTATION_SERVICES].DefaultView.ToTable(true, "ServiceId");
-            //        for (int quotationServices = 0; quotationServices < this._ds.Tables[Label.QUOTATION_SERVICES].Rows.Count; quotationServices++)
-            //        {
+                //    if (this._ds.Tables[Label.QUOTATION_SERVICES].Rows.Count != 0)
+                //    {
+                //        //dtServicesUniqueTable = this._ds.Tables[Label.QUOTATION_SERVICES].DefaultView.ToTable(true, "ServiceId");
+                //        for (int quotationServices = 0; quotationServices < this._ds.Tables[Label.QUOTATION_SERVICES].Rows.Count; quotationServices++)
+                //        {
 
-            //            serviceName = Convert.ToString(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["MetaDataCode"]);
-            //            areMultipleEntriesAllowed = Convert.ToBoolean(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["AreMultipleEntriesAllowed"]);
-            //            quotationServiceId = Convert.ToInt32(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["Id"]);
-            //            activationObject.Add(new JProperty(serviceName, new JObject()));
-            //            activationObject.SelectToken(serviceName).Add(new JProperty(Label.ARE_MULTIPLE_ENTRIES_ALLOWED, areMultipleEntriesAllowed));
-            //            serviceToken = activationObject[serviceName];
-            //            if (serviceToken.Type != JTokenType.Null)
-            //            {
-            //                if (areMultipleEntriesAllowed)
-            //                {
-            //                    activationObject.SelectToken(serviceName).Add(new JProperty(Label.DATA, new JArray()));
-            //                }
-            //                else
-            //                {
-            //                    activationObject.SelectToken(serviceName).Add(new JProperty(Label.DATA, new JObject()));
-            //                }
-            //            }
-            //            drServiceProperies = this._ds.Tables[Label.QUOTATION_SERVICE_PROPERTIES].Select(Label.QUOTATION_SERVICE_ID + "=" + quotationServiceId);
-            //            foreach (DataRow drServiceProperty in drServiceProperies)
-            //            {
-            //                activationObject.SelectToken(serviceName).SelectToken(Label.DATA).Add(new JProperty(drServiceProperty["MetaDataCode"].ToString(), drServiceProperty["Value"]));
-            //            }
-            //        }
+                //            serviceName = Convert.ToString(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["MetaDataCode"]);
+                //            areMultipleEntriesAllowed = Convert.ToBoolean(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["AreMultipleEntriesAllowed"]);
+                //            quotationServiceId = Convert.ToInt32(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["Id"]);
+                //            activationObject.Add(new JProperty(serviceName, new JObject()));
+                //            activationObject.SelectToken(serviceName).Add(new JProperty(Label.ARE_MULTIPLE_ENTRIES_ALLOWED, areMultipleEntriesAllowed));
+                //            serviceToken = activationObject[serviceName];
+                //            if (serviceToken.Type != JTokenType.Null)
+                //            {
+                //                if (areMultipleEntriesAllowed)
+                //                {
+                //                    activationObject.SelectToken(serviceName).Add(new JProperty(Label.DATA, new JArray()));
+                //                }
+                //                else
+                //                {
+                //                    activationObject.SelectToken(serviceName).Add(new JProperty(Label.DATA, new JObject()));
+                //                }
+                //            }
+                //            drServiceProperies = this._ds.Tables[Label.QUOTATION_SERVICE_PROPERTIES].Select(Label.QUOTATION_SERVICE_ID + "=" + quotationServiceId);
+                //            foreach (DataRow drServiceProperty in drServiceProperies)
+                //            {
+                //                activationObject.SelectToken(serviceName).SelectToken(Label.DATA).Add(new JProperty(drServiceProperty["MetaDataCode"].ToString(), drServiceProperty["Value"]));
+                //            }
+                //        }
 
-            //    }
+                //    }
 
-            //}
-            //catch (Exception ex)
-            //{
+                //}
+                //catch (Exception ex)
+                //{
 
-            //}
+                //}
 
-            //return activationObject;
+                //return activationObject;
                 if (this._ds.Tables[Label.QUOTATION_SERVICES].Rows.Count != 0)
                 {
                     //dtServicesUniqueTable = this._ds.Tables[Label.QUOTATION_SERVICES].DefaultView.ToTable(true, "ServiceId");
