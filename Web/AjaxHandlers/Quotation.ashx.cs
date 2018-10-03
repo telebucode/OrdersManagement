@@ -167,6 +167,7 @@ namespace Web.AjaxHandlers
             byte stateId = 0;
             int employeeId = 0;
             byte productId = 0;
+
             if (context.Request["ProductId"] != null && byte.TryParse(context.Request["ProductId"].ToString(), out productId))
                 GenerateErrorResponse(400, string.Format("ProductId must be a number"));
             if (context.Request["AccountId"] != null && int.TryParse(context.Request["AccountId"].ToString(), out accountId))

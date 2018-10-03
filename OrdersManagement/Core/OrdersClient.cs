@@ -84,10 +84,13 @@ namespace OrdersManagement.Core
                 JObject repsonseObj;
                 dynamic metaData;
                 dynamic logResponse;
+                string _ApiKey = "fDZjHHybyM";
+                string _ApiSecret = "zu5nKlRQFbPCQrihQn51";
                 metaData = this.GetRequestObjectForActivation(quotationId, isPostPaidQuotation, activatedPercentage);
                 CredentialCache credentials = new CredentialCache();
-                credentials.Add(uriPrefix: new Uri(activationUrl), authType: "Basic", cred: new NetworkCredential("smscountry", "smsc"));
-                WebRequest request = (HttpWebRequest)WebRequest.Create(activationUrl);
+                //credentials.Add(uriPrefix: new Uri(activationUrl), authType: "Basic", cred: new NetworkCredential("smscountry", "smsc"));
+                credentials.Add(new Uri(activationUrl), "Basic", new NetworkCredential(_ApiKey, _ApiSecret));
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(activationUrl);
                 request.Credentials = credentials;
                 request.Method = "POST";
                 request.ContentType = "application/json";
