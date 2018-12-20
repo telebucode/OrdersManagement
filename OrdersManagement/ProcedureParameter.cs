@@ -69,7 +69,7 @@ namespace OrdersManagement
         internal const string ORDER_ID = "@OrderId";
         internal const string REQUEST_OBJECT = "@RequestObject";
         internal const string RESPONSE_OBJECT = "@ResponseObject";
-
+        internal const string QUOTATION_TYPE = "@QuotationType";
         internal const string SUCCESS = "@Success";
         internal const string MESSAGE = "@Message";
     }

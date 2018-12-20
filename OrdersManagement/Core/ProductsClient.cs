@@ -91,6 +91,7 @@ namespace OrdersManagement.Core
                     return this.ErrorResponse();
                 if (this._ds.Tables.Count > 0)
                     this._ds.Tables[0].TableName = Label.PRODUCTS;
+                    this._ds.Tables[1].TableName = Label.QUOTATION_TYPES;
                 this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
                 this._helper.ParseDataSet(this._ds, tablePreferences);
                 return this._helper.GetResponse();

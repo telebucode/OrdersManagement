@@ -209,10 +209,20 @@ namespace OrdersManagement.Core
                             {
                                 throw new QuotationException(string.Format("Property {0} for Service {1} have special characters which are not allowed ", servicePropertyEntry.Value.MetaDataCode, serviceName));
                             }
-                        }
+                        } 
 
                     }
-                    if (servicePropertyEntry.Value.InputType != PropertyInputType.TEXT_AREA && servicePropertyEntry.Value.InputType != PropertyInputType.TEXT_BOX)
+                    if (servicePropertyEntry.Value.InputType == PropertyInputType.DROP_DOWN && servicePropertyEntry.Value.DataType == PropertyDataType.INT)
+                    {
+                        if (servicePropertyEntry.Value.IsRequired == true)
+                        {
+                            if (serviceProperty.SelectToken(servicePropertyEntry.Key).ToString() == "0" || serviceProperty.SelectToken(servicePropertyEntry.Key).ToString() == "")
+                            {
+                                throw new QuotationException(string.Format("Property {0} for Service {1} have not selected", servicePropertyEntry.Value.MetaDataCode, serviceName));
+                            }
+                        }
+                    }
+                    if (servicePropertyEntry.Value.InputType != PropertyInputType.TEXT_AREA && servicePropertyEntry.Value.InputType != PropertyInputType.TEXT_BOX && servicePropertyEntry.Value.InputType != PropertyInputType.DROP_DOWN)
                     {
                         if (!servicePropertyEntry.Value.PropertFields.Keys.Contains(servicePropertyEntry.Value.ToString()))
                         {
@@ -394,14 +404,14 @@ namespace OrdersManagement.Core
                 this.Clean();
             }
         }
-        internal dynamic Create(byte productId, int accountId, int employeeId, byte channelId, string metaData, string ipAddress, int stateId)
+        internal dynamic Create(byte productId, int accountId, int employeeId, byte channelId, string metaData, string ipAddress, int stateId, int QuotationTypeId)
         {
             this.ValidateQuotation(metaData, productId);
             try
             {
                 List<QuotationServices> quotationServices = ListOfQuotationServices(metaData);
                 List<QuotationServiceProperties> quotationServiceProperties = ListOfQuotationServiceProperties(metaData, Label.CREATE);
-
+                 
                 this._sqlCommand = new SqlCommand(StoredProcedure.CREATE_QUOTATION, this._sqlConnection);
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_ID, SqlDbType.Int).Value = productId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.ACCOUNT_ID, SqlDbType.Int).Value = accountId;
@@ -411,6 +421,7 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_SERVICE_PROPERTIES, SqlDbType.Structured).Value = quotationServiceProperties.ToQuotationServicePropertiesDataTable();
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IP_ADDRESS, SqlDbType.VarChar, 50).Value = ipAddress;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.STATE_ID, SqlDbType.Int).Value = stateId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_TYPE, SqlDbType.Int).Value = QuotationTypeId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.ORDER_AMOUNT, SqlDbType.Decimal).Value = this._orderAmount;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_ID, SqlDbType.BigInt).Direction = ParameterDirection.Output;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);

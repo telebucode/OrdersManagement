@@ -228,11 +228,11 @@ namespace OrdersManagement.Core
         /// <param name="ipAddress"></param>
         /// <param name="stateId"></param>
         /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
-        public dynamic CreateQuotation(byte productId, int accountId, int employeeId, byte channelId, string metaData, string ipAddress, int stateId)
+        public dynamic CreateQuotation(byte productId, int accountId, int employeeId, byte channelId, string metaData, string ipAddress, int stateId , int quotationType)
         {
             QuotationClient client = new QuotationClient(ref this._helper);
 
-            return client.Create(productId, accountId, employeeId, channelId, metaData, ipAddress, stateId);
+            return client.Create(productId, accountId, employeeId, channelId, metaData, ipAddress, stateId, quotationType);
         }
         /// <summary>
         /// Updates an existing Quotation
