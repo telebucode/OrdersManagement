@@ -21,6 +21,8 @@ namespace OrdersManagement.Model
         [StringValue("Bit")]
         BIT=5,
         [StringValue("Money")]
-        MONEY=6
+        MONEY=6,
+        [StringValue("Label")]
+        LABEL=7
     }
 }

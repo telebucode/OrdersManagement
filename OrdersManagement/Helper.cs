@@ -76,6 +76,7 @@ namespace OrdersManagement
                 return;
             try
             {
+                this._da = new SqlDataAdapter();
                 this._sqlCommand = new SqlCommand(StoredProcedure.GET_SERVICES, this._sqlConnection);
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_ID, SqlDbType.TinyInt).Value = productId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = isOnlyActive;
@@ -592,6 +593,10 @@ namespace OrdersManagement
                             SharedClass.InputTypes.Add(Convert.ToByte(inputTypeRow[Label.ID]), PropertyInputType.RADIO_BUTTON);
                         else if (inputTypeRow[Label.TYPE].ToString().Equals(Label.FILE_UPLOAD, StringComparison.CurrentCultureIgnoreCase))
                             SharedClass.InputTypes.Add(Convert.ToByte(inputTypeRow[Label.ID]), PropertyInputType.FILE_UPLOAD);
+                        else if (inputTypeRow[Label.TYPE].ToString().Equals(Label.DATE_TIME, StringComparison.CurrentCultureIgnoreCase))
+                            SharedClass.InputTypes.Add(Convert.ToByte(inputTypeRow[Label.ID]), PropertyInputType.DATE_TIME);
+                        else if (inputTypeRow[Label.TYPE].ToString().Equals(Label.LABEL, StringComparison.CurrentCultureIgnoreCase))
+                            SharedClass.InputTypes.Add(Convert.ToByte(inputTypeRow[Label.ID]), PropertyInputType.LABEL);
                         else
                             throw new ClientInitializationException(string.Format("Input Type is not defined for {0} in Orders Library.", inputTypeRow[Label.TYPE]));
                     }
@@ -641,6 +646,9 @@ namespace OrdersManagement
                             SharedClass.InputDataTypes.Add(Convert.ToByte(inputDataTypeRow[Label.ID]), PropertyDataType.BIT);
                         else if (inputDataTypeRow[Label.DATA_TYPE].ToString().Equals(Label.MONEY, StringComparison.CurrentCultureIgnoreCase))
                             SharedClass.InputDataTypes.Add(Convert.ToByte(inputDataTypeRow[Label.ID]), PropertyDataType.MONEY);
+                        else if (inputDataTypeRow[Label.DATA_TYPE].ToString().Equals(Label.LABEL, StringComparison.CurrentCultureIgnoreCase))
+                            SharedClass.InputDataTypes.Add(Convert.ToByte(inputDataTypeRow[Label.ID]), PropertyDataType.LABEL);
+                        
                         else
                             throw new ClientInitializationException(string.Format("Input Data Type is not defined for {0} in Orders Library.", inputDataTypeRow[Label.DATA_TYPE]));
                     }

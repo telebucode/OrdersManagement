@@ -65,7 +65,6 @@ namespace Web.AjaxHandlers
             }
         }
 
-
         private void GetServices(HttpContext context)
         {
             short serviceId = 0;
@@ -245,6 +244,7 @@ namespace Web.AjaxHandlers
 
             bool isRequired = true;
             bool includeInOrderAmount = false;
+            bool isActive = true;
             byte inputTypeId = 0;
             byte dataTypeId = 0;
             ServiceProperty serviceProperty = new ServiceProperty();
@@ -262,11 +262,14 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("Parameter InputTypeId of Property '{0}' is missing or invalid", propertyObject.SelectToken("DisplayName").ToString()));
             if (propertyObject.SelectToken("DataTypeId") == null || !byte.TryParse(propertyObject.SelectToken("DataTypeId").ToString(), out dataTypeId))
                 GenerateErrorResponse(400, string.Format("Parameter DataTypeId of Property '{0}' is missing or invalid", propertyObject.SelectToken("DisplayName").ToString()));
+            if (propertyObject.SelectToken("IsActive") != null && !bool.TryParse(propertyObject.SelectToken("IsActive").ToString(), out isActive)) 
+            GenerateErrorResponse(400, string.Format("Parameter IsActive of Property '{0}' is missing or invalid", propertyObject.SelectToken("IsActive").ToString()));
 
 
             serviceProperty.DisplayName = propertyObject.SelectToken("DisplayName").ToString();
             serviceProperty.MetaDataCode = propertyObject.SelectToken("MetaDataCode").ToString();
             serviceProperty.IsRequired = isRequired;
+            serviceProperty.IsActive = isActive;
             serviceProperty.DefaultValue = propertyObject.SelectToken("DefaultValue") == null ? string.Empty : propertyObject.SelectToken("DefaultValue").ToString();
             serviceProperty.IncludeInOrderAmount = includeInOrderAmount;
             serviceProperty.InputTypeId = inputTypeId;

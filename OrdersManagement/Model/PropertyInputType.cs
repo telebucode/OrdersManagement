@@ -19,6 +19,10 @@ namespace OrdersManagement.Model
         [StringValue("RadioButton")]
         RADIO_BUTTON = 4,
         [StringValue("FileUpload")]
-        FILE_UPLOAD = 5
+        FILE_UPLOAD = 5,
+        [StringValue("DateTime")]
+        DATE_TIME = 6,
+        [StringValue("Label")]
+        LABEL = 7
     }
 }

@@ -61,6 +61,7 @@ namespace OrdersManagement
         internal const string DROP_DOWN = "DropDown";
         internal const string RADIO_BUTTON = "RadioButton";
         internal const string FILE_UPLOAD = "FileUpload";
+        internal const string LABEL = "Label";
 
         internal const string INT = "Int";
         internal const string FLOAT = "Float";

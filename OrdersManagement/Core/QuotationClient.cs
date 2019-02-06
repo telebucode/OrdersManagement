@@ -222,7 +222,7 @@ namespace OrdersManagement.Core
                             }
                         }
                     }
-                    if (servicePropertyEntry.Value.InputType != PropertyInputType.TEXT_AREA && servicePropertyEntry.Value.InputType != PropertyInputType.TEXT_BOX && servicePropertyEntry.Value.InputType != PropertyInputType.DROP_DOWN)
+                    if (servicePropertyEntry.Value.InputType != PropertyInputType.TEXT_AREA && servicePropertyEntry.Value.InputType != PropertyInputType.TEXT_BOX && servicePropertyEntry.Value.InputType != PropertyInputType.DROP_DOWN && servicePropertyEntry.Value.InputType != PropertyInputType.LABEL && servicePropertyEntry.Value.InputType != PropertyInputType.DATE_TIME)
                     {
                         if (!servicePropertyEntry.Value.PropertFields.Keys.Contains(servicePropertyEntry.Value.ToString()))
                         {
