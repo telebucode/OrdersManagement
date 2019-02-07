@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-
-using OrdersManagement;
-using OrdersManagement.Model;
-using OrdersManagement.Core;
+//using Orders;
+using System.Web.Script.Serialization;
 using Newtonsoft.Json.Linq;
+using OrdersManagement.Model;
+using System.Web.SessionState;
+
 
 namespace Web.AjaxHandlers
 {
@@ -18,6 +19,13 @@ namespace Web.AjaxHandlers
         private JObject errorJSon = new JObject(new JProperty("Success", false), new JProperty("Message", ""));
         public void ProcessRequest(HttpContext context)
         {
+            //if (HttpContext.Current.Session["AdminId"] == null || HttpContext.Current.Session["AdminId"].ToString() == string.Empty)
+            //{
+            //    context.Response.StatusCode = 401;
+            //    context.Response.StatusDescription = "Invalid Session";
+            //    context.Response.End();
+
+            //}
             if (context.Request["Action"] == null)
             {
                 context.Response.StatusCode = 400;
@@ -56,6 +64,12 @@ namespace Web.AjaxHandlers
                     case "Download":
                         Download(context);
                         break;
+                    case "GetQuotationServices":
+                        GetQuotationServices(context);
+                        break;
+                    case "GetQuotationServiceProperties":
+                        GetQuotationServiceProperties(context);
+                        break;
                     default:
                         GenerateErrorResponse(400, string.Format("Invalid Action ({0})", context.Request["Action"].ToString()));
                         break;
@@ -77,7 +91,7 @@ namespace Web.AjaxHandlers
             bool onlyActive = true;
             if (context.Request["OnlyActive"] != null && !bool.TryParse(context.Request["OnlyActive"].ToString(), out onlyActive))
                 GenerateErrorResponse(400, string.Format("OnlyActive value ({0}) is not a valid boolean value", context.Request["OnlyActive"].ToString()));
-            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: OrdersManagement.ResponseFormat.JSON);
             context.Response.Write(client.GetQuotationStatuses(onlyActive));
         }
         private void GetQuotationChannels(HttpContext context)
@@ -85,7 +99,7 @@ namespace Web.AjaxHandlers
             bool onlyActive = true;
             if (context.Request["OnlyActive"] != null && !bool.TryParse(context.Request["OnlyActive"].ToString(), out onlyActive))
                 GenerateErrorResponse(400, string.Format("OnlyActive value ({0}) is not a valid boolean value", context.Request["OnlyActive"].ToString()));
-            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: OrdersManagement.ResponseFormat.JSON);
             context.Response.Write(client.GetQuotationChannels(onlyActive));
         }
         private void Search(HttpContext context)
@@ -93,15 +107,16 @@ namespace Web.AjaxHandlers
             byte productId = 0;
             int quotationId = 0;
             string quotationNumber = string.Empty;
+            string accountName = string.Empty;
             string mobile = string.Empty;
             string email = string.Empty;
             int accountId = 0;
-            int employeeId = 0;
+            int employeeId = Convert.ToInt32(context.Session["AdminId"]);
             int ownerShipId = 0;
             byte statusId = 0;
             sbyte channelId = 0;
             string ipAddress = string.Empty;
-            byte billingModeId = 0;
+            byte billingModeId = 1;
             DateTime fromDateTime = DateTime.Now.Date;
             DateTime toDateTime = DateTime.Now.AddDays(1).AddTicks(-1);
             int pageNumber = 1;
@@ -115,6 +130,8 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("QuotationId must be a number"));
             if (searchData.SelectToken("QuotationNumber") != null)
                 quotationNumber = searchData.SelectToken("QuotationNumber").ToString();
+            if (searchData.SelectToken("AccountName") != null)
+                accountName = searchData.SelectToken("AccountName").ToString();
             if (searchData.SelectToken("AccountId") != null && !int.TryParse(searchData.SelectToken("AccountId").ToString(), out accountId))
                 GenerateErrorResponse(400, string.Format("AccountId must be a number"));
             if (searchData.SelectToken("EmployeeId") != null && !int.TryParse(searchData.SelectToken("EmployeeId").ToString(), out employeeId))
@@ -138,14 +155,15 @@ namespace Web.AjaxHandlers
             if (searchData.SelectToken("Mobile") != null)
                 mobile = searchData.SelectToken("Mobile").ToString();
             if (searchData.SelectToken("Email") != null)
-                mobile = searchData.SelectToken("Email").ToString();
+                email = searchData.SelectToken("Email").ToString();
             TablePreferences quotationTablePreferences = new TablePreferences("", "", true, false);
             Dictionary<string, TablePreferences> quotationsDictionary = new Dictionary<string, TablePreferences>();
             quotationsDictionary.Add("Quotations", quotationTablePreferences);
             OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: OrdersManagement.ResponseFormat.JSON);
             context.Response.Write(client.GetQuotations(productId: productId, quotationId: quotationId, quotationNumber: quotationNumber, accountId: accountId,
                 employeeId: employeeId, ownerShipId: ownerShipId, statusId: statusId, channelId: channelId, ipAddress: ipAddress,
-                billingModeId: billingModeId, fromDateTime: fromDateTime, toDateTime: toDateTime, pageNumber: pageNumber, limit: limit, mobile: mobile, email: email, tablePreferences: quotationsDictionary));
+                billingModeId: billingModeId, fromDateTime: fromDateTime, toDateTime: toDateTime, pageNumber: pageNumber, limit: limit,
+                mobile: mobile, email: email, accountName: accountName, tablePreferences: quotationsDictionary));
         }
         private void GetQuotationDetails(HttpContext context)
         {
@@ -157,55 +175,64 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("QuoationId must be greater than 0"));
             if (context.Request["IsPostPaidQuotation"] != null && !bool.TryParse(context.Request["IsPostPaidQuotation"].ToString(), out isPostPaidQuotation))
                 GenerateErrorResponse(400, string.Format("IsPostPaidQuotation must be a boolean value"));
-            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: OrdersManagement.ResponseFormat.JSON);
             context.Response.Write(client.GetQuotationDetails(quotationId, isPostPaidQuotation));
         }
         private void Create(HttpContext context)
         {
-            int accountId = 0;
-            byte channelId = 0;
-            byte stateId = 0;
-            int employeeId = 0;
-            byte productId = 0;
-
-            if (context.Request["ProductId"] != null && byte.TryParse(context.Request["ProductId"].ToString(), out productId))
-                GenerateErrorResponse(400, string.Format("ProductId must be a number"));
-            if (context.Request["AccountId"] != null && int.TryParse(context.Request["AccountId"].ToString(), out accountId))
-                GenerateErrorResponse(400, string.Format("AccountId must be a number"));
-            if (accountId <= 0)
-                GenerateErrorResponse(400, string.Format("AccountId must be greater than 0"));
-            if (context.Request["ChannelId"] != null && byte.TryParse(context.Request["ChannelId"].ToString(), out channelId))
-                GenerateErrorResponse(400, string.Format("ChannelId must be a number"));
-            if (channelId <= 0)
-                GenerateErrorResponse(400, string.Format("ChannelId must be greater than 0"));
-            if (context.Request["MetaData"] == null || context.Request["MetaData"].ToString().Replace(" ", "").Length == 0)
-                GenerateErrorResponse(400, string.Format("MetaData is mandatory"));
-            if (context.Request["StateId"] != null && !byte.TryParse(context.Request["StateId"].ToString(), out stateId))
-                GenerateErrorResponse(400, string.Format("StateId must ne a number"));
-            if (stateId <= 0)
-                GenerateErrorResponse(400, "StateId must be greater than 0");
-            if (channelId == 1)
+            try
             {
-                if (context.Request["EmployeeId"] == null && context.Session["EmployeeId"] == null)
-                    GenerateErrorResponse(403, string.Format("EmployeeId is mandatory"));
-                if (context.Request["EmployeeId"] != null && !int.TryParse(context.Request["EmployeeId"].ToString(), out employeeId))
-                    GenerateErrorResponse(400, string.Format("EmployeeId must be a number"));
-                else if (!int.TryParse(context.Session["EmployeeId"].ToString(), out employeeId))
-                    GenerateErrorResponse(400, string.Format("EmployeeId must be a number."));
+                int accountId = 0;
+                byte channelId = 0;
+                byte stateId = 0;
+                int employeeId = 1;
+                byte productId = 0;
+                if (context.Request["ProductId"] == null || !byte.TryParse(context.Request["ProductId"].ToString(), out productId))
+                    GenerateErrorResponse(400, string.Format("ProductId must be a number"));
+                if (context.Request["AccountId"] == null || !int.TryParse(context.Request["AccountId"].ToString(), out accountId))
+                    GenerateErrorResponse(400, string.Format("AccountId must be a number"));
+                if (accountId <= 0)
+                    GenerateErrorResponse(400, string.Format("AccountId must be greater than 0"));
+                if (context.Request["ChannelId"] == null || !byte.TryParse(context.Request["ChannelId"].ToString(), out channelId))
+                    GenerateErrorResponse(400, string.Format("ChannelId must be a number"));
+                if (channelId <= 0)
+                    GenerateErrorResponse(400, string.Format("ChannelId must be greater than 0"));
+                if (context.Request["MetaData"] == null || context.Request["MetaData"].ToString().Replace(" ", "").Length == 0)
+                    GenerateErrorResponse(400, string.Format("MetaData is mandatory"));
+                if (context.Request["StateId"] == null || !byte.TryParse(context.Request["StateId"].ToString(), out stateId))
+                    GenerateErrorResponse(400, string.Format("StateId must ne a number"));
+                if (stateId <= 0)
+                    GenerateErrorResponse(400, "StateId must be greater than 0");
+                if (channelId == 1)
+                {
+                    if (context.Request["EmployeeId"] == null && context.Session["EmployeeId"] == null)
+                        GenerateErrorResponse(403, string.Format("EmployeeId is mandatory"));
+                    if (context.Request["EmployeeId"] != null && !int.TryParse(context.Request["EmployeeId"].ToString(), out employeeId))
+                        GenerateErrorResponse(400, string.Format("EmployeeId must be a number"));
+                    //else if (!int.TryParse(context.Session["EmployeeId"].ToString(), out employeeId))
+                    // GenerateErrorResponse(400, string.Format("EmployeeId must be a number."));
+                }
+                var metadata = new JavaScriptSerializer().DeserializeObject(context.Request["MetaData"]);
+                OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: OrdersManagement.ResponseFormat.JSON);
+                context.Response.Write(client.CreateQuotation(productId, accountId: accountId,
+                    employeeId: employeeId,
+                    channelId: channelId,
+                    metaData: metadata.ToString(),
+                    ipAddress: context.Request["IpAddress"] != null ? context.Request["IpAddress"].ToString() : context.Request.ServerVariables["REMOTE_ADDR"].ToString(), stateId: stateId, quotationType: Convert.ToInt32(context.Request["quotationType"].ToString())));
             }
-            Client client = new Client(responseFormat: ResponseFormat.JSON);
-            context.Response.Write(client.CreateQuotation(productId, accountId: accountId,
-                employeeId: employeeId,
-                channelId: channelId,
-                metaData: context.Request["MetaData"].ToString(),
-                ipAddress: context.Request["IpAddress"] != null ? context.Request["IpAddress"].ToString() : context.Request.ServerVariables["REMOTE_ADDR"].ToString(), stateId: stateId, quotationType: Convert.ToInt32 ( context.Request["quotationType"].ToString())));
+            catch (Exception ex)
+            {
+                
+            }
+
         }
         private void Update(HttpContext context)
         {
             int quotationId = 0;
             byte stateId = 0;
             byte channelId = 0;
-            int employeeId = 0;
+            int employeeId = Convert.ToInt32(context.Session["AdminId"]);
+
             if (context.Request["QuotationId"] != null && !int.TryParse(context.Request["QuotationId"].ToString(), out quotationId))
                 GenerateErrorResponse(400, string.Format("QuotationId must be a number"));
             if (quotationId <= 0)
@@ -214,7 +241,7 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("StateId must ne a number"));
             if (stateId <= 0)
                 GenerateErrorResponse(400, "StateId must be greater than 0");
-            if (context.Request["ChannelId"] != null && byte.TryParse(context.Request["ChannelId"].ToString(), out channelId))
+            if (context.Request["ChannelId"] != null && !byte.TryParse(context.Request["ChannelId"].ToString(), out channelId))
                 GenerateErrorResponse(400, string.Format("ChannelId must be a number"));
             if (channelId <= 0)
                 GenerateErrorResponse(400, string.Format("ChannelId must be greater than 0"));
@@ -226,11 +253,12 @@ namespace Web.AjaxHandlers
                     GenerateErrorResponse(403, string.Format("EmployeeId is mandatory"));
                 if (context.Request["EmployeeId"] != null && !int.TryParse(context.Request["EmployeeId"].ToString(), out employeeId))
                     GenerateErrorResponse(400, string.Format("EmployeeId must be a number"));
-                else if (!int.TryParse(context.Session["EmployeeId"].ToString(), out employeeId))
-                    GenerateErrorResponse(400, string.Format("EmployeeId must be a number."));
+                //else if (!int.TryParse(context.Session["EmployeeId"].ToString(), out employeeId))
+                //    GenerateErrorResponse(400, string.Format("EmployeeId must be a number."));
             }
-            Client client = new Client(responseFormat: ResponseFormat.JSON);
-            context.Response.Write(client.UpdateQuotation(quotationId: quotationId, employeeId: employeeId, metaData: context.Request["MetaData"].ToString(), ipAddress: context.Request["IpAddress"] != null ? context.Request["IpAddress"].ToString() : context.Request.ServerVariables["REMOTE_ADDR"].ToString(), stateId: stateId));
+            var metadata = new JavaScriptSerializer().DeserializeObject(context.Request["MetaData"]);
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: OrdersManagement.ResponseFormat.JSON);
+            context.Response.Write(client.UpdateQuotation(quotationId: quotationId, employeeId: employeeId, metaData: metadata.ToString(), ipAddress: context.Request["IpAddress"] != null ? context.Request["IpAddress"].ToString() : context.Request.ServerVariables["REMOTE_ADDR"].ToString(), stateId: stateId));
         }
         private void Delete(HttpContext context)
         {
@@ -242,7 +270,7 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("QuoationId must be greater than 0"));
             if (context.Request["IsPostPaidQuotation"] != null && !bool.TryParse(context.Request["IsPostPaidQuotation"].ToString(), out isPostPaidQuotation))
                 GenerateErrorResponse(400, string.Format("IsPostPaidQuotation must be a boolean value"));
-            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: OrdersManagement.ResponseFormat.JSON);
             context.Response.Write(client.DeleteQuotation(quotationId: quotationId, isPostPaidQuotation: isPostPaidQuotation));
         }
         private void View(HttpContext context)
@@ -250,12 +278,12 @@ namespace Web.AjaxHandlers
             int quotationId = 0;
             bool isPostPaidQuotation = false;
             if (context.Request["QuotationId"] != null && !int.TryParse(context.Request["QuotationId"].ToString(), out quotationId))
-                GenerateErrorResponse(400, string.Format("OnlyActive value ({0}) is not a valid boolean value", context.Request["OnlyActive"].ToString()));
+                GenerateErrorResponse(400, string.Format("QuotationId ({0}) is not a valid integer value", context.Request["QuotationId"].ToString()));
             if (quotationId <= 0)
                 GenerateErrorResponse(400, string.Format("QuoationId must be greater than 0"));
             if (context.Request["IsPostPaidQuotation"] != null && !bool.TryParse(context.Request["IsPostPaidQuotation"].ToString(), out isPostPaidQuotation))
                 GenerateErrorResponse(400, string.Format("IsPostPaidQuotation must be a boolean value"));
-            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: OrdersManagement.ResponseFormat.JSON);
             context.Response.Write(client.ViewQuotation(quotationId, isPostPaidQuotation));
         }
         private void Download(HttpContext context)
@@ -268,8 +296,43 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("QuoationId must be greater than 0"));
             if (context.Request["IsPostPaidQuotation"] != null && !bool.TryParse(context.Request["IsPostPaidQuotation"].ToString(), out isPostPaidQuotation))
                 GenerateErrorResponse(400, string.Format("IsPostPaidQuotation must be a boolean value"));
-            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: OrdersManagement.ResponseFormat.JSON);
             context.Response.Write(client.DownloadQuotation(quotationId, isPostPaidQuotation));
+        }
+
+        private void GetQuotationServices(HttpContext context)
+        {
+            bool onlyActive = true;
+            int quotationId = 0;
+            byte billingModeId = 1;
+            if (context.Request["OnlyActive"] != null && !bool.TryParse(context.Request["OnlyActive"].ToString(), out onlyActive))
+                GenerateErrorResponse(400, string.Format("OnlyActive value ({0}) is not a valid boolean value", context.Request["OnlyActive"].ToString()));
+            if (context.Request["QuotationId"] != null && !int.TryParse(context.Request["QuotationId"].ToString(), out quotationId))
+                GenerateErrorResponse(400, string.Format("QuotationId value ({0}) is not a valid integer value", context.Request["QuotationId"].ToString()));
+            if (context.Request["BillingModeId"] != null && !byte.TryParse(context.Request["BillingModeId"].ToString(), out billingModeId))
+                GenerateErrorResponse(400, string.Format("QuotationId value ({0}) is not a valid integer value", context.Request["BillingModeId"].ToString()));
+            TablePreferences quotationServicesTablePreferences = new TablePreferences("", "", true, false);
+            Dictionary<string, TablePreferences> quotationServicesDictionary = new Dictionary<string, TablePreferences>();
+            quotationServicesDictionary.Add("QuotationServices", quotationServicesTablePreferences);
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: OrdersManagement.ResponseFormat.JSON);
+            context.Response.Write(client.GetQuotationServices(quotationId: quotationId, billingModeId: billingModeId, onlyActive: onlyActive, tablePreferences: quotationServicesDictionary));
+        }
+        private void GetQuotationServiceProperties(HttpContext context)
+        {
+            bool onlyActive = true;
+            int quotationId = 0;
+            byte billingModeId = 1;
+            if (context.Request["OnlyActive"] != null && !bool.TryParse(context.Request["OnlyActive"].ToString(), out onlyActive))
+                GenerateErrorResponse(400, string.Format("OnlyActive value ({0}) is not a valid boolean value", context.Request["OnlyActive"].ToString()));
+            if (context.Request["QuotationId"] != null && !int.TryParse(context.Request["QuotationId"].ToString(), out quotationId))
+                GenerateErrorResponse(400, string.Format("QuotationId value ({0}) is not a valid integer value", context.Request["QuotationId"].ToString()));
+            if (context.Request["BillingModeId"] != null && !byte.TryParse(context.Request["BillingModeId"].ToString(), out billingModeId))
+                GenerateErrorResponse(400, string.Format("QuotationId value ({0}) is not a valid integer value", context.Request["BillingModeId"].ToString()));
+            TablePreferences quotationServicePropertiesTablePreferences = new TablePreferences("", "", true, false);
+            Dictionary<string, TablePreferences> quotationServicePropertiesDictionary = new Dictionary<string, TablePreferences>();
+            quotationServicePropertiesDictionary.Add("QuotationServiceProperties", quotationServicePropertiesTablePreferences);
+            OrdersManagement.Core.Client client = new OrdersManagement.Core.Client(responseFormat: OrdersManagement.ResponseFormat.JSON);
+            context.Response.Write(client.GetQuotationServiceProperties(quotationId: quotationId, billingModeId: billingModeId, onlyActive: onlyActive, tablePreferences: quotationServicePropertiesDictionary));
         }
         private void GenerateErrorResponse(int statusCode, string message)
         {
@@ -285,6 +348,7 @@ namespace Web.AjaxHandlers
             catch (System.Threading.ThreadAbortException e)
             { }
         }
+
         public bool IsReusable
         {
             get

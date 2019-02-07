@@ -18,7 +18,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var ordersClient = new OrdersClient({ async: true });
-            ordersClient.CreateQuotation(24, "{'Balance':{'Id':'1','Occurance':'1','Amount':'1000','PPPS':'1','PromotionalPulse/Voi':'1','TPPS':'1','TransactionalPulse/V':'1','ValidityInDays':'15'}}", function (res) {
+            ordersClient.CreateQuotation(1,2,1,1, "{'UnlimitedPlan':{'Id':'1','Occurance':'1','Amount':'10.00','MEMLIMIT':'100','BC':'Billing Cycle','PBD':'25-Feb-2019','PED':'26-Feb-2019','PDD':'27-Feb-2019'}}",1,2, function (res) {
                 console.log(res);
             });
             //ordersClient.GetBankAccounts(true, function (res) {
