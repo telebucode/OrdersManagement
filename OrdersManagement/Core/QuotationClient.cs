@@ -180,6 +180,18 @@ namespace OrdersManagement.Core
                             }
 
                             break;
+                        case PropertyDataType.BIT:
+                            try
+                            {
+                                Boolean.Parse(serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString());
+                            }
+                            catch (Exception e)
+                            {
+                                throw new QuotationException(string.Format("Property {0} for Service {1} requires Money value. But '{2}' is not a valid money value.",
+                                    servicePropertyEntry.Value.MetaDataCode, serviceName, serviceProperty.SelectToken(servicePropertyEntry.Value.MetaDataCode).ToString()));
+                            }
+
+                            break;
                         default:
                             break;
                     }
@@ -222,7 +234,7 @@ namespace OrdersManagement.Core
                             }
                         }
                     }
-                    if (servicePropertyEntry.Value.InputType != PropertyInputType.TEXT_AREA && servicePropertyEntry.Value.InputType != PropertyInputType.TEXT_BOX && servicePropertyEntry.Value.InputType != PropertyInputType.DROP_DOWN && servicePropertyEntry.Value.InputType != PropertyInputType.LABEL && servicePropertyEntry.Value.InputType != PropertyInputType.DATE_TIME)
+                    if (servicePropertyEntry.Value.InputType != PropertyInputType.TEXT_AREA && servicePropertyEntry.Value.InputType != PropertyInputType.TEXT_BOX && servicePropertyEntry.Value.InputType != PropertyInputType.DROP_DOWN && servicePropertyEntry.Value.InputType != PropertyInputType.LABEL &&servicePropertyEntry.Value.InputType != PropertyInputType.RADIO_BUTTON && servicePropertyEntry.Value.InputType != PropertyInputType.DATE_TIME)
                     {
                         if (!servicePropertyEntry.Value.PropertFields.Keys.Contains(servicePropertyEntry.Value.ToString()))
                         {

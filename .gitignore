@@ -156,3 +156,5 @@ $RECYCLE.BIN/
 .DS_Store
 OrdersLogs
 /Web/Files
+/TestClient/App.config
+/Web/Web.config
