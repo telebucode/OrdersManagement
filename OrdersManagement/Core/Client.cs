@@ -300,6 +300,13 @@ namespace OrdersManagement.Core
             InvoiceClient client = new InvoiceClient(ref this._helper);
             return client.Create(quotationId: quotationId, billingModeId: billingModeId, employeeId: employeeId, tablePreferences: tablePreferences);
         }
+
+        //cancel Invoice
+        public dynamic CancelInvoice(int quotationId, int adminId)
+        {
+            InvoiceClient client = new InvoiceClient(ref this._helper);
+            return client.CancelInvoice(quotationId: quotationId, adminId: adminId);
+        }
         /// <summary>
         /// 
         /// </summary>

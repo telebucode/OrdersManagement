@@ -44,6 +44,9 @@ namespace Web.AjaxHandlers
                     case "Download":
                         Download(context);
                         break;
+                    case "Cancel":
+                        CancelInvoice(context);
+                        break;
                     default:
                         GenerateErrorResponse(400, string.Format("Invalid Action ({0})", context.Request["Action"].ToString()));
                         break;
@@ -166,6 +169,19 @@ namespace Web.AjaxHandlers
                 GenerateErrorResponse(400, string.Format("IsPostPaidQuotation must be a boolean value"));
             Client client = new Client(responseFormat: ResponseFormat.JSON);
             context.Response.Write(client.DownloadInvoice(quotationId, isPostPaidQuotation));
+        }
+        //cancel Invoice
+        private void CancelInvoice(HttpContext context)
+        {
+            int quotationId = 0;
+            int adminId = 0;
+            if (context.Request["QuotationId"] != null && !int.TryParse(context.Request["QuotationId"].ToString(), out quotationId))
+                GenerateErrorResponse(400, string.Format("QuotationId Must be a number"));
+            if (context.Request["AdminId"] != null && !int.TryParse(context.Request["AdminId"].ToString(), out adminId))
+                GenerateErrorResponse(400, string.Format("AdminId Must be a number"));
+
+            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            context.Response.Write(client.CancelInvoice(quotationId, adminId));
         }
         private void GenerateErrorResponse(int statusCode, string message)
         {

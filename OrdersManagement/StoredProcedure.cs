@@ -38,6 +38,7 @@ namespace OrdersManagement
         internal const string GET_INVOICE_STATUSES = "GetInvoiceStatuses";
         internal const string CREATE_INVOICE = "CreateInvoice";
         internal const string GET_INVOICES = "GetInvoices";
+        internal const string CANCEL_INVOICE = "CancelInvoice";
         #endregion
         #region PAYMENTS RELATED
         internal const string GET_BANK_ACCOUNTS = "GetBankAccounts";

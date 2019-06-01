@@ -19,7 +19,8 @@ namespace OrdersManagement
         internal const string SERVICE_PROPERTY_FIELDS = "@ServicePropertyFields";
         internal const string SERVICE_PROPERTY_DETAILS = "@ServicePropertyDetails";
         internal const string SERVICE_PROPERTY_ID = "@ServicePropertyId";
-
+        
+        internal const string ADMIN_ID = "@AdminId";
         internal const string QUOTATION_ID = "@QuotationId";
         internal const string QUOTATION_NUMBER = "@QuotationNumber";
         internal const string ACCOUNT_ID = "@AccountId";

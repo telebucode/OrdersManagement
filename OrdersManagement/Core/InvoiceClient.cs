@@ -162,6 +162,35 @@ namespace OrdersManagement.Core
                 this.Clean();
             }
         }
+
+        //cancel Invoice 
+        internal dynamic CancelInvoice(int quotationId, int adminId)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.CANCEL_INVOICE, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_ID, SqlDbType.Int).Value = quotationId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ADMIN_ID, SqlDbType.Int).Value = adminId;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                //this._helper.ParseDataSet(this._ds, tablePreferences);
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to cancel Invoice. {0}", e.ToString()));
+                throw new InvoiceException(string.Format("Unable to cancel Invoice. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+
         internal dynamic ViewInvoice(int quotationId, bool isPostPaidQuotation)
         {
             DataSet tempDataSet = new DataSet();
