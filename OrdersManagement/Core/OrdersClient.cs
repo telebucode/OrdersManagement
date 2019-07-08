@@ -74,7 +74,7 @@ namespace OrdersManagement.Core
         #endregion
 
         #region INTERNAL METHODS
-        internal dynamic ActivateOrder(int quotationId, bool isPostPaidQuotation, byte activatedPercentage, string activationUrl, int employeeId, Dictionary<string, TablePreferences> tablePreferences = null)
+        internal dynamic ActivateOrder(int quotationId, bool isPostPaidQuotation, float activationAmount, string activationUrl, int employeeId, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
@@ -83,10 +83,10 @@ namespace OrdersManagement.Core
                 string HttpAPIResponseString = "";
                 JObject repsonseObj;
                 dynamic metaData;
-                dynamic logResponse;
+                //dynamic logResponse;
                 string _ApiKey = "fDZjHHybyM";
                 string _ApiSecret = "zu5nKlRQFbPCQrihQn51";
-                metaData = this.GetRequestObjectForActivation(quotationId, isPostPaidQuotation, activatedPercentage);
+                metaData = this.GetRequestObjectForActivation(quotationId, isPostPaidQuotation, activationAmount);
                 CredentialCache credentials = new CredentialCache();
                 //credentials.Add(uriPrefix: new Uri(activationUrl), authType: "Basic", cred: new NetworkCredential("smscountry", "smsc"));
                 credentials.Add(new Uri(activationUrl), "Basic", new NetworkCredential(_ApiKey, _ApiSecret));
@@ -102,7 +102,7 @@ namespace OrdersManagement.Core
                 HttpAPIResponseString = SReader.ReadToEnd();
                 SReader.Close();
                 repsonseObj = JObject.Parse(HttpAPIResponseString);
-                logResponse = this.LogOrderData(employeeId, Convert.ToString(metaData), Convert.ToString(repsonseObj));
+                //logResponse = this.LogOrderData(employeeId, Convert.ToString(metaData), Convert.ToString(repsonseObj));
 
 
                 return repsonseObj;
@@ -244,12 +244,14 @@ namespace OrdersManagement.Core
             }
         }
 
-        internal dynamic VerifyOrderStatuses(long orderId, Dictionary<string, TablePreferences> tablePreferences = null)
+        internal dynamic VerifyOrderStatuses(long orderId, float activationAmount, bool isActivated, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
                 this._sqlCommand = new SqlCommand(StoredProcedure.VERIFY_ORDER_STATUS, this._sqlConnection);
                 this._sqlCommand.Parameters.Add(ProcedureParameter.ORDER_ID, SqlDbType.BigInt).Value = orderId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ACTIVATION_AMOUNT, SqlDbType.Float).Value = activationAmount;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ISACTIVATED, SqlDbType.Bit).Value = isActivated;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());
@@ -270,7 +272,7 @@ namespace OrdersManagement.Core
             }
         }
 
-        public dynamic GetRequestObjectForActivation(int quotationId, bool isPostPaidQuotation, byte activationPercentage)
+        public dynamic GetRequestObjectForActivation(int quotationId, bool isPostPaidQuotation, float activationAmount)
         {
             dynamic activationObject = new JObject();
             dynamic servicesObject;
@@ -351,7 +353,7 @@ namespace OrdersManagement.Core
                     {
                         serviceName = Convert.ToString(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["MetaDataCode"]);
                         areMultipleEntriesAllowed = Convert.ToBoolean(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["AreMultipleEntriesAllowed"]);
-                        quotationServiceId = Convert.ToInt32(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["Id"]);
+                        quotationServiceId = Convert.ToInt32(this._ds.Tables[Label.QUOTATION_SERVICES].Rows[quotationServices]["ServiceId"]);
 
                         if (activationObject[serviceName] == null)
                         {
@@ -367,7 +369,7 @@ namespace OrdersManagement.Core
                                 activationObject.SelectToken(serviceName).Add(new JProperty(Label.DATA, new JObject()));
                             }
                         }
-                        drServiceProperies = this._ds.Tables[Label.QUOTATION_SERVICE_PROPERTIES].Select(Label.QUOTATION_SERVICE_ID + "=" + quotationServiceId);
+                        drServiceProperies = this._ds.Tables[Label.QUOTATION_SERVICE_PROPERTIES].Select(Label.SERVICE_ID + "=" + quotationServiceId);
                         JObject servicesData = new JObject();
                         servicesData.Add(new JProperty("QuotationServiceId", quotationServiceId));
 
@@ -390,7 +392,8 @@ namespace OrdersManagement.Core
                     }
 
                     JObject ActivationServiceJobj = new JObject();
-                    ActivationServiceJobj.Add(new JProperty(Label.ACCOUNT_ID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.PRODUCT_USERID]));
+                    ActivationServiceJobj.Add(new JProperty(Label.PRODUCT_USERID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.PRODUCT_USERID]));
+                    ActivationServiceJobj.Add(new JProperty(Label.ACTIVATION_AMOUNT, activationAmount));
                     ActivationServiceJobj.Add(new JProperty(Label.ORDER_ID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.ID]));
                     ActivationServiceJobj.Add(new JProperty(Label.SERVICES_LIST, activationObject));
                     activationObject = new JObject();

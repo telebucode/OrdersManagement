@@ -13,6 +13,7 @@ namespace OrdersManagement.Model
         private short _id = 0;
         private string _displayName = string.Empty;
         private string _metaDataCode = string.Empty;
+        private string _inputProperty = string.Empty;
         private bool _isRequired = true;
         private dynamic _defaultValue = null;
         private PropertyInputType _inputType = PropertyInputType.UNKNOWN;
@@ -37,6 +38,8 @@ namespace OrdersManagement.Model
         /// Gets Or Sets the Code to be used
         /// </summary>
         public string MetaDataCode { get { return this._metaDataCode; } set { this._metaDataCode = value; } }
+
+        public string InputProperty { get { return this._inputProperty; } set { this._inputProperty = value; } }
         /// <summary>
         /// Gets Or Sets the value indicating whether this Property is required or not. Default is true.
         /// </summary>

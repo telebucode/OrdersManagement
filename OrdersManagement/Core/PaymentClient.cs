@@ -174,7 +174,7 @@ namespace OrdersManagement.Core
 
 
         public dynamic CreatePayment(int productId, int accountId, int employeeId, int invoiceId, int billingModeId,
-            int paymentGatewayId, float paymentAmount, int bankAccountId, DateTime depositeDate, int activatePercentage,
+            int paymentGatewayId, float paymentAmount, int bankAccountId, DateTime depositeDate, DateTime dueDate,
             string comments, bool isTDSApplicable, int tdsPercentage, string chequeNumber, string attachments, string transactionNumber,
             string clientAccountNumber, string clientAccountName, string clientBankName, string clientBankBranch,
             int onlinePaymentGatewayId, string paymentGatewayReferenceId,
@@ -193,7 +193,9 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PAYMENT_AMOUNT, SqlDbType.Float).Value = paymentAmount;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.BANK_ACCOUNT_ID, SqlDbType.Float).Value = bankAccountId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.DEPOSIT_DATE, SqlDbType.DateTime).Value = depositeDate;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.ACTIVATE_PERCENTAGE, SqlDbType.Int).Value = activatePercentage;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.DUE_DATE, SqlDbType.DateTime).Value = dueDate;
+                //this._sqlCommand.Parameters.Add(ProcedureParameter.ACTIVATE_PERCENTAGE, SqlDbType.Int).Value = activatePercentage;
+                //this._sqlCommand.Parameters.Add(ProcedureParameter.ACTIVATION_AMOUNT, SqlDbType.Int).Value = activationAmount;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.COMMENTS, SqlDbType.VarChar, -1).Value = comments;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IS_TDS_APPLICABLE, SqlDbType.Bit).Value = isTDSApplicable;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.TDS_Percentage, SqlDbType.Int).Value = tdsPercentage;
@@ -283,6 +285,8 @@ namespace OrdersManagement.Core
                     return this.ErrorResponse();
                 if (this._ds.Tables.Count > 0)
                     this._ds.Tables[0].TableName = Label.PAYMENT_DETAILS;
+                if (this._ds.Tables.Count > 1)
+                    this._ds.Tables[1].TableName = Label.DISTINCT_GATEWAYS;
                 this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
                 this._helper.ParseDataSet(this._ds, tablePreferences);
                 return this._helper.GetResponse();

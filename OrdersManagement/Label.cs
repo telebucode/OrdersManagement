@@ -22,6 +22,7 @@ namespace OrdersManagement
         internal const string IS_REQUIRED = "IsRequired";
         internal const string DEFAULT_VALUE = "DefaultValue";
         internal const string INCLUDE_IN_ORDER_AMOUNT = "IncludeInOrderAmount";
+        internal const string INPUT_PROPERTY = "InputProperty";
         internal const string PROPERTIES = "Properties";
         internal const string PROPERTY = "Property";
         internal const string SERVICES = "Services";
@@ -85,6 +86,7 @@ namespace OrdersManagement
         internal const string ORDER_STATUSES = "OrderStatuses";
         internal const string PAYMENTS = "Payments";
         internal const string PAYMENT_DETAILS = "PaymentDetails";
+        internal const string DISTINCT_GATEWAYS = "DistinctGateways";
         internal const string ORDERS = "Orders";
         internal const string PRODUCTS = "Products";
         internal const string ORDER_SUMMARY = "OrderSummary";
@@ -96,6 +98,8 @@ namespace OrdersManagement
         internal const string PRODUCT_USERID = "AccountProductId";
         internal const string ORDER_ID = "OrderId";
         internal const string ACCOUNT_ID = "AccountId";
+        internal const string ACTIVATION_PERCENTAGE = "ActivationPercentage";
+        internal const string ACTIVATION_AMOUNT = "ActivationAmount";
         
         
         #region LOG_4_NET_RELATED

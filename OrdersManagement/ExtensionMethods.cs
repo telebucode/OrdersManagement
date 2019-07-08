@@ -87,12 +87,13 @@ namespace OrdersManagement
             table.Columns.Add(Label.IS_ACTIVE, typeof(bool));
             table.Columns.Add(Label.DEFAULT_VALUE, typeof(string));
             table.Columns.Add(Label.INCLUDE_IN_ORDER_AMOUNT, typeof(bool));
+            table.Columns.Add(Label.INPUT_PROPERTY, typeof(string));
             if (serviceProperty.DisplayName == null || serviceProperty.DisplayName.Length == 0)
                 throw new Exceptions.ServiceException(string.Format("Invalid DisplayName"));
             if (serviceProperty.MetaDataCode == null || serviceProperty.MetaDataCode.Length == 0)
                 throw new Exceptions.ServiceException(string.Format("Invalid MetaDataCode"));
             table.Rows.Add(serviceProperty.DisplayName, serviceProperty.MetaDataCode, Convert.ToByte(serviceProperty.InputTypeId),
-                Convert.ToByte(serviceProperty.DataTypeId), serviceProperty.IsRequired,serviceProperty.IsActive, serviceProperty.DefaultValue, serviceProperty.IncludeInOrderAmount);
+                Convert.ToByte(serviceProperty.DataTypeId), serviceProperty.IsRequired,serviceProperty.IsActive, serviceProperty.DefaultValue, serviceProperty.IncludeInOrderAmount,serviceProperty.InputProperty);
             return table;
         }
 
