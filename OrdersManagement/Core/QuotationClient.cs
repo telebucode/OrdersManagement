@@ -77,7 +77,7 @@ namespace OrdersManagement.Core
         private void ValidateQuotation(string metaData, byte productId = 0)
         {
             if (!SharedClass.ServiceLoaded)
-                this._helper.LoadServices();
+                this._helper.LoadServices(true,true,false,productId);
             JObject quotationMetaData = null;
             try
             {
