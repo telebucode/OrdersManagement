@@ -324,11 +324,11 @@ namespace OrdersManagement.Core
             return client.DownloadInvoice(quotationId, isPostPaidQuotation);
         }
 
-        public dynamic GetInvoices(byte productId = 0, int invoiceId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, string mobile = "", string email = "", string accountName = "", Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GetInvoices(byte productId = 0, int invoiceId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, string mobile = "", string email = "", string accountName = "", Dictionary<string, TablePreferences> tablePreferences = null,bool isdownload = false)
         {
             InvoiceClient client = new InvoiceClient(ref this._helper);
             return client.Search(productId, invoiceId, quotationNumber, accountId, employeeId, ownerShipId, statusId, channelId,
-                ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, mobile, email, accountName, tablePreferences);
+                ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, mobile, email, accountName, tablePreferences, isdownload);            
         }
 
         #endregion
