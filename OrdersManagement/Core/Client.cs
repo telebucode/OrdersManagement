@@ -307,6 +307,18 @@ namespace OrdersManagement.Core
             InvoiceClient client = new InvoiceClient(ref this._helper);
             return client.CancelInvoice(quotationId: quotationId, adminId: adminId);
         }
+
+        public dynamic GetInvoiceAccountDetails(int invoiceId, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            InvoiceClient client = new InvoiceClient(ref this._helper);
+            return client.GetInvoiceAccountDetails(invoiceId, tablePreferences);
+        }
+
+        public dynamic UpdateInvoice(int invoiceId, string mobile, string email, string address, string GSTIN, string companyName, int stateId, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            InvoiceClient client = new InvoiceClient(ref this._helper);
+            return client.UpdateInvoice(invoiceId, mobile, email, address, GSTIN, companyName, stateId, tablePreferences);
+        }
         /// <summary>
         /// 
         /// </summary>

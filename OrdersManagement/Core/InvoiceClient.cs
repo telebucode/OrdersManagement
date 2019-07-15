@@ -191,6 +191,66 @@ namespace OrdersManagement.Core
             }
         }
 
+        internal dynamic GetInvoiceAccountDetails(int invoiceId, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.GET_INVOICE_ACCOUNT_DETAILS, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.INVOICEID, SqlDbType.BigInt).Value = invoiceId;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.INVOICE_ACCOUNT_DETAILS;
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, tablePreferences);
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to fetch Invoice Account Details. {0}", e.ToString()));
+                throw new InvoiceException(string.Format("Unable to fetch Invoice Account Details. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+
+        internal dynamic UpdateInvoice(int invoiceId, string mobile, string email, string address, string GSTIN, string companyName, int stateId, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.UPDATE_INVOICE, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.INVOICEID, SqlDbType.BigInt).Value = invoiceId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.MOBILE, SqlDbType.VarChar, 15).Value = mobile;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.EMAIL, SqlDbType.VarChar, 200).Value = email;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ADDRESS, SqlDbType.NVarChar, 1000).Value = address;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.GSTIN, SqlDbType.VarChar, 15).Value = GSTIN;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.COMPANY, SqlDbType.NVarChar, 200).Value = companyName;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.STATE_ID, SqlDbType.Int).Value = stateId;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+               
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, tablePreferences);
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to Update Invoice. {0}", e.ToString()));
+                throw new InvoiceException(string.Format("Unable to Update Invoice. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
         internal dynamic ViewInvoice(int quotationId, bool isPostPaidQuotation)
         {
             DataSet tempDataSet = new DataSet();

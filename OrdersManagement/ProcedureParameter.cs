@@ -45,6 +45,9 @@ namespace OrdersManagement
         internal const string MOBILE = "@Mobile";
         internal const string EMAIL = "@Email";
         internal const string COUNT = "@Count";
+        internal const string ADDRESS = "@Address";
+        internal const string GSTIN = "@Gstin";
+        internal const string COMPANY = "@Company";
 
         internal const string INVOICEID = "@InvoiceId";
         internal const string PAYMENT_GATEWAY_ID = "@PaymentGatewayId";
