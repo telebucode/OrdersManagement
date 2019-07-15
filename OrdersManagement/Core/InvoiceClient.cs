@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using System.Data;
 using System.Data.SqlClient;
 using OrdersManagement.Model;
@@ -11,6 +10,8 @@ using OrdersManagement.Exceptions;
 using Newtonsoft.Json.Linq;
 using System.Web;
 using SelectPdf;
+using System.IO;
+using OfficeOpenXml;
 
 namespace OrdersManagement.Core
 {
@@ -88,7 +89,7 @@ namespace OrdersManagement.Core
         internal dynamic Search(int productId = 0, int invoiceId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0,
             int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0,
             Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, 
-            string mobile = "", string email = "",string accountName = "",Dictionary<string, TablePreferences> tablePreferences = null)
+            string mobile = "", string email = "",string accountName = "",Dictionary<string, TablePreferences> tablePreferences = null, bool isdownload = false)
         {
             try
             {
@@ -111,6 +112,7 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PAGE_NUMBER, SqlDbType.Int).Value = pageNumber;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.COUNT, SqlDbType.Int).Direction = ParameterDirection.Output;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.LIMIT, SqlDbType.TinyInt).Value = limit;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ISDOWNLOAD, SqlDbType.Bit).Value = isdownload;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());
@@ -118,9 +120,18 @@ namespace OrdersManagement.Core
                     return this.ErrorResponse();
                 if (this._ds.Tables.Count > 0)
                     this._ds.Tables[0].TableName = Label.INVOICES;
-                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
-                this._helper.ParseDataSet(this._ds, tablePreferences);
-                return this._helper.GetResponse();
+                JObject jobj = new JObject();
+                if (isdownload == true)
+                {
+                    ExportToExcelSheet(_ds, "Invoices");                   
+                }
+                else
+                {
+                    this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                    this._helper.ParseDataSet(this._ds, tablePreferences);                   
+                    jobj = this._helper.GetResponse();;
+                }
+                return jobj;
             }
             catch (Exception e)
             {
@@ -350,6 +361,32 @@ namespace OrdersManagement.Core
             }
 
         }
+
+        public static void ExportToExcelSheet(DataSet ds, string fileName)
+        {
+            MemoryStream ms = new MemoryStream();
+            using (ExcelPackage pck = new ExcelPackage())
+            {
+                foreach (DataTable dt in ds.Tables)
+                {
+                    ExcelWorksheet EWS = pck.Workbook.Worksheets.Add(dt.TableName);
+
+                    EWS.Cells["A1"].LoadFromDataTable(dt, true);
+                    EWS.Cells.AutoFitColumns();
+                    EWS.View.FreezePanes(2, 1);
+
+                }
+                pck.SaveAs(ms);
+            }
+            ms.WriteTo(HttpContext.Current.Response.OutputStream);
+            HttpContext.Current.Response.Clear();
+            HttpContext.Current.Response.AddHeader("content-disposition", "attachment; filename="+ fileName + ".xls");
+            HttpContext.Current.Response.ContentType = "application/ms-excel";
+            HttpContext.Current.Response.BinaryWrite(ms.ToArray());
+            HttpContext.Current.Response.Flush(); 
+            HttpContext.Current.Response.SuppressContent = true;  
+        }
+        
         #endregion
 
     }
