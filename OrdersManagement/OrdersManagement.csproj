@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Core\ActivationClient.cs" />
     <Compile Include="Core\Client.cs" />
+    <Compile Include="Core\ExportToExcel.cs" />
     <Compile Include="Core\GenericClient.cs" />
     <Compile Include="Core\InvoiceClient.cs" />
     <Compile Include="Core\OrdersClient.cs" />

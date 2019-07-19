@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using System.Data;
 using System.Data.SqlClient;
 using OrdersManagement.Model;
@@ -372,7 +371,7 @@ namespace OrdersManagement.Core
                 this.Clean();
             }
         }
-        internal dynamic Search(int productId = 0, int quotationId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, string mobile = "", string email = "", string accountName = "", Dictionary<string, TablePreferences> tablePreferences = null)
+        internal dynamic Search(int productId = 0, int quotationId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, string mobile = "", string email = "", string accountName = "", Dictionary<string, TablePreferences> tablePreferences = null, bool isdownload = false)
         {
             try
             {
@@ -392,6 +391,7 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.TO_DATE_TIME, SqlDbType.DateTime).Value = toDateTime;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.MOBILE, SqlDbType.VarChar, 15).Value = mobile;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.EMAIL, SqlDbType.VarChar, 200).Value = email;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ISDOWNLOAD, SqlDbType.Bit).Value = isdownload;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PAGE_NUMBER, SqlDbType.Int).Value = pageNumber;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.LIMIT, SqlDbType.TinyInt).Value = limit;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.COUNT, SqlDbType.Int).Direction = ParameterDirection.Output;
@@ -402,9 +402,18 @@ namespace OrdersManagement.Core
                     return this.ErrorResponse();
                 if (this._ds.Tables.Count > 0)
                     this._ds.Tables[0].TableName = Label.QUOTATIONS;
-                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
-                this._helper.ParseDataSet(this._ds, tablePreferences);
-                return this._helper.GetResponse();
+                JObject jobj = new JObject();
+                if (isdownload == true)
+                {
+                    ExportToExcel.ExportDsToExcelSheet(_ds, "Quotations");
+                }
+                else
+                {
+                    this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                    this._helper.ParseDataSet(this._ds, tablePreferences);
+                    jobj = this._helper.GetResponse();
+                }
+                return jobj;
             }
             catch (Exception e)
             {

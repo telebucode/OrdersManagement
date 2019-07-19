@@ -212,11 +212,11 @@ namespace OrdersManagement.Core
             int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "",
             byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null,
             int pageNumber = 1, byte limit = 20, string mobile = "", string email = "", string accountName = "",
-            Dictionary<string, TablePreferences> tablePreferences = null)
+            Dictionary<string, TablePreferences> tablePreferences = null, bool isdownload = false)
         {
             QuotationClient client = new QuotationClient(ref this._helper);
             return client.Search(productId, quotationId, quotationNumber, accountId, employeeId, ownerShipId, statusId, channelId,
-                ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, mobile, email, accountName, tablePreferences);
+                ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, mobile, email, accountName, tablePreferences, isdownload);
         }
         /// <summary>
         /// Creates a Quotation
@@ -383,12 +383,12 @@ namespace OrdersManagement.Core
         }
 
 
-        public dynamic GetPayments(byte productId, int accountId, string mobile, string email, int paymentStatus, string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, string accountName, int pageNumber, byte limit, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GetPayments(byte productId, int accountId, string mobile, string email, int paymentStatus, string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, string accountName, int pageNumber, byte limit, Dictionary<string, TablePreferences> tablePreferences = null, bool isdownload = false)
         {
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);
             return paymentsClient.GetPayments(productId: productId, accountId: accountId, mobile: mobile, email: email,
                 paymentStatus: paymentStatus, number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime,
-                accountName: accountName, pageNumber: pageNumber, limit: limit, tablePreferences: tablePreferences);
+                accountName: accountName, pageNumber: pageNumber, limit: limit, tablePreferences: tablePreferences, isdownload: isdownload);
         }
 
         public dynamic GetPaymentDetails(byte productId, int orderId, Dictionary<string, TablePreferences> tablePreferences = null)
@@ -417,12 +417,12 @@ namespace OrdersManagement.Core
             return ordersClient.GetOrderStatuses(onlyActive: onlyActive, tablePreferences: tablePreferences);
         }
 
-        public dynamic GetOrders(byte productId, int accountId, string mobile, string email, int orderStatus, string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, string accountName, int pageNumber, byte limit, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GetOrders(byte productId, int accountId, string mobile, string email, int orderStatus, string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, string accountName, int pageNumber, byte limit, Dictionary<string, TablePreferences> tablePreferences = null, bool isdownload = false)
         {
             OrdersClient paymentsClient = new OrdersClient(ref this._helper);
             return paymentsClient.GetOrders(productId: productId, accountId: accountId, mobile: mobile, email: email,
                 orderStatus: orderStatus, number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime,
-                accountName: accountName, pageNumber: pageNumber, limit: limit, tablePreferences: tablePreferences);
+                accountName: accountName, pageNumber: pageNumber, limit: limit, tablePreferences: tablePreferences, isdownload: isdownload);
         }
         public dynamic ActivateOrder(int quotationId, bool isPostPaidQuotation, float activationAmount, string activationUrl, int employeeId, Dictionary<string, TablePreferences> tablePreferences = null)
         {

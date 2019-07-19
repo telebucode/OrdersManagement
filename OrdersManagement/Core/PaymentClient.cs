@@ -230,7 +230,7 @@ namespace OrdersManagement.Core
 
         internal dynamic GetPayments(byte productId, int accountId, string mobile, string email, int paymentStatus,
             string number, byte billingMode, int pageNumber, byte limit, DateTime fromDateTime, DateTime toDateTime, string accountName,
-            Dictionary<string, TablePreferences> tablePreferences = null)
+            Dictionary<string, TablePreferences> tablePreferences = null, bool isdownload = false)
         {
             try
             {
@@ -245,6 +245,7 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.BILLING_MODE_ID, SqlDbType.Int).Value = billingMode;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.FROM_DATE_TIME, SqlDbType.DateTime).Value = fromDateTime;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.TO_DATE_TIME, SqlDbType.DateTime).Value = toDateTime;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ISDOWNLOAD, SqlDbType.Bit).Value = isdownload;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PAGE_NUMBER, SqlDbType.Int).Value = pageNumber;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.LIMIT, SqlDbType.TinyInt).Value = limit;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.COUNT, SqlDbType.Int).Direction = ParameterDirection.Output;
@@ -255,9 +256,18 @@ namespace OrdersManagement.Core
                     return this.ErrorResponse();
                 if (this._ds.Tables.Count > 0)
                     this._ds.Tables[0].TableName = Label.PAYMENTS;
-                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
-                this._helper.ParseDataSet(this._ds, tablePreferences);
-                return this._helper.GetResponse();
+                JObject jobj = new JObject();
+                if (isdownload == false)
+                {
+                    this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                    this._helper.ParseDataSet(this._ds, tablePreferences);
+                    jobj = this._helper.GetResponse();
+                }
+                else
+                {
+                    ExportToExcel.ExportDsToExcelSheet(_ds, "Payments");
+                }
+                return jobj;
             }
             catch (Exception e)
             {

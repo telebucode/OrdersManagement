@@ -203,7 +203,7 @@ namespace OrdersManagement.Core
 
         internal dynamic GetOrders(byte productId, int accountId, string mobile, string email, int orderStatus,
             string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, string accountName, int pageNumber, byte limit,
-            Dictionary<string, TablePreferences> tablePreferences = null)
+            Dictionary<string, TablePreferences> tablePreferences = null,bool isdownload = false)
         {
             try
             {
@@ -215,6 +215,7 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.EMAIL, SqlDbType.VarChar, 126).Value = email;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.ORDER_STATUS_ID, SqlDbType.TinyInt).Value = orderStatus;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.NUMBER, SqlDbType.VarChar, 32).Value = number;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ISDOWNLOAD, SqlDbType.Bit).Value = isdownload;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.BILLING_MODE_ID, SqlDbType.TinyInt).Value = billingMode;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.FROM_DATE_TIME, SqlDbType.DateTime).Value = fromDateTime;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.TO_DATE_TIME, SqlDbType.DateTime).Value = toDateTime;
@@ -229,9 +230,21 @@ namespace OrdersManagement.Core
                     return this.ErrorResponse();
                 if (this._ds.Tables.Count > 0)
                     this._ds.Tables[0].TableName = Label.ORDERS;
-                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
-                this._helper.ParseDataSet(this._ds, tablePreferences);
-                return this._helper.GetResponse();
+
+                JObject jobj = new JObject();
+                if (isdownload == true)
+                {
+                    ExportToExcel.ExportDsToExcelSheet(_ds, "OrderActivations");
+                }
+                else
+                {
+                    this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                    this._helper.ParseDataSet(this._ds, tablePreferences);
+                    jobj = this._helper.GetResponse();
+                }
+                return jobj;
+
+                
             }
             catch (Exception e)
             {

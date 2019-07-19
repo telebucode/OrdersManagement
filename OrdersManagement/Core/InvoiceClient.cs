@@ -10,8 +10,6 @@ using OrdersManagement.Exceptions;
 using Newtonsoft.Json.Linq;
 using System.Web;
 using SelectPdf;
-using System.IO;
-using OfficeOpenXml;
 
 namespace OrdersManagement.Core
 {
@@ -123,7 +121,7 @@ namespace OrdersManagement.Core
                 JObject jobj = new JObject();
                 if (isdownload == true)
                 {
-                    ExportToExcelSheet(_ds, "Invoices");                   
+                    ExportToExcel.ExportDsToExcelSheet(_ds, "Invoices");                   
                 }
                 else
                 {
@@ -360,31 +358,6 @@ namespace OrdersManagement.Core
                 return false;
             }
 
-        }
-
-        public static void ExportToExcelSheet(DataSet ds, string fileName)
-        {
-            MemoryStream ms = new MemoryStream();
-            using (ExcelPackage pck = new ExcelPackage())
-            {
-                foreach (DataTable dt in ds.Tables)
-                {
-                    ExcelWorksheet EWS = pck.Workbook.Worksheets.Add(dt.TableName);
-
-                    EWS.Cells["A1"].LoadFromDataTable(dt, true);
-                    EWS.Cells.AutoFitColumns();
-                    EWS.View.FreezePanes(2, 1);
-
-                }
-                pck.SaveAs(ms);
-            }
-            ms.WriteTo(HttpContext.Current.Response.OutputStream);
-            HttpContext.Current.Response.Clear();
-            HttpContext.Current.Response.AddHeader("content-disposition", "attachment; filename="+ fileName + ".xls");
-            HttpContext.Current.Response.ContentType = "application/ms-excel";
-            HttpContext.Current.Response.BinaryWrite(ms.ToArray());
-            HttpContext.Current.Response.Flush(); 
-            HttpContext.Current.Response.SuppressContent = true;  
         }
         
         #endregion
