@@ -20,7 +20,7 @@ namespace OrdersManagement.Model
         #endregion
 
         #region PUBLIC PROPERTIES
-        public short Id { get; set; }
+        public int Id { get; set; }
         public int QuotationId { get; set; }
         public short ServiceId { get; set; }
         public string MetaDataCode { get; set; }

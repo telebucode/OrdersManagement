@@ -76,7 +76,7 @@ namespace OrdersManagement.Core
         private void ValidateQuotation(string metaData, byte productId = 0)
         {
             if (!SharedClass.ServiceLoaded)
-                this._helper.LoadServices(true,true,false,productId);
+                this._helper.LoadServices(true,true,false,1);
             JObject quotationMetaData = null;
             try
             {
@@ -778,12 +778,15 @@ namespace OrdersManagement.Core
                 this._sqlCommand = new SqlCommand(StoredProcedure.GET_QUOTATION_SERVICE_PROPERTIES, this._sqlConnection);
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = onlyActive;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_ID, SqlDbType.Int).Value = quotationId;
+                
                 this._sqlCommand.Parameters.Add(ProcedureParameter.BILLING_MODE_ID, SqlDbType.TinyInt).Value = billingModeId;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());
                 if (!this._sqlCommand.IsSuccess())
                     return this.ErrorResponse();
+                if (this._ds.Tables.Count > 1)
+                    this._ds.Tables[1].TableName = Label.EXTRA_CHARGES;
                 if (this._ds.Tables.Count > 0)
                     this._ds.Tables[0].TableName = Label.QUOTATION_SERVICE_PROPERTIES;
                 this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
@@ -847,7 +850,7 @@ namespace OrdersManagement.Core
 
                     QuotationServices quotationService = new QuotationServices();
                     quotationService.MetaDataCode = jpropert.Name;
-                    quotationService.Id = Convert.ToByte(jpropert.Value.SelectToken(Label.ID).ToString());
+                    quotationService.Id = Convert.ToInt32(jpropert.Value.SelectToken(Label.ID).ToString());
                     quotationService.ServiceId = SharedClass.Services[quotationService.MetaDataCode].Id;
                     quotationService.Occurance = Convert.ToByte(jpropert.Value.SelectToken(Label.OCCURANCE).ToString());
                     quotationService.ExtraCharges = OrdersManagement.ExtensionMethods.ToExtraChargesString(jpropert.Value.SelectToken(Label.EXTRA_CHARGES), quotationService.MetaDataCode);
