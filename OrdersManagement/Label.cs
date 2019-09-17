@@ -101,7 +101,7 @@ namespace OrdersManagement
         internal const string ACCOUNT_ID = "AccountId";
         internal const string ACTIVATION_PERCENTAGE = "ActivationPercentage";
         internal const string ACTIVATION_AMOUNT = "ActivationAmount";
-        
+        internal const string BALANCE_TYPE = "BalanceType";
         
         #region LOG_4_NET_RELATED
         internal const string LOG_NAME = "LogName";
