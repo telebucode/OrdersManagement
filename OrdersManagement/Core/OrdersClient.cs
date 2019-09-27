@@ -304,6 +304,7 @@ namespace OrdersManagement.Core
                 this._da.Fill(this._ds = new DataSet());
                 if (!this._sqlCommand.IsSuccess())
                     return this.ErrorResponse();
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
                 if (this._ds.Tables.Count > 2)
                 {
                     this._ds.Tables[0].TableName = Label.QUOTATION;
@@ -407,8 +408,9 @@ namespace OrdersManagement.Core
                     JObject ActivationServiceJobj = new JObject();
                     ActivationServiceJobj.Add(new JProperty(Label.PRODUCT_USERID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.PRODUCT_USERID]));
                     ActivationServiceJobj.Add(new JProperty(Label.ACTIVATION_AMOUNT, activationAmount));
+                    ActivationServiceJobj.Add(new JProperty(Label.BALANCE_TYPE, this._ds.Tables[Label.QUOTATION].Rows[0][Label.BALANCE_TYPE]));
                     ActivationServiceJobj.Add(new JProperty(Label.ORDER_ID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.ID]));
-                    ActivationServiceJobj.Add(new JProperty(Label.SERVICES_LIST, activationObject));
+                    ActivationServiceJobj.Add(new JProperty(Label.SERVICES_LIST, activationObject));                    
                     activationObject = new JObject();
                     activationObject = ActivationServiceJobj;
                 }
