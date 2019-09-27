@@ -382,6 +382,11 @@ namespace OrdersManagement.Core
             return paymentsClient.GetPaymentStatuses(onlyActive: onlyActive, tablePreferences: tablePreferences);
         }
 
+        public dynamic PaymentStatuses( Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            PaymentClient paymentsClient = new PaymentClient(ref this._helper);
+            return paymentsClient.PaymentStatuses( tablePreferences: tablePreferences);
+        }
 
         public dynamic GetPayments(byte productId, int accountId, string mobile, string email, int paymentStatus, string number, byte billingMode, DateTime fromDateTime, DateTime toDateTime, string accountName, int pageNumber, byte limit, Dictionary<string, TablePreferences> tablePreferences = null, bool isdownload = false)
         {
@@ -389,6 +394,12 @@ namespace OrdersManagement.Core
             return paymentsClient.GetPayments(productId: productId, accountId: accountId, mobile: mobile, email: email,
                 paymentStatus: paymentStatus, number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime,
                 accountName: accountName, pageNumber: pageNumber, limit: limit, tablePreferences: tablePreferences, isdownload: isdownload);
+        }
+
+        public dynamic UpdatePaymentStatus(int adminId, long invoiceId, byte statusId, string comment, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            PaymentClient paymentsClient = new PaymentClient(ref this._helper);
+            return paymentsClient.UpdatePaymentStatus(adminId: adminId, invoiceId: invoiceId, statusId: statusId, comment: comment, tablePreferences: tablePreferences);
         }
 
         public dynamic GetPaymentDetails(byte productId, int orderId, Dictionary<string, TablePreferences> tablePreferences = null)

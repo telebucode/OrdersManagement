@@ -9,6 +9,7 @@ namespace OrdersManagement
     internal static class ProcedureParameter
     {
         internal const string IS_ONLY_ACTIVE = "@IsOnlyActive";
+        internal const string Mode = "@Mode";
         internal const string SERVICE_ID = "@ServiceId";
         internal const string PRODUCT_ID = "@ProductId";
         internal const string DISPLAY_NAME = "@DisplayName";
