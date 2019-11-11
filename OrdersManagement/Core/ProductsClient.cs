@@ -78,12 +78,13 @@ namespace OrdersManagement.Core
         #endregion
 
         #region INTERNAL METHODS
-        internal dynamic GetProducts(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        internal dynamic GetProducts(bool onlyActive = true, Int32 adminId = 0, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
                 this._sqlCommand = new SqlCommand(StoredProcedure.GET_PRODUCTS, this._sqlConnection);
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IS_ONLY_ACTIVE, SqlDbType.Bit).Value = onlyActive;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ADMIN_ID, SqlDbType.Int).Value = adminId;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());

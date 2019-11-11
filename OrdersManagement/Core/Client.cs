@@ -456,10 +456,10 @@ namespace OrdersManagement.Core
 
         // Products Related
         #region
-        public dynamic GetProducts(bool onlyActive = true, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GetProducts(bool onlyActive = true,Int32 adminId=0, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             ProductsClient serviceClient = new ProductsClient(ref this._helper);
-            return serviceClient.GetProducts(onlyActive: onlyActive, tablePreferences: tablePreferences);
+            return serviceClient.GetProducts(onlyActive: onlyActive,adminId: adminId, tablePreferences: tablePreferences);
         }
         #endregion
 
