@@ -141,7 +141,7 @@ namespace OrdersManagement.Core
                 this.Clean();
             }
         }
-        internal dynamic Create(int quotationId, byte billingModeId, int employeeId, Dictionary<string, TablePreferences> tablePreferences = null)
+        internal dynamic Create(int quotationId, byte billingModeId, int employeeId,bool isProformaInvoice, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
@@ -149,6 +149,7 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_ID, SqlDbType.Int).Value = quotationId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.BILLING_MODE_ID, SqlDbType.TinyInt).Value = billingModeId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.EMPLOYEE_ID, SqlDbType.Int).Value = employeeId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ISPROFORMAINVOICE, SqlDbType.Bit).Value = isProformaInvoice;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.INVOICEID, SqlDbType.BigInt).Direction = ParameterDirection.Output;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
@@ -260,7 +261,7 @@ namespace OrdersManagement.Core
                 this.Clean();
             }
         }
-        internal dynamic ViewInvoice(int quotationId, bool isPostPaidQuotation)
+        internal dynamic ViewInvoice(int quotationId, bool isPostPaidQuotation, bool isProformaInvoice)
         {
             DataSet tempDataSet = new DataSet();
             string entityName = string.Empty;
@@ -270,6 +271,7 @@ namespace OrdersManagement.Core
                 this._sqlCommand = new SqlCommand(StoredProcedure.VIEW_OR_DOWNLOAD_INVOICE, this._sqlConnection);
                 this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_ID, SqlDbType.Int).Value = quotationId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IS_POSTPAID_QUOTATION, SqlDbType.Bit).Value = isPostPaidQuotation;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ISPROFORMAINVOICE, SqlDbType.Bit).Value = isProformaInvoice;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.HTML, SqlDbType.VarChar, -1).Direction = ParameterDirection.Output;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
@@ -291,6 +293,39 @@ namespace OrdersManagement.Core
                 this.Clean();
             }
             return quotationData;
+        }
+
+        internal dynamic GenerateSaleInvoice(int invoiceId, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            DataSet tempDataSet = new DataSet();
+            string entityName = string.Empty;
+            string invoiceData = string.Empty;
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.GENERATE_SALE_INVOICE, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.INVOICEID, SqlDbType.Int).Value = invoiceId;                                
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();                
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.INVOICES;
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, tablePreferences);
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                invoiceData = "";
+                Logger.Error(string.Format("Unable to get Generate Sale Invoice. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to Generate Sale Invoice. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+            
         }
         internal dynamic DownloadInvoice(int quotationId, bool isPostPaidQuotation)
         {

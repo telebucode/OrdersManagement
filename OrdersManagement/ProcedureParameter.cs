@@ -21,6 +21,7 @@ namespace OrdersManagement
         internal const string SERVICE_PROPERTY_DETAILS = "@ServicePropertyDetails";
         internal const string SERVICE_PROPERTY_ID = "@ServicePropertyId";
         internal const string ISDOWNLOAD = "@isdownload";
+        internal const string ISPROFORMAINVOICE = "@isProformaInvoice";
 
         internal const string ADMIN_ID = "@AdminId";
         internal const string QUOTATION_ID = "@QuotationId";

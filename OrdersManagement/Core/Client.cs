@@ -295,10 +295,10 @@ namespace OrdersManagement.Core
             InvoiceClient client = new InvoiceClient(ref this._helper);
             return client.GetStatuses(onlyActive, tablePreferences);
         }
-        public dynamic CreateInvoice(int quotationId, byte billingModeId, int employeeId, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic CreateInvoice(int quotationId, byte billingModeId, int employeeId,bool isProformaInvoice, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             InvoiceClient client = new InvoiceClient(ref this._helper);
-            return client.Create(quotationId: quotationId, billingModeId: billingModeId, employeeId: employeeId, tablePreferences: tablePreferences);
+            return client.Create(quotationId: quotationId, billingModeId: billingModeId, employeeId: employeeId,isProformaInvoice: isProformaInvoice, tablePreferences: tablePreferences);
         }
 
         //cancel Invoice
@@ -325,10 +325,16 @@ namespace OrdersManagement.Core
         /// <param name="quotationId"></param>
         /// <param name="isPostPaidQuotation"></param>
         /// <returns></returns>
-        public dynamic ViewInvoice(int quotationId, bool isPostPaidQuotation)
+        public dynamic ViewInvoice(int quotationId, bool isPostPaidQuotation, bool isProformaInvoice)
         {
             InvoiceClient client = new InvoiceClient(ref this._helper);
-            return client.ViewInvoice(quotationId, isPostPaidQuotation);
+            return client.ViewInvoice(quotationId, isPostPaidQuotation, isProformaInvoice);
+        }
+
+        public dynamic GenerateSaleInvoice(int invoiceId, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            InvoiceClient client = new InvoiceClient(ref this._helper);
+            return client.GenerateSaleInvoice(invoiceId,tablePreferences);
         }
         public dynamic DownloadInvoice(int quotationId, bool isPostPaidQuotation)
         {
