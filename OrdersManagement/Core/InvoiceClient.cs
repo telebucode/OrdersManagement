@@ -87,11 +87,14 @@ namespace OrdersManagement.Core
         internal dynamic Search(int productId = 0, int invoiceId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0,
             int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0,
             Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, 
-            string mobile = "", string email = "",string accountName = "",Dictionary<string, TablePreferences> tablePreferences = null, bool isdownload = false)
+            string mobile = "", string email = "",string accountName = "",Dictionary<string, TablePreferences> tablePreferences = null, bool isdownload = false,bool isProformaInvoice=false)
         {
             try
             {
-                this._sqlCommand = new SqlCommand(StoredProcedure.GET_INVOICES, this._sqlConnection);
+                if(isProformaInvoice==false)
+                    this._sqlCommand = new SqlCommand(StoredProcedure.GET_INVOICES, this._sqlConnection);
+                else
+                    this._sqlCommand = new SqlCommand(StoredProcedure.GET_PROFORMA_INVOICES, this._sqlConnection);
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_ID, SqlDbType.Int).Value = productId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.INVOICEID, SqlDbType.Int).Value = invoiceId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_NUMBER, SqlDbType.VarChar, 20).Value = quotationNumber;
@@ -295,15 +298,16 @@ namespace OrdersManagement.Core
             return quotationData;
         }
 
-        internal dynamic GenerateSaleInvoice(int invoiceId, Dictionary<string, TablePreferences> tablePreferences = null)
+        internal dynamic GenerateTaxInvoice(int invoiceId,int adminId, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             DataSet tempDataSet = new DataSet();
             string entityName = string.Empty;
             string invoiceData = string.Empty;
             try
             {
-                this._sqlCommand = new SqlCommand(StoredProcedure.GENERATE_SALE_INVOICE, this._sqlConnection);
-                this._sqlCommand.Parameters.Add(ProcedureParameter.INVOICEID, SqlDbType.Int).Value = invoiceId;                                
+                this._sqlCommand = new SqlCommand(StoredProcedure.GENERATE_TAX_INVOICE, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.INVOICEID, SqlDbType.Int).Value = invoiceId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ADMIN_ID, SqlDbType.Int).Value = adminId;                                
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());

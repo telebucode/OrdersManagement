@@ -40,8 +40,9 @@ namespace OrdersManagement
         internal const string UPDATE_INVOICE = "UpdateInvoice";
         internal const string CREATE_INVOICE = "CreateInvoice";
         internal const string GET_INVOICES = "GetInvoices";
+        internal const string GET_PROFORMA_INVOICES = "GetProformaInvoices";
         internal const string CANCEL_INVOICE = "CancelInvoice";
-        internal const string GENERATE_SALE_INVOICE = "GenerateSaleInvoice";
+        internal const string GENERATE_TAX_INVOICE = "GenerateTaxInvoice";
         #endregion
         #region PAYMENTS RELATED
         internal const string GET_BANK_ACCOUNTS = "GetBankAccounts";

@@ -331,10 +331,10 @@ namespace OrdersManagement.Core
             return client.ViewInvoice(quotationId, isPostPaidQuotation, isProformaInvoice);
         }
 
-        public dynamic GenerateSaleInvoice(int invoiceId, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GenerateTaxInvoice(int invoiceId,int adminId, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             InvoiceClient client = new InvoiceClient(ref this._helper);
-            return client.GenerateSaleInvoice(invoiceId,tablePreferences);
+            return client.GenerateTaxInvoice(invoiceId,adminId,tablePreferences);
         }
         public dynamic DownloadInvoice(int quotationId, bool isPostPaidQuotation)
         {
@@ -342,11 +342,11 @@ namespace OrdersManagement.Core
             return client.DownloadInvoice(quotationId, isPostPaidQuotation);
         }
 
-        public dynamic GetInvoices(byte productId = 0, int invoiceId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, string mobile = "", string email = "", string accountName = "", Dictionary<string, TablePreferences> tablePreferences = null,bool isdownload = false)
+        public dynamic GetInvoices(byte productId = 0, int invoiceId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, string mobile = "", string email = "", string accountName = "", Dictionary<string, TablePreferences> tablePreferences = null, bool isdownload = false, bool isProformaInvoice = false)
         {
             InvoiceClient client = new InvoiceClient(ref this._helper);
             return client.Search(productId, invoiceId, quotationNumber, accountId, employeeId, ownerShipId, statusId, channelId,
-                ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, mobile, email, accountName, tablePreferences, isdownload);            
+                ipAddress, billingModeId, fromDateTime, toDateTime, pageNumber, limit, mobile, email, accountName, tablePreferences, isdownload, isProformaInvoice);            
         }
 
         #endregion
