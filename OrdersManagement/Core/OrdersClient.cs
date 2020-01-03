@@ -277,7 +277,33 @@ namespace OrdersManagement.Core
             catch (Exception e)
             {
                 Logger.Error(string.Format("Unable to verify  OrderStatus. {0}", e.ToString()));
-                throw new QuotationException(string.Format("nable to verify  OrderStatus. {0}", e.Message));
+                throw new QuotationException(string.Format("Unable to verify  OrderStatus. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+
+        public dynamic UpdateUnlimitedActivation(long orderId, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.UPDATE_UNLIMITED_ACTIVATION, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ORDER_ID, SqlDbType.BigInt).Value = orderId;                
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, tablePreferences);
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to Update Unlimited Activation. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to Update Unlimited Activation. {0}", e.Message));
             }
             finally
             {
@@ -423,6 +449,8 @@ namespace OrdersManagement.Core
 
             return activationObject;
         }
+
+
 
         #endregion
     }

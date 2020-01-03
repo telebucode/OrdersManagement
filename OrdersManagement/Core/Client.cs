@@ -336,10 +336,10 @@ namespace OrdersManagement.Core
             InvoiceClient client = new InvoiceClient(ref this._helper);
             return client.GenerateTaxInvoice(invoiceId,adminId,tablePreferences);
         }
-        public dynamic DownloadInvoice(int quotationId, bool isPostPaidQuotation)
+        public dynamic DownloadInvoice(int quotationId, bool isPostPaidQuotation,bool isProformaInvoice)
         {
             InvoiceClient client = new InvoiceClient(ref this._helper);
-            return client.DownloadInvoice(quotationId, isPostPaidQuotation);
+            return client.DownloadInvoice(quotationId, isPostPaidQuotation, isProformaInvoice);
         }
 
         public dynamic GetInvoices(byte productId = 0, int invoiceId = 0, string quotationNumber = "", int accountId = 0, int employeeId = 0, int ownerShipId = 0, byte statusId = 0, sbyte channelId = 0, string ipAddress = "", byte billingModeId = 0, Nullable<DateTime> fromDateTime = null, Nullable<DateTime> toDateTime = null, int pageNumber = 1, byte limit = 20, string mobile = "", string email = "", string accountName = "", Dictionary<string, TablePreferences> tablePreferences = null, bool isdownload = false, bool isProformaInvoice = false)
@@ -456,6 +456,12 @@ namespace OrdersManagement.Core
         {
             OrdersClient ordersClient = new OrdersClient(ref this._helper);
             return ordersClient.GetRequestObjectForActivation(quotationId, isPostPaidQuotation, activationPercentage);
+        }
+
+        public dynamic UpdateUnlimitedActivation(long orderId, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            OrdersClient ordersClient = new OrdersClient(ref this._helper);
+            return ordersClient.UpdateUnlimitedActivation(orderId, tablePreferences: tablePreferences);
         }
 
         #endregion
