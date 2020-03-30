@@ -80,6 +80,21 @@ namespace OrdersManagement
         internal const string REQUEST_OBJECT = "@RequestObject";
         internal const string RESPONSE_OBJECT = "@ResponseObject";
         internal const string QUOTATION_TYPE = "@QuotationType";
+
+        // RAZORPAY
+        internal const string PRODUCTID = "@ProductId";
+        internal const string PRODUCT_USER_ID = "@ProductUserId";
+        internal const string NAME = "@Name";        
+        //internal const string MOBILE = "@Mobile";
+        //internal const string EMAIL = "@Email";
+        // currency in limbo ??
+        internal const string RAW_AMOUNT = "@RawAmount";
+        internal const string TAX = "@Tax";
+        internal const string FINAL_AMOUNT = "@FinalAmount";
+        internal const string RAZORPAY_ORDERID = "@RazorpayOrderId";
+        internal const string RAZORPAY_PAYMENT_ID = "@RazorpayPaymentId";
+        internal const string RAZORPAY_SIGNATURE = "@RazorpaySignature";
+
         internal const string SUCCESS = "@Success";
         internal const string MESSAGE = "@Message";
     }

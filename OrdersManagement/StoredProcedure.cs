@@ -54,6 +54,7 @@ namespace OrdersManagement
         internal const string Get_And_Update_Payment_Statuses = "GetAndUpdatePaymentStatuses";
         internal const string GET_PAYMENT_DETAILS = "GetPaymentDetails";
         internal const string VERIFY_PAYMENT_STATUSES = "VerifyPaymentStatuses";
+        internal const string INITIATE_RAZORPAY_TRANSACTION = "InitiateRazorpayTransaction";        
         #endregion
         #region Orders Related
         internal const string GET_ORDER_STATUSES = "GetOrderStatuses";

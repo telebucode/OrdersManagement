@@ -337,6 +337,40 @@ namespace OrdersManagement.Core
             }
         }
 
+        internal dynamic InitiateRazorpayTransaction(int productId, int productUserId, string userName, string mobile, string email, float rawAmount, float tax, float totalAmount, string orderId)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.INITIATE_RAZORPAY_TRANSACTION, this._sqlConnection);                
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCTID, SqlDbType.TinyInt).Value = productId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_USER_ID, SqlDbType.Int).Value = productUserId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.NAME, SqlDbType.VarChar).Value = userName;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.MOBILE, SqlDbType.VarChar).Value = mobile;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.EMAIL, SqlDbType.VarChar).Value = email;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.RAW_AMOUNT, SqlDbType.Float).Value = rawAmount;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.TAX, SqlDbType.Float).Value = tax;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.FINAL_AMOUNT, SqlDbType.Float).Value = totalAmount;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ORDER_ID, SqlDbType.VarChar).Value = orderId;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();                
+                
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to Initiate Razorpay transaction logging {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to Initiate Razorpay transaction logging. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+
         #endregion
 
         internal dynamic PaymentStatuses(Dictionary<string, TablePreferences> tablePreferences)
