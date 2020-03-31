@@ -62,6 +62,7 @@ namespace OrdersManagement
         internal const string ACTIVATE_ORDER = "ActivateOrder";
         internal const string VERIFY_ORDER_STATUS = "VerifyOrderStatus";
         internal const string UPDATE_UNLIMITED_ACTIVATION = "UpdateUnlimitedActivation";
+        internal const string GET_PRODUCT_DETAILS = "GetProductDetails";
         internal const string ORDERS_LOG = "OrdersLog";
         #endregion
         #region PRODUCTS RELATED

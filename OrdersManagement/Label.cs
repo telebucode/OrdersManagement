@@ -95,10 +95,13 @@ namespace OrdersManagement
 
         internal const string QUOTATION_TYPES = "QuotationTypes";
         internal const string DATA = "Data";
-        internal const string SERVICES_LIST = "Services";
+        internal const string SERVICES_LIST = "Services"; 
+        internal const string EMPLOYEE_EMAILID = "EmployeeEmailId";
         internal const string PRODUCT_USERID = "AccountProductId";
         internal const string ORDER_ID = "OrderId";
+        internal const string COMMENTS = "Comments";
         internal const string ACCOUNT_ID = "AccountId";
+        internal const string EMPLOYEE_ID = "EmployeeId";
         internal const string ACTIVATION_PERCENTAGE = "ActivationPercentage";
         internal const string ACTIVATION_AMOUNT = "ActivationAmount";
         internal const string BALANCE_TYPE = "BalanceType";

@@ -441,10 +441,10 @@ namespace OrdersManagement.Core
                 orderStatus: orderStatus, number: number, billingMode: billingMode, fromDateTime: fromDateTime, toDateTime: toDateTime,
                 accountName: accountName, pageNumber: pageNumber, limit: limit, tablePreferences: tablePreferences, isdownload: isdownload);
         }
-        public dynamic ActivateOrder(int quotationId, bool isPostPaidQuotation, float activationAmount, string activationUrl, int employeeId, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic ActivateOrder(int quotationId, bool isPostPaidQuotation, float activationAmount, string activationUrl,string activationComments, int employeeId, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             OrdersClient ordersClient = new OrdersClient(ref this._helper);
-            return ordersClient.ActivateOrder(quotationId: quotationId, isPostPaidQuotation: isPostPaidQuotation, activationAmount: activationAmount, activationUrl: activationUrl, employeeId: employeeId, tablePreferences: null);
+            return ordersClient.ActivateOrder(quotationId: quotationId, isPostPaidQuotation: isPostPaidQuotation, activationAmount: activationAmount, activationUrl: activationUrl,activationComments: activationComments, employeeId: employeeId, tablePreferences: null);
         }
 
         public dynamic VerifyOrderStatuses(long orderId, float activationAmount,bool isActivated, Dictionary<string, TablePreferences> tablePreferences = null)
@@ -452,10 +452,10 @@ namespace OrdersManagement.Core
             OrdersClient ordersClient = new OrdersClient(ref this._helper);
             return ordersClient.VerifyOrderStatuses(orderId: orderId,activationAmount:activationAmount,isActivated:isActivated, tablePreferences: tablePreferences);
         }
-        public dynamic GetRequestObjectForActivation(int quotationId, bool isPostPaidQuotation, byte activationPercentage)
+        public dynamic GetRequestObjectForActivation(int quotationId, bool isPostPaidQuotation, byte activationPercentage, string activationComments, int employeeId)
         {
             OrdersClient ordersClient = new OrdersClient(ref this._helper);
-            return ordersClient.GetRequestObjectForActivation(quotationId, isPostPaidQuotation, activationPercentage);
+            return ordersClient.GetRequestObjectForActivation(quotationId, isPostPaidQuotation, activationPercentage, activationComments, employeeId);
         }
 
         public dynamic UpdateUnlimitedActivation(long orderId, Dictionary<string, TablePreferences> tablePreferences = null)

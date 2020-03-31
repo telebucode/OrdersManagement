@@ -72,8 +72,8 @@ namespace OrdersManagement
         }
         internal void LoadServices(bool includeServiceProperties = true, bool isOnlyActive = true, bool forceLoad = false, byte productId = 1)
         {
-            if (SharedClass.ServiceLoaded && !forceLoad)
-                return;
+            //if (SharedClass.ServiceLoaded && !forceLoad)
+            //    return;
             try
             {
                 this._da = new SqlDataAdapter();

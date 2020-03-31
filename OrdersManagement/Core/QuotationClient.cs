@@ -75,8 +75,8 @@ namespace OrdersManagement.Core
         }
         private void ValidateQuotation(string metaData, byte productId = 0)
         {
-            if (!SharedClass.ServiceLoaded)
-                this._helper.LoadServices(true,true,false,1);
+            //if (!SharedClass.ServiceLoaded)
+                this._helper.LoadServices(true,true,false,productId);
             JObject quotationMetaData = null;
             try
             {
@@ -198,13 +198,13 @@ namespace OrdersManagement.Core
                     {
                         //servicePropertyEntry.Value.PropertFields;
 
-                        if (serviceProperty.SelectToken(servicePropertyEntry.Key).ToString().Length < servicePropertyEntry.Value.PropertFields[servicePropertyEntry.Key].MinLength)
+                        if (servicePropertyEntry.Value.PropertFields.Count != 0 && serviceProperty.SelectToken(servicePropertyEntry.Key).ToString().Length < servicePropertyEntry.Value.PropertFields[servicePropertyEntry.Key].MinLength)
                         {
                             throw new QuotationException(string.Format("Property {0} for Service {1} value is invalid or it's length is not supported",
                                    servicePropertyEntry.Value.MetaDataCode, serviceName));
 
                         }
-                        if (serviceProperty.SelectToken(servicePropertyEntry.Key).ToString().Length > servicePropertyEntry.Value.PropertFields[servicePropertyEntry.Key].MaxLength)
+                        if (servicePropertyEntry.Value.PropertFields.Count != 0 && serviceProperty.SelectToken(servicePropertyEntry.Key).ToString().Length > servicePropertyEntry.Value.PropertFields[servicePropertyEntry.Key].MaxLength)
                         {
                             throw new QuotationException(string.Format("Property {0} for Service {1} value length is exceeded",
                                    servicePropertyEntry.Value.MetaDataCode, serviceName));
