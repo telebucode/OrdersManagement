@@ -371,6 +371,35 @@ namespace OrdersManagement.Core
             }
         }
 
+        internal dynamic UpdateRazorpayResponse(string orderId, string paymentId, string signature, string status)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.UPDATE_RAZORPAY_RESPONSE, this._sqlConnection);                
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ORDER_ID, SqlDbType.VarChar).Value = orderId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_PAYMENT_ID, SqlDbType.VarChar).Value = orderId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_SIGNATURE, SqlDbType.VarChar).Value = orderId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_STATUS, SqlDbType.VarChar).Value = status;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to save Razorpay response {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to save Razorpay response. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+
         #endregion
 
         internal dynamic PaymentStatuses(Dictionary<string, TablePreferences> tablePreferences)

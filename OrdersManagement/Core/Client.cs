@@ -425,11 +425,11 @@ namespace OrdersManagement.Core
             return paymentsClient.InitiateRazorpayTransaction(productId: productId, productUserId: productUserId, userName: userName, mobile: mobile, email: email, rawAmount: rawAmount, tax: tax, totalAmount: totalAmount, orderId: orderId);
         }
 
-        //public dynamic VerifyRazorpaySignature(string orderId, string paymentId, string signature)
-        //{
-        //    PaymentClient paymentsClient = new PaymentClient(ref this._helper);
-        //    return paymentsClient.VerifyRazorSignature();
-        //}
+        public dynamic UpdateRazorpayResponse(string orderId, string paymentId, string signature, string status)
+        {
+            PaymentClient paymentsClient = new PaymentClient(ref this._helper);
+            return paymentsClient.UpdateRazorpayResponse(orderId: orderId, paymentId: paymentId, signature: signature, status: status);
+        }
         #endregion
 
         #region Orders Related

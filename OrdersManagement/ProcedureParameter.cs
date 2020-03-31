@@ -94,6 +94,7 @@ namespace OrdersManagement
         internal const string RAZORPAY_ORDERID = "@RazorpayOrderId";
         internal const string RAZORPAY_PAYMENT_ID = "@RazorpayPaymentId";
         internal const string RAZORPAY_SIGNATURE = "@RazorpaySignature";
+        internal const string RAZORPAY_STATUS = "@Status";
 
         internal const string SUCCESS = "@Success";
         internal const string MESSAGE = "@Message";
