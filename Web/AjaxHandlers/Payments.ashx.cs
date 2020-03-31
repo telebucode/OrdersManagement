@@ -236,6 +236,25 @@ namespace Web.AjaxHandlers
             Client client = new Client(responseFormat: ResponseFormat.JSON);
             context.Response.Write(client.VerifyPaymentStatuses(orderId, null));
         }
+
+        //private void InitiateRazorpayTransaction(HttpContext context)
+        //{            
+        //    if (context.Request["OrderId"] != null)
+        //        GenerateErrorResponse(400, "OrderId not received from Razorpay Order");
+
+        //    Client client = new Client(responseFormat: ResponseFormat.JSON);
+        //    context.Response.Write(client.InitiateRazorpayInOrders(Convert.ToInt32(context.Request["ProductId"]), Convert.ToInt32(context.Request["UserId"]), context.Request["Name"], context.Request["Mobile"], context.Request["EmailId"], float.Parse(context.Request["RawAmount"]), float.Parse(context.Request["Tax"]), float.Parse(context.Request["TotalAmount"]), context.Request["OrderId"]));
+        //}
+
+        //private void UpdateRazorpayResponse(HttpContext context)
+        //{
+        //    if (context.Request["OrderId"] != null && context.Request["PaymentId"] != null && context.Request["Signature"] != null)
+        //        GenerateErrorResponse(400, "All 3 response parameters must be received from Razorpay Order");
+
+        //    Client client = new Client(responseFormat: ResponseFormat.JSON);
+        //    context.Response.Write(client.UpdateRazorpayResponse(context.Request["OrderId"], context.Request["PaymentId"], context.Request["Signature"], context.Request["status"]));
+        //}
+
         private void GenerateErrorResponse(int statusCode, string message)
         {
             HttpContext.Current.Response.Clear();
