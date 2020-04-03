@@ -337,7 +337,7 @@ namespace OrdersManagement.Core
             }
         }
 
-        internal dynamic InitiateRazorpayTransaction(int productId, int productUserId, string userName, string mobile, string email, float rawAmount, float tax, float totalAmount, string orderId)
+        internal dynamic InitiateRazorpayTransaction(int productId, int productUserId, string userName, string mobile, string email, float rawAmount, float tax, string orderId, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
@@ -349,15 +349,17 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.EMAIL, SqlDbType.VarChar).Value = email;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.RAW_AMOUNT, SqlDbType.Float).Value = rawAmount;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.TAX, SqlDbType.Float).Value = tax;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.FINAL_AMOUNT, SqlDbType.Float).Value = totalAmount;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.ORDER_ID, SqlDbType.VarChar).Value = orderId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_ORDER_ID, SqlDbType.VarChar).Value = orderId;
+                
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
-
-                this._da.Fill(this._ds = new DataSet());
-                if (!this._sqlCommand.IsSuccess())
-                    return this.ErrorResponse();                
+                this._da.Fill(this._ds = new DataSet()); 
                 
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, tablePreferences);
                 return this._helper.GetResponse();
             }
             catch (Exception e)
@@ -371,22 +373,24 @@ namespace OrdersManagement.Core
             }
         }
 
-        internal dynamic UpdateRazorpayResponse(string orderId, string paymentId, string signature, string status)
+        internal dynamic UpdateRazorpayResponse(string orderId, string paymentId, string signature, int status, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
                 this._sqlCommand = new SqlCommand(StoredProcedure.UPDATE_RAZORPAY_RESPONSE, this._sqlConnection);                
-                this._sqlCommand.Parameters.Add(ProcedureParameter.ORDER_ID, SqlDbType.VarChar).Value = orderId;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_PAYMENT_ID, SqlDbType.VarChar).Value = orderId;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_SIGNATURE, SqlDbType.VarChar).Value = orderId;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_STATUS, SqlDbType.VarChar).Value = status;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_ORDER_ID, SqlDbType.VarChar).Value = orderId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_PAYMENT_ID, SqlDbType.VarChar).Value = paymentId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_SIGNATURE, SqlDbType.VarChar).Value = signature;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_STATUS, SqlDbType.TinyInt).Value = status;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
-
                 this._da.Fill(this._ds = new DataSet());
+
                 if (!this._sqlCommand.IsSuccess())
                     return this.ErrorResponse();
 
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, tablePreferences);
                 return this._helper.GetResponse();
             }
             catch (Exception e)

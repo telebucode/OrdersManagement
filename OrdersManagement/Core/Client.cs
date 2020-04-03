@@ -419,16 +419,16 @@ namespace OrdersManagement.Core
             return paymentsClient.VerifyPaymentStatuses(orderId: orderId, tablePreferences: tablePreferences);
         }
 
-        public dynamic InitiateRazorpayInOrders(int productId, int productUserId, string userName, string mobile, string email, float rawAmount, float tax, float totalAmount, string orderId)
+        public dynamic InitiateRazorpayInOrders(int productId, int productUserId, string userName, string mobile, string email, float rawAmount, float tax, string orderId, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);        
-            return paymentsClient.InitiateRazorpayTransaction(productId: productId, productUserId: productUserId, userName: userName, mobile: mobile, email: email, rawAmount: rawAmount, tax: tax, totalAmount: totalAmount, orderId: orderId);
+            return paymentsClient.InitiateRazorpayTransaction(productId: productId, productUserId: productUserId, userName: userName, mobile: mobile, email: email, rawAmount: rawAmount, tax: tax, orderId: orderId, tablePreferences: tablePreferences);
         }
 
-        public dynamic UpdateRazorpayResponse(string orderId, string paymentId, string signature, string status)
+        public dynamic UpdateRazorpayResponse(string orderId, string paymentId, string signature, int status, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);
-            return paymentsClient.UpdateRazorpayResponse(orderId: orderId, paymentId: paymentId, signature: signature, status: status);
+            return paymentsClient.UpdateRazorpayResponse(orderId: orderId, paymentId: paymentId, signature: signature, status: status, tablePreferences: tablePreferences);
         }
         #endregion
 
