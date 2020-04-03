@@ -74,7 +74,7 @@ namespace OrdersManagement.Core
         #endregion
 
         #region INTERNAL METHODS
-        internal dynamic ActivateOrder(int quotationId, bool isPostPaidQuotation, float activationAmount, string activationUrl, int employeeId, Dictionary<string, TablePreferences> tablePreferences = null)
+        internal dynamic ActivateOrder(int quotationId, bool isPostPaidQuotation, float activationAmount, string activationUrl,string activationComments, int employeeId, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
@@ -84,9 +84,13 @@ namespace OrdersManagement.Core
                 JObject repsonseObj;
                 dynamic metaData;
                 //dynamic logResponse;
-                string _ApiKey = "fDZjHHybyM";
-                string _ApiSecret = "zu5nKlRQFbPCQrihQn51";
-                metaData = this.GetRequestObjectForActivation(quotationId, isPostPaidQuotation, activationAmount);
+                string _ApiKey = "";
+                string _ApiSecret = "";
+                dynamic ds=this.GetProductDetails(quotationId);
+                _ApiKey = ds.Table.ApiKey;
+                _ApiSecret = ds.Table.ApiSecret;
+                metaData = this.GetRequestObjectForActivation(quotationId, isPostPaidQuotation, activationAmount, activationComments,employeeId);
+                Logger.Error(string.Format("Metadata Reuest : {0} | Url : {1}", metaData,activationUrl));
                 CredentialCache credentials = new CredentialCache();
                 //credentials.Add(uriPrefix: new Uri(activationUrl), authType: "Basic", cred: new NetworkCredential("smscountry", "smsc"));
                 credentials.Add(new Uri(activationUrl), "Basic", new NetworkCredential(_ApiKey, _ApiSecret));
@@ -311,7 +315,7 @@ namespace OrdersManagement.Core
             }
         }
 
-        public dynamic GetRequestObjectForActivation(int quotationId, bool isPostPaidQuotation, float activationAmount)
+        public dynamic GetRequestObjectForActivation(int quotationId, bool isPostPaidQuotation, float activationAmount, string activationComments,int employeeId)
         {
             dynamic activationObject = new JObject();
             dynamic servicesObject;
@@ -421,7 +425,7 @@ namespace OrdersManagement.Core
                         if (activationObject.SelectToken(serviceName).SelectToken(Label.DATA).Type == JTokenType.Array)
                         {
                             JArray serviceJarray = new JArray();
-                            serviceJarray = (JArray)activationObject.SelectToken(serviceName).SelectToken(Label.DATA).Add(servicesData);
+                            serviceJarray = (JArray)(activationObject.SelectToken(serviceName).SelectToken(Label.DATA));
                             serviceJarray.Add(servicesData);
                             activationObject.SelectToken(serviceName).SelectToken(Label.DATA).Replace(serviceJarray);
                         }
@@ -436,6 +440,9 @@ namespace OrdersManagement.Core
                     ActivationServiceJobj.Add(new JProperty(Label.ACTIVATION_AMOUNT, activationAmount));
                     ActivationServiceJobj.Add(new JProperty(Label.BALANCE_TYPE, this._ds.Tables[Label.QUOTATION].Rows[0][Label.BALANCE_TYPE]));
                     ActivationServiceJobj.Add(new JProperty(Label.ORDER_ID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.ID]));
+                    ActivationServiceJobj.Add(new JProperty(Label.COMMENTS, activationComments));
+                    ActivationServiceJobj.Add(new JProperty(Label.ACCOUNT_ID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.ACCOUNT_ID]));
+                    ActivationServiceJobj.Add(new JProperty(Label.EMPLOYEE_EMAILID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.EMPLOYEE_EMAILID]));
                     ActivationServiceJobj.Add(new JProperty(Label.SERVICES_LIST, activationObject));                    
                     activationObject = new JObject();
                     activationObject = ActivationServiceJobj;
@@ -450,7 +457,31 @@ namespace OrdersManagement.Core
             return activationObject;
         }
 
-
+        public dynamic GetProductDetails(int quotationId, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.GET_PRODUCT_DETAILS, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_ID, SqlDbType.BigInt).Value = quotationId;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, tablePreferences);
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to Get ProductDetails. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to Get ProductDetails. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
 
         #endregion
     }

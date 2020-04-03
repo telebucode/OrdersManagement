@@ -20,7 +20,7 @@ namespace TestClient
                 Client c = new Client(responseFormat: ResponseFormat.JSON);
                 Dictionary<string, TablePreferences> prefs = new Dictionary<string, TablePreferences>();
                 //prefs.Add("InputTypes", new TablePreferences(RootName: "FieldTypes", childElementNameForRows: "FieldType", columnValuesAsXmlAttributes: true, singleRowAsSingleEntity: true));                
-                dynamic d = c.ActivateOrder(3651, false, 100, "http://localhost:4649/v2.1/ServiceActivation", 1);
+                dynamic d = c.ActivateOrder(3651, false, 100, "http://localhost:3779/v2.1/ServiceActivation","Test", 1);
                 //dynamic d = c.ActivateOrder(7, false, 100, "http://localhost:4649/v2.1/ServiceActivation", 1);
                 //dynamic d = c.GetQuotationDetails(4026, false);
                 // dynamic d1 = c.GetQuotationDetails(4029, false);
