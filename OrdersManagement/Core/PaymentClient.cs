@@ -342,7 +342,7 @@ namespace OrdersManagement.Core
             try
             {
                 this._sqlCommand = new SqlCommand(StoredProcedure.INITIATE_RAZORPAY_TRANSACTION, this._sqlConnection);                
-                this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCTID, SqlDbType.TinyInt).Value = productId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_ID, SqlDbType.TinyInt).Value = productId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_USER_ID, SqlDbType.Int).Value = productUserId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.NAME, SqlDbType.VarChar).Value = userName;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.MOBILE, SqlDbType.VarChar).Value = mobile;
@@ -373,11 +373,12 @@ namespace OrdersManagement.Core
             }
         }
 
-        internal dynamic UpdateRazorpayResponse(string orderId, string paymentId, string signature, int status, Dictionary<string, TablePreferences> tablePreferences = null)
+        internal dynamic UpdateRazorpayResponse(int Id, string orderId, string paymentId, string signature, int status, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
                 this._sqlCommand = new SqlCommand(StoredProcedure.UPDATE_RAZORPAY_RESPONSE, this._sqlConnection);                
+                this._sqlCommand.Parameters.Add(ProcedureParameter.TABLE_ID, SqlDbType.BigInt).Value = Id;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_ORDER_ID, SqlDbType.VarChar).Value = orderId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_PAYMENT_ID, SqlDbType.VarChar).Value = paymentId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_SIGNATURE, SqlDbType.VarChar).Value = signature;

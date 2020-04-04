@@ -425,10 +425,10 @@ namespace OrdersManagement.Core
             return paymentsClient.InitiateRazorpayTransaction(productId: productId, productUserId: productUserId, userName: userName, mobile: mobile, email: email, rawAmount: rawAmount, tax: tax, orderId: orderId, tablePreferences: tablePreferences);
         }
 
-        public dynamic UpdateRazorpayResponse(string orderId, string paymentId, string signature, int status, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic UpdateRazorpayResponse(int Id, string orderId, string paymentId, string signature, int status, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);
-            return paymentsClient.UpdateRazorpayResponse(orderId: orderId, paymentId: paymentId, signature: signature, status: status, tablePreferences: tablePreferences);
+            return paymentsClient.UpdateRazorpayResponse(Id: Id, orderId: orderId, paymentId: paymentId, signature: signature, status: status, tablePreferences: tablePreferences);
         }
         #endregion
 

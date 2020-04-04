@@ -82,10 +82,10 @@ namespace OrdersManagement
         internal const string QUOTATION_TYPE = "@QuotationType";
 
         // RAZORPAY
-        internal const string PRODUCTID = "@ProductId";
+        internal const string TABLE_ID = "@Id";
+        // internal const string PRODUCT_ID = "@ProductId";// reusing from above
         internal const string PRODUCT_USER_ID = "@ProductUserId";
-        internal const string NAME = "@Name";        
-        // currency in limbo ??
+        internal const string NAME = "@Name";                
         internal const string RAW_AMOUNT = "@RawAmount";
         internal const string TAX = "@Tax";        
         internal const string RAZORPAY_ORDER_ID = "@RazorpayOrderId";
