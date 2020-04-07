@@ -56,6 +56,33 @@
     // Public Methods Start
 
     // Services Related
+    OrdersClient.prototype.GenerateOrderForOnlinePayments = function (onlyActive, callBackFunction) {
+        var actionResponse;
+        failedActionResponse.Message = defaultErrorMessage;
+        $.ajax({
+            url: this.options.ordersHandler,
+            async: this.options.async,
+            dataType: "JSON",
+            data:
+            {
+                Action: "GenerateOrderForOnlinePayments"
+            },
+            success: function (response) {
+                actionResponse = response;
+                if (CanCallBack(callBackFunction))
+                    callBackFunction(actionResponse);
+            },
+            error: function (response) {
+                failedActionResponse.Response = response;
+                failedActionResponse.Message = response.responseJSON.Message;
+                actionResponse = failedActionResponse;
+                if (CanCallBack(callBackFunction))
+                    callBackFunction(actionResponse);
+            }
+        });
+        if (!CanCallBack(callBackFunction))
+            return actionResponse;
+    }
     OrdersClient.prototype.GetInputTypes = function (onlyActive, callBackFunction) {
         var actionResponse;
         failedActionResponse.Message = defaultErrorMessage;

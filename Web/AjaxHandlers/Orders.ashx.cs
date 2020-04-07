@@ -35,6 +35,9 @@ namespace Web.AjaxHandlers
                     case "Search":
                         Search(context);
                         break;
+                    case "GenerateOrderForOnlinePayments":
+                        GenerateOrderForOnlinePayments(context);
+                        break;
                 }
             }
             catch (System.Threading.ThreadAbortException e)
@@ -47,6 +50,11 @@ namespace Web.AjaxHandlers
             {
                 GenerateErrorResponse(500, e.Message);
             }
+        }
+        private void GenerateOrderForOnlinePayments(HttpContext context)
+        {
+            Client client = new Client(responseFormat: ResponseFormat.JSON);
+            context.Response.Write(client.GenerateOrderForOnlinePayments(1,1,5,"",100,18,118,"ABC","XYZ",null));
         }
         private void GetOrderSummary(HttpContext context)
         {

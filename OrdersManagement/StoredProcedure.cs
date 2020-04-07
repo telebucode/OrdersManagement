@@ -66,6 +66,7 @@ namespace OrdersManagement
         internal const string UPDATE_UNLIMITED_ACTIVATION = "UpdateUnlimitedActivation";
         internal const string GET_PRODUCT_DETAILS = "GetProductDetails";
         internal const string ORDERS_LOG = "OrdersLog";
+        internal const string GENERATE_ORDER_FOR_ONLINE_PAYMENTS = "GenerateOrderForOnlinePayments";
         #endregion
         #region PRODUCTS RELATED
         internal const string GET_PRODUCTS = "GetProducts";
