@@ -419,10 +419,10 @@ namespace OrdersManagement.Core
             return paymentsClient.VerifyPaymentStatuses(orderId: orderId, tablePreferences: tablePreferences);
         }
 
-        public dynamic InitiateRazorpayInOrders(int productId, int productUserId, string userName, string mobile, string email, float rawAmount, float tax, string orderId, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic InitiateRazorpayInOrders(int productId, int productUserId, string userName, string mobile, string email, float rawAmount, float tax, float fee, string orderId, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             PaymentClient paymentsClient = new PaymentClient(ref this._helper);        
-            return paymentsClient.InitiateRazorpayTransaction(productId: productId, productUserId: productUserId, userName: userName, mobile: mobile, email: email, rawAmount: rawAmount, tax: tax, orderId: orderId, tablePreferences: tablePreferences);
+            return paymentsClient.InitiateRazorpayTransaction(productId: productId, productUserId: productUserId, userName: userName, mobile: mobile, email: email, rawAmount: rawAmount, tax: tax, fee: fee, orderId: orderId, tablePreferences: tablePreferences);
         }
 
         public dynamic UpdateRazorpayResponse(int Id, string orderId, string paymentId, string signature, int status, Dictionary<string, TablePreferences> tablePreferences = null)

@@ -337,7 +337,7 @@ namespace OrdersManagement.Core
             }
         }
 
-        internal dynamic InitiateRazorpayTransaction(int productId, int productUserId, string userName, string mobile, string email, float rawAmount, float tax, string orderId, Dictionary<string, TablePreferences> tablePreferences = null)
+        internal dynamic InitiateRazorpayTransaction(int productId, int productUserId, string userName, string mobile, string email, float rawAmount, float tax, float fee, string orderId, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
@@ -349,6 +349,7 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.EMAIL, SqlDbType.VarChar).Value = email;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.RAW_AMOUNT, SqlDbType.Float).Value = rawAmount;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.TAX, SqlDbType.Float).Value = tax;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.FEE, SqlDbType.Float).Value = fee;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_ORDER_ID, SqlDbType.VarChar).Value = orderId;
                 
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
