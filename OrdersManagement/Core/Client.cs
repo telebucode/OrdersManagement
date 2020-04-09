@@ -475,6 +475,12 @@ namespace OrdersManagement.Core
             return ordersClient.UpdateUnlimitedActivation(orderId, tablePreferences: tablePreferences);
         }
 
+        public dynamic GenerateOrderForOnlinePayments(long accountId,int productId, int productUserId,string metaData, float orderAmount, float taxAmount, float totalAmount, string paymentGatewayOrderId, string paymentGatewayPaymentId, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            OrdersClient ordersClient = new OrdersClient(ref this._helper);
+            return ordersClient.GenerateOrderForOnlinePayments(accountId: accountId, productId: productId, productAccountId:productUserId,metaData: metaData, orderAmount: orderAmount,taxAmount:taxAmount,TotalAmount:totalAmount,paymentGatewayOrderId: paymentGatewayOrderId,paymentGatewayPaymentid: paymentGatewayPaymentId ,  tablePreferences: tablePreferences);
+        }
+
         #endregion
 
         // Products Related

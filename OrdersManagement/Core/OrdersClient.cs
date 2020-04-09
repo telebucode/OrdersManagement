@@ -315,6 +315,44 @@ namespace OrdersManagement.Core
             }
         }
 
+        public dynamic GenerateOrderForOnlinePayments(long accountId,int productId,long productAccountId, string metaData, float orderAmount,float taxAmount,float TotalAmount, string paymentGatewayOrderId, string paymentGatewayPaymentid, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.GENERATE_ORDER_FOR_ONLINE_PAYMENTS, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ACCOUNT_ID, SqlDbType.BigInt).Value = accountId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_ID, SqlDbType.Int).Value = productId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_USER_ID, SqlDbType.BigInt).Value = productAccountId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.META_DATA, SqlDbType.VarChar, -1).Value = metaData;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.ORDER_AMOUNT, SqlDbType.Float).Value = orderAmount;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.TAX, SqlDbType.Float).Value = taxAmount;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.TOTAL_AMOUNT, SqlDbType.Float).Value = TotalAmount;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PAYMENT_GATEWAY_ORDER_ID, SqlDbType.VarChar,256).Value = paymentGatewayOrderId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PAYMENT_GATEWAY_PAYMENT_ID, SqlDbType.VarChar, 256).Value = paymentGatewayPaymentid;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                if(this._ds.Tables.Count > 0)
+                {
+                    this._ds.Tables[0].TableName = "InvoiceDetails";
+                }
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, tablePreferences);
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to Update Unlimited Activation. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to Update Unlimited Activation. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+
         public dynamic GetRequestObjectForActivation(int quotationId, bool isPostPaidQuotation, float activationAmount, string activationComments,int employeeId)
         {
             dynamic activationObject = new JObject();

@@ -380,8 +380,8 @@ namespace OrdersManagement.Core
             {
                 this._sqlCommand = new SqlCommand(StoredProcedure.UPDATE_RAZORPAY_RESPONSE, this._sqlConnection);                
                 this._sqlCommand.Parameters.Add(ProcedureParameter.TABLE_ID, SqlDbType.BigInt).Value = Id;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_ORDER_ID, SqlDbType.VarChar).Value = orderId;
-                this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_PAYMENT_ID, SqlDbType.VarChar).Value = paymentId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PAYMENT_GATEWAY_ORDER_ID, SqlDbType.VarChar).Value = orderId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PAYMENT_GATEWAY_PAYMENT_ID, SqlDbType.VarChar).Value = paymentId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_SIGNATURE, SqlDbType.VarChar).Value = signature;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.RAZORPAY_STATUS, SqlDbType.TinyInt).Value = status;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
