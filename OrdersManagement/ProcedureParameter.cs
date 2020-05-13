@@ -89,6 +89,7 @@ namespace OrdersManagement
         internal const string RAW_AMOUNT = "@RawAmount";
         internal const string TAX = "@Tax";
         internal const string FEE = "@Fee";
+        internal const string TOTAL_AMOUNT = "@TotalAmount";
         internal const string PAYMENT_GATEWAY_ORDER_ID = "@PaymentGatewayOrderId";
         internal const string PAYMENT_GATEWAY_PAYMENT_ID = "@PaymentGatewayPaymentId";
         internal const string RAZORPAY_ORDER_ID = "@RazorpayOrderId";
