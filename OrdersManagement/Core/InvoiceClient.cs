@@ -216,7 +216,10 @@ namespace OrdersManagement.Core
                 if (!this._sqlCommand.IsSuccess())
                     return this.ErrorResponse();
                 if (this._ds.Tables.Count > 0)
-                    this._ds.Tables[0].TableName = Label.INVOICE_ACCOUNT_DETAILS;
+                {
+                    this._ds.Tables[0].TableName = Label.OWNERSHIP_NAMES;
+                    this._ds.Tables[1].TableName = Label.INVOICE_ACCOUNT_DETAILS;
+                }
                 this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
                 this._helper.ParseDataSet(this._ds, tablePreferences);
                 return this._helper.GetResponse();
@@ -232,7 +235,7 @@ namespace OrdersManagement.Core
             }
         }
 
-        internal dynamic UpdateInvoice(int invoiceId, string mobile, string email, string address, string GSTIN, string companyName, int stateId, Dictionary<string, TablePreferences> tablePreferences = null)
+        internal dynamic UpdateInvoice(int invoiceId, string mobile, string email, string address, string GSTIN, string companyName, int stateId,int ownership,string ponumber, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
@@ -244,6 +247,8 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.GSTIN, SqlDbType.VarChar, 15).Value = GSTIN;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.COMPANY, SqlDbType.NVarChar, 200).Value = companyName;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.STATE_ID, SqlDbType.Int).Value = stateId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.OWNERSHIP_ID, SqlDbType.Int).Value = ownership;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PO_NUMBER, SqlDbType.VarChar,100).Value = ponumber;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());

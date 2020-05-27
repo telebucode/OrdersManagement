@@ -30,6 +30,7 @@ namespace OrdersManagement
         internal const string ACCOUNT_NAME = "@AccountName";
         internal const string EMPLOYEE_ID = "@EmployeeId";
         internal const string OWNERSHIP_ID = "@OwnerShipId";
+        internal const string PO_NUMBER = "@PONumber";
         internal const string STATUS_ID = "@StatusId";
         internal const string CHANNEL_ID = "@ChannelId";
         internal const string IP_ADDRESS = "@IpAddress";
