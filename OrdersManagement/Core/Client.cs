@@ -314,10 +314,10 @@ namespace OrdersManagement.Core
             return client.GetInvoiceAccountDetails(invoiceId, tablePreferences);
         }
 
-        public dynamic UpdateInvoice(int invoiceId, string mobile, string email, string address, string GSTIN, string companyName, int stateId, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic UpdateInvoice(int invoiceId, string mobile, string email, string address, string GSTIN, string companyName, int stateId,int ownership,string ponumber, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             InvoiceClient client = new InvoiceClient(ref this._helper);
-            return client.UpdateInvoice(invoiceId, mobile, email, address, GSTIN, companyName, stateId, tablePreferences);
+            return client.UpdateInvoice(invoiceId, mobile, email, address, GSTIN, companyName, stateId,ownership,ponumber, tablePreferences);
         }
         /// <summary>
         /// 
