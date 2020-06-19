@@ -289,11 +289,11 @@ namespace OrdersManagement.Core
             }
         }
 
-        public dynamic UpdateUnlimitedActivation(long orderId, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic AutoActivateService(long orderId, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
-                this._sqlCommand = new SqlCommand(StoredProcedure.UPDATE_UNLIMITED_ACTIVATION, this._sqlConnection);
+                this._sqlCommand = new SqlCommand(StoredProcedure.AUTO_ACTICVATE_SERVICE, this._sqlConnection);
                 this._sqlCommand.Parameters.Add(ProcedureParameter.ORDER_ID, SqlDbType.BigInt).Value = orderId;                
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);

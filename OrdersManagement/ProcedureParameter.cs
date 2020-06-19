@@ -81,6 +81,7 @@ namespace OrdersManagement
         internal const string REQUEST_OBJECT = "@RequestObject";
         internal const string RESPONSE_OBJECT = "@ResponseObject";
         internal const string QUOTATION_TYPE = "@QuotationType";
+        internal const string IS_AUTO_ACTIVATE = "@IsAutoActivate";
 
         // RAZORPAY
         internal const string TABLE_ID = "@Id";

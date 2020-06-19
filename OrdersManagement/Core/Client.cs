@@ -469,10 +469,10 @@ namespace OrdersManagement.Core
             return ordersClient.GetRequestObjectForActivation(quotationId, isPostPaidQuotation, activationPercentage, activationComments, employeeId);
         }
 
-        public dynamic UpdateUnlimitedActivation(long orderId, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic AutoActivateService(long orderId, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             OrdersClient ordersClient = new OrdersClient(ref this._helper);
-            return ordersClient.UpdateUnlimitedActivation(orderId, tablePreferences: tablePreferences);
+            return ordersClient.AutoActivateService(orderId, tablePreferences: tablePreferences);
         }
 
         public dynamic GenerateOrderForOnlinePayments(long accountId,int productId, int productUserId,string metaData, float orderAmount, float taxAmount, float totalAmount, string paymentGatewayOrderId, string paymentGatewayPaymentId, Dictionary<string, TablePreferences> tablePreferences = null)
