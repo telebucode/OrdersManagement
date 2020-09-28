@@ -277,6 +277,7 @@ namespace OrdersManagement.Core
             try
             {
                 this._sqlCommand = new SqlCommand(StoredProcedure.VIEW_OR_DOWNLOAD_INVOICE, this._sqlConnection);
+                this._sqlCommand.CommandTimeout = 60;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_ID, SqlDbType.Int).Value = quotationId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IS_POSTPAID_QUOTATION, SqlDbType.Bit).Value = isPostPaidQuotation;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.ISPROFORMAINVOICE, SqlDbType.Bit).Value = isProformaInvoice;
@@ -346,6 +347,7 @@ namespace OrdersManagement.Core
             try
             {
                 this._sqlCommand = new SqlCommand(StoredProcedure.VIEW_OR_DOWNLOAD_INVOICE, this._sqlConnection);
+                this._sqlCommand.CommandTimeout = 60;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.QUOTATION_ID, SqlDbType.Int).Value = quotationId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.IS_POSTPAID_QUOTATION, SqlDbType.Bit).Value = isPostPaidQuotation;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.ISPROFORMAINVOICE, SqlDbType.Bit).Value = isProformaInvoice;
