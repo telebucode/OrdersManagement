@@ -480,6 +480,11 @@ namespace OrdersManagement.Core
             OrdersClient ordersClient = new OrdersClient(ref this._helper);
             return ordersClient.GenerateOrderForOnlinePayments(accountId: accountId, productId: productId, productAccountId:productUserId,metaData: metaData, orderAmount: orderAmount,taxAmount:taxAmount,TotalAmount:totalAmount,paymentGatewayOrderId: paymentGatewayOrderId,paymentGatewayPaymentid: paymentGatewayPaymentId ,  tablePreferences: tablePreferences);
         }
+        public dynamic GetOrderDetails(int userid, int productid, DateTime fromDateTime, DateTime toDateTime, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            OrdersClient ordersClient = new OrdersClient(ref this._helper);
+            return ordersClient.GetOrderDetails(userId: userid, productId: productid, fromdate: fromDateTime, todate: toDateTime, tablePreferences: tablePreferences);
+        }
 
         #endregion
 

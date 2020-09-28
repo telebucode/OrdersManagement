@@ -66,6 +66,7 @@ namespace OrdersManagement
         internal const string UPDATE_UNLIMITED_ACTIVATION = "UpdateUnlimitedActivation";
         internal const string AUTO_ACTICVATE_SERVICE = "AutoActivateService";
         internal const string GET_PRODUCT_DETAILS = "GetProductDetails";
+        internal const string GET_ORDER_DETAILS = "GetOrderDetails";
         internal const string ORDERS_LOG = "OrdersLog";
         internal const string GENERATE_ORDER_FOR_ONLINE_PAYMENTS = "GenerateOrderForOnlinePayments";
         #endregion
@@ -75,6 +76,7 @@ namespace OrdersManagement
         internal const string GET_BILLING_MODES = "GetBillingModes";
         internal const string GET_COUNTRIES = "GetCountries";
         internal const string GET_STATES = "GetStates";
+        
     }
 }
 

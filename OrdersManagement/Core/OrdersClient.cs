@@ -521,6 +521,37 @@ namespace OrdersManagement.Core
             }
         }
 
+        public dynamic GetOrderDetails(int userId, int productId, DateTime fromdate, DateTime todate, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.GET_ORDER_DETAILS, this._sqlConnection);
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_USER_ID, SqlDbType.Int).Value = userId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_ID, SqlDbType.BigInt).Value = productId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.FROM_DATE_TIME, SqlDbType.DateTime).Value = fromdate;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.TO_DATE_TIME, SqlDbType.DateTime).Value = todate;
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, tablePreferences);
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to Get ProductDetails. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to Get ProductDetails. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+
+
+
         #endregion
     }
 }
