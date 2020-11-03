@@ -458,6 +458,12 @@ namespace OrdersManagement.Core
             return ordersClient.ActivateOrder(quotationId: quotationId, isPostPaidQuotation: isPostPaidQuotation, activationAmount: activationAmount, activationUrl: activationUrl,activationComments: activationComments, employeeId: employeeId, tablePreferences: null);
         }
 
+        public dynamic UpdateInvoiceNumber(int quotationId,int OrderId,     string invoiceNumber, string invoicesDataUrl, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            OrdersClient ordersClient = new OrdersClient(ref this._helper);
+            return ordersClient.UpdateInvoiceNumber(quotationId: quotationId, OrderId: OrderId, invoiceNumber: invoiceNumber, invoicesDataUrl: invoicesDataUrl, tablePreferences: null);
+        }
+
         public dynamic VerifyOrderStatuses(long orderId, float activationAmount,bool isActivated, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             OrdersClient ordersClient = new OrdersClient(ref this._helper);

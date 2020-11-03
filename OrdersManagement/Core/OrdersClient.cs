@@ -122,6 +122,53 @@ namespace OrdersManagement.Core
             }
         }
 
+        internal dynamic UpdateInvoiceNumber(int quotationId,int OrderId, string invoiceNumber, string invoicesDataUrl, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            try
+            {
+                StreamReader SReader = null;
+                StreamWriter SWriter = null;
+                string HttpAPIResponseString = "";
+                JObject repsonseObj;
+                JObject requestObj;
+                dynamic metaData;
+                string _ApiKey = "";
+                string _ApiSecret = "";
+                dynamic ds = this.GetProductDetails(quotationId);
+                _ApiKey = ds.Table.ApiKey;
+                _ApiSecret = ds.Table.ApiSecret;
+                requestObj = new JObject(new JProperty("OrderId", OrderId), new JProperty("InvoiceNumber", invoiceNumber),new JProperty("Mode",1));
+                //CredentialCache credentials = new CredentialCache();
+                //credentials.Add(new Uri(invoicesDataUrl), "Basic", new NetworkCredential(_ApiKey, _ApiSecret));
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(invoicesDataUrl);
+                //request.Credentials = credentials;
+                string Credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(_ApiKey + ":" + _ApiSecret));
+                request.Headers.Add("Authorization", "Basic " + Credentials);
+                request.Method = "POST";
+                request.ContentType = "application/json";
+                SWriter = new StreamWriter(request.GetRequestStream());
+                SWriter.Write(requestObj.ToString());
+                SWriter.Flush();
+                SWriter.Close();
+                SReader = new StreamReader(request.GetResponse().GetResponseStream());
+                HttpAPIResponseString = SReader.ReadToEnd();
+                SReader.Close();
+                repsonseObj = JObject.Parse(HttpAPIResponseString);
+                //logResponse = this.LogOrderData(employeeId, Convert.ToString(metaData), Convert.ToString(repsonseObj));
+
+
+                return repsonseObj;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Unable to fetch OrderSummary. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to fetch OrderSummary. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
         private dynamic LogOrderData(int employeeId, string requestObject, string responseObject)
         {
             try
@@ -477,7 +524,7 @@ namespace OrdersManagement.Core
                     ActivationServiceJobj.Add(new JProperty(Label.PRODUCT_USERID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.PRODUCT_USERID]));
                     ActivationServiceJobj.Add(new JProperty(Label.ACTIVATION_AMOUNT, activationAmount));
                     ActivationServiceJobj.Add(new JProperty(Label.BALANCE_TYPE, this._ds.Tables[Label.QUOTATION].Rows[0][Label.BALANCE_TYPE]));
-                    ActivationServiceJobj.Add(new JProperty(Label.ORDER_ID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.ID]));
+                    ActivationServiceJobj.Add(new JProperty(Label.ORDER_ID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.ORDER_ID]));
                     ActivationServiceJobj.Add(new JProperty(Label.COMMENTS, activationComments));
                     ActivationServiceJobj.Add(new JProperty(Label.ACCOUNT_ID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.ACCOUNT_ID]));
                     ActivationServiceJobj.Add(new JProperty(Label.EMPLOYEE_EMAILID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.EMPLOYEE_EMAILID]));
