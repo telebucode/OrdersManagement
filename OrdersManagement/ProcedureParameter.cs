@@ -37,6 +37,7 @@ namespace OrdersManagement
         internal const string BILLING_MODE_ID = "@BillingModeId";
         internal const string FROM_DATE_TIME = "@FromDateTime";
         internal const string TO_DATE_TIME = "@ToDateTime";
+        internal const string STATUS = "@Status";
         internal const string PAGE_NUMBER = "@PageNumber";
         internal const string LIMIT = "@Limit";
         internal const string META_DATA = "@MetaData";

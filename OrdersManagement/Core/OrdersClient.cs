@@ -521,7 +521,7 @@ namespace OrdersManagement.Core
             }
         }
 
-        public dynamic GetOrderDetails(int userId, int productId, DateTime fromdate, DateTime todate, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GetOrderDetails(int userId, int productId, DateTime fromdate, DateTime todate,string status, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
@@ -530,6 +530,7 @@ namespace OrdersManagement.Core
                 this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_ID, SqlDbType.BigInt).Value = productId;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.FROM_DATE_TIME, SqlDbType.DateTime).Value = fromdate;
                 this._sqlCommand.Parameters.Add(ProcedureParameter.TO_DATE_TIME, SqlDbType.DateTime).Value = todate;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.STATUS, SqlDbType.VarChar,20).Value = status;
                 this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
                 this._da = new SqlDataAdapter(this._sqlCommand);
                 this._da.Fill(this._ds = new DataSet());
