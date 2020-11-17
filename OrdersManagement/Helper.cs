@@ -240,7 +240,7 @@ namespace OrdersManagement
         /// </summary>
         /// <param name="ds">The DataSet.</param>
         /// <returns></returns>        
-        internal void ParseDataSet(DataSet ds, Dictionary<string, Model.TablePreferences> tablePreferences = null)
+        internal void ParseDataSet(DataSet ds, Dictionary<string, Model.TablePreferences> tablePreferences = null,bool isArray=false)
         {
             if (ds == null)
             {
@@ -353,11 +353,23 @@ namespace OrdersManagement
                             }
                             else
                             {
-                                this._jObj.Add(new JProperty(childXmlElementNameForRows.Length > 0 ?
-                                                                    childXmlElementNameForRows :
-                                                                        currentTableRootName.Length > 0 ?
-                                                                                currentTableRootName : table.TableName,
-                                                                               rowJObj));
+                                if (isArray == true)
+                                {
+                                    this._jArr.Add(rowJObj);
+                                    this._jObj.Add(new JProperty(childXmlElementNameForRows.Length > 0 ?
+                                                                        childXmlElementNameForRows :
+                                                                            currentTableRootName.Length > 0 ?
+                                                                                    currentTableRootName : table.TableName,
+                                                                                   this._jArr));
+                                }
+                                else
+                                {
+                                    this._jObj.Add(new JProperty(childXmlElementNameForRows.Length > 0 ?
+                                                                        childXmlElementNameForRows :
+                                                                            currentTableRootName.Length > 0 ?
+                                                                                    currentTableRootName : table.TableName,
+                                                                                   rowJObj));
+                                }
                                 //this._jObj.Add(new JProperty(currentTableRootName.Length > 0 ? currentTableRootName : table.TableName, rowJObj));
                             }
                         }

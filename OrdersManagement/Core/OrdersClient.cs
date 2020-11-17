@@ -568,7 +568,7 @@ namespace OrdersManagement.Core
             }
         }
 
-        public dynamic GetOrderDetails(int userId, int productId, DateTime fromdate, DateTime todate,string status, Dictionary<string, TablePreferences> tablePreferences = null)
+        public dynamic GetOrderDetails(int userId, int productId, DateTime fromdate, DateTime todate,string status,bool IsDownLoad, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             try
             {
@@ -583,9 +583,21 @@ namespace OrdersManagement.Core
                 this._da.Fill(this._ds = new DataSet());
                 if (!this._sqlCommand.IsSuccess())
                     return this.ErrorResponse();
-                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
-                this._helper.ParseDataSet(this._ds, tablePreferences);
-                return this._helper.GetResponse();
+                //this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                //this._helper.ParseDataSet(this._ds, tablePreferences);
+                JObject jobj = new JObject();
+                if (IsDownLoad)
+                {
+                    ExportToExcel.ExportDsToExcelSheet(_ds, "RechargesHistory");
+                }
+                else
+                {
+                    this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                    this._helper.ParseDataSet(this._ds, tablePreferences,true);
+                    jobj = this._helper.GetResponse();
+                }
+                return jobj;
+                //return this._helper.GetResponse();
             }
             catch (Exception e)
             {
