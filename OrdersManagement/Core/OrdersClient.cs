@@ -523,6 +523,7 @@ namespace OrdersManagement.Core
                     JObject ActivationServiceJobj = new JObject();
                     ActivationServiceJobj.Add(new JProperty(Label.PRODUCT_USERID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.PRODUCT_USERID]));
                     ActivationServiceJobj.Add(new JProperty(Label.ACTIVATION_AMOUNT, activationAmount));
+                    ActivationServiceJobj.Add(new JProperty(Label.INVOICE_NUMBER, this._ds.Tables[Label.QUOTATION].Rows[0][Label.INVOICE_NUMBER]));
                     ActivationServiceJobj.Add(new JProperty(Label.BALANCE_TYPE, this._ds.Tables[Label.QUOTATION].Rows[0][Label.BALANCE_TYPE]));
                     ActivationServiceJobj.Add(new JProperty(Label.ORDER_ID, this._ds.Tables[Label.QUOTATION].Rows[0][Label.ORDER_ID]));
                     ActivationServiceJobj.Add(new JProperty(Label.COMMENTS, activationComments));

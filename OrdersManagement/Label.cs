@@ -40,6 +40,7 @@ namespace OrdersManagement
         internal const string OWNERSHIP_NAMES = "OwnershipNames";
         internal const string OWNERSHIP_ID = "OwnershipId";
         internal const string INVOICES = "Invoices";
+        internal const string INVOICE_NUMBER = "InvoiceNumber";
         internal const string BILLING_MODES = "BillingModes";
         internal const string EXTRA_CHARGES = "ExtraCharges";
         internal const string AMOUNT = "Amount";
