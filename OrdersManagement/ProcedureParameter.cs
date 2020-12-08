@@ -8,6 +8,8 @@ namespace OrdersManagement
 {
     internal static class ProcedureParameter
     {
+        internal const string CREDIT_NOTE_AMOUNT = "@CreditNoteAmount";
+        internal const string INVOICE_NUMBER = "@InvoiceNumber";
         internal const string IS_ONLY_ACTIVE = "@IsOnlyActive";
         internal const string Mode = "@Mode";
         internal const string SERVICE_ID = "@ServiceId";

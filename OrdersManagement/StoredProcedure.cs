@@ -43,6 +43,7 @@ namespace OrdersManagement
         internal const string GET_PROFORMA_INVOICES = "GetProformaInvoices";
         internal const string CANCEL_INVOICE = "CancelInvoice";
         internal const string GENERATE_TAX_INVOICE = "GenerateTaxInvoice";
+        internal const string CREDIT_NOTE = "CreditNote";
         #endregion
         #region PAYMENTS RELATED
         internal const string GET_BANK_ACCOUNTS = "GetBankAccounts";

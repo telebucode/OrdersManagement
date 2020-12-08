@@ -10,6 +10,8 @@ using OrdersManagement.Exceptions;
 using Newtonsoft.Json.Linq;
 using System.Web;
 using SelectPdf;
+using System.Net;
+using System.IO;
 
 namespace OrdersManagement.Core
 {
@@ -337,6 +339,82 @@ namespace OrdersManagement.Core
             }
             
         }
+
+        internal dynamic CreditNote(int adminId, int InvoiceId, decimal CreditAmount, string Comment, Dictionary<string, TablePreferences> tablePreferences)
+        {
+            //DataSet tempDataSet = new DataSet();
+            StreamReader SReader = null;
+            StreamWriter SWriter = null;
+            string entityName = string.Empty;
+            string invoiceData = string.Empty;
+            string activationUrl = "", _ApiKey = "", _ApiSecret = "", HttpAPIResponseString = "";
+            //JObject metaData = new JObject();
+            try
+            {
+                this._sqlCommand = new SqlCommand(StoredProcedure.CREDIT_NOTE, this._sqlConnection);
+
+                this._sqlCommand.Parameters.Add(ProcedureParameter.INVOICEID, SqlDbType.Int).Value = InvoiceId;
+                this._sqlCommand.Parameters.Add(ProcedureParameter.CREDIT_NOTE_AMOUNT, SqlDbType.Money).Value = CreditAmount;
+
+                //this._sqlCommand.Parameters.Add(ProcedureParameter.ORDER_ID, SqlDbType.Int).Direction = ParameterDirection.Output;
+                //this._sqlCommand.Parameters.Add(ProcedureParameter.INVOICE_NUMBER, SqlDbType.VarChar, -1).Direction = ParameterDirection.Output;
+                //this._sqlCommand.Parameters.Add(ProcedureParameter.PRODUCT_USER_ID, SqlDbType.Int).Direction = ParameterDirection.Output;
+
+                this._helper.PopulateCommonOutputParameters(ref this._sqlCommand);
+                this._da = new SqlDataAdapter(this._sqlCommand);
+                this._da.Fill(this._ds = new DataSet());
+                //this._sqlCommand.ExecuteNonQuery();
+
+                if (!this._sqlCommand.IsSuccess())
+                    return this.ErrorResponse();
+                if (this._ds.Tables.Count > 0)
+                    this._ds.Tables[0].TableName = Label.INVOICES;
+                this._ds.Tables.Add(this._helper.ConvertOutputParametersToDataTable(this._sqlCommand.Parameters));
+                this._helper.ParseDataSet(this._ds, tablePreferences);
+
+                //JObject jobj = this._helper.GetResponse();
+                _ApiKey = this._ds.Tables[0].Rows[0]["ApiKey"].ToString();
+                _ApiSecret = this._ds.Tables[0].Rows[0]["ApiSecret"].ToString();
+                activationUrl = this._ds.Tables[0].Rows[0]["ActivationCallBackUrl"].ToString();
+
+                JObject ApiDataObj = new JObject();
+                ApiDataObj.Add(new JProperty(Label.PRODUCT_USERID, Convert.ToInt64(this._ds.Tables[0].Rows[0][Label.PRODUCT_USERID])));
+                ApiDataObj.Add(new JProperty(Label.ACTIVATION_AMOUNT, CreditAmount));
+                ApiDataObj.Add(new JProperty(Label.ORDER_ID, this._ds.Tables[0].Rows[0][Label.ORDER_ID]));
+                ApiDataObj.Add(new JProperty(Label.COMMENTS, Comment));
+                ApiDataObj.Add(new JProperty(Label.INVOICE_NUMBER, this._ds.Tables[0].Rows[0][Label.INVOICE_NUMBER]));
+                ApiDataObj.Add(new JProperty(Label.IS_CREDIT_NOTE, 1));
+
+                CredentialCache credentials = new CredentialCache();
+                //credentials.Add(uriPrefix: new Uri(activationUrl), authType: "Basic", cred: new NetworkCredential("smscountry", "smsc"));
+                credentials.Add(new Uri(activationUrl), "Basic", new NetworkCredential(_ApiKey, _ApiSecret));
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(activationUrl);
+                request.Credentials = credentials;
+                request.Method = "POST";
+                request.ContentType = "application/json";
+                SWriter = new StreamWriter(request.GetRequestStream());
+                SWriter.Write(ApiDataObj.ToString());
+                SWriter.Flush();
+                SWriter.Close();
+                SReader = new StreamReader(request.GetResponse().GetResponseStream());
+                HttpAPIResponseString = SReader.ReadToEnd();
+                SReader.Close();
+                //repsonseObj = JObject.Parse(HttpAPIResponseString);
+
+                return this._helper.GetResponse();
+            }
+            catch (Exception e)
+            {
+                invoiceData = "";
+                Logger.Error(string.Format("Unable to get Generate Sale Invoice. {0}", e.ToString()));
+                throw new QuotationException(string.Format("Unable to Generate Sale Invoice. {0}", e.Message));
+            }
+            finally
+            {
+                this.Clean();
+            }
+        }
+
         internal dynamic DownloadInvoice(int quotationId, bool isPostPaidQuotation, bool isProformaInvoice)
         {
             DataSet tempDataSet = new DataSet();
