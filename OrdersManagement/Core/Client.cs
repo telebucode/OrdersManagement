@@ -290,6 +290,11 @@ namespace OrdersManagement.Core
         /// <param name="onlyActive">Indicates whether to fetch only active statuses or all statuses irrespective of the status</param>
         /// <param name="tablePreferences">See Model.TablePreferences for details</param>
         /// <returns>JSon/Xml Object Depending on the ResponseFormat Set while Initiating the Client Object.</returns>
+        public dynamic CreditNote(int adminId, int InvoiceId, decimal CreditAmount, string Comment, Dictionary<string, TablePreferences> tablePreferences = null)
+        {
+            InvoiceClient client = new InvoiceClient(ref this._helper);
+            return client.CreditNote(adminId: adminId, InvoiceId: InvoiceId, CreditAmount: CreditAmount, Comment: Comment, tablePreferences: tablePreferences);
+        }
         public dynamic GetInvoiceStatuses(bool onlyActive = false, Dictionary<string, TablePreferences> tablePreferences = null)
         {
             InvoiceClient client = new InvoiceClient(ref this._helper);

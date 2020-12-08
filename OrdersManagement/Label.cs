@@ -8,6 +8,8 @@ namespace OrdersManagement
 {
     internal static class Label
     {
+        internal const string INVOICE_NUMBER = "InvoiceNumber";
+        internal const string IS_CREDIT_NOTE = "IsCreditNote";
         internal const string ID = "Id";
         internal const string DISPLAY_NAME = "DisplayName";
         internal const string META_DATA_CODE = "MetaDataCode";
